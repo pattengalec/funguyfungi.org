@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FGF Farm Manual</title>
+<meta name="theme-color" content="#35503A">
+<link rel="icon" type="image/png" href="lfg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>
+(function(){try{
+  var m = localStorage.getItem('lfg-mode');
+  /* mode toggle removed — manual is dark-only, matching the site */
+}catch(e){}})();
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Manual palette — light (default) ── */
+:root, [data-mode="light"] {
+  --bg:           #2A2620;
+  --bg-dark:      #24211B;
+  --bg-deeper:    #1E1B16;
+  --cream:        #F0EDE2;
+  --cream-dim:    #B0A99C;
+  --forest:       #A8B89A;
+  --forest-mid:   #7E9A6E;
+  --lime:         #7E9A6E;
+  --lime-pale:    #A8B89A;
+  --orange:       #C9973F;
+  --orange-dim:   #B5651D;
+  --border:       #45423A;
+  --card-bg:      #34302A;
+  --card-shadow:  rgba(0,0,0,0.18);
+  --font-head:    'IM Fell English', Georgia, serif;
+  --font-body:    'Source Sans 3', 'Helvetica Neue', sans-serif;
+  --font-mono:    'Courier Prime', monospace;
+}
+
+/* ── Manual palette — dark mode ── */
+[data-mode="dark"] {
+  --bg:           #24231E;
+  --bg-dark:      #1B1B17;
+  --bg-deeper:    #141310;
+  --cream:        #F0EDE2;
+  --cream-dim:    #A8A296;
+  --forest:       #7E9A6E;
+  --forest-mid:   #5a8818;
+  --lime:         #A8B89A;
+  --lime-pale:    #C9D8A0;
+  --orange:       #C9973F;
+  --orange-dim:   #B5651D;
+  --border:       #45423A;
+  --card-bg:      #2E2C26;
+  --card-shadow:  rgba(0,0,0,0.4);
+  --font-head:    'IM Fell English', Georgia, serif;
+  --font-body:    'Source Sans 3', 'Helvetica Neue', sans-serif;
+  --font-mono:    'Courier Prime', monospace;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--forest);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── HOME SCREEN ── */
+#screen-home { background: var(--bg); }
+
+.home-header {
+  background: #3E5C42;
+  padding: 1.25rem 1rem 1rem;
+  text-align: center;
+  border-bottom: 3px solid var(--lime);
+  position: relative;
+}
+.home-header .logo-text {
+  font-family: var(--font-head);
+  font-size: 1.7rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.home-header .logo-sub {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lime-pale);
+  margin-top: 0.2rem;
+  font-family: var(--font-mono);
+}
+.home-header .logo-rule {
+  width: 40px; height: 2px;
+  background: var(--lime);
+  margin: 0.5rem auto 0;
+}
+.home-header .manual-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lime-pale);
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  opacity: 0.8;
+}
+.header-controls {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.hdr-btn {
+  background: transparent;
+  border: 1px solid rgba(184,224,96,0.4);
+  color: var(--lime-pale);
+  border-radius: 20px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+.hdr-btn:hover { background: rgba(184,224,96,0.15); }
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem 0;
+  flex-wrap: wrap;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lime-pale);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.nav-links a:hover { opacity: 1; }
+
+.home-intro {
+  padding: 1rem 1rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--cream);
+  text-align: center;
+  font-style: italic;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem 5rem;
+}
+
+.topic-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 0.75rem;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 2px 6px var(--card-shadow);
+  transition: transform 0.12s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.topic-card:active { transform: scale(0.97); box-shadow: 0 1px 3px var(--card-shadow); }
+
+.topic-card .card-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+.topic-card .card-title {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--forest);
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+.topic-card .card-desc {
+  font-size: 0.65rem;
+  color: var(--cream);
+  line-height: 1.4;
+  font-family: var(--font-body);
+}
+.topic-card .card-badge {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #3E5C42;
+  color: var(--lime-pale);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* ── TOPIC SCREEN ── */
+.topic-screen { background: var(--bg); }
+
+.topic-header {
+  background: #3E5C42;
+  padding: 0 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.topic-header-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--forest-mid);
+}
+.back-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--lime-pale); font-size: 1.1rem; padding: 0.25rem;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; align-items: center; gap: 0.3rem;
+  font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 500;
+}
+.topic-header-title {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--cream);
+  flex: 1;
+}
+.topic-header-icon { font-size: 1.3rem; }
+
+/* Sub-tab strip */
+.subtab-strip {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background: #3E5C42;
+  border-top: 1px solid var(--forest-mid);
+}
+.subtab-strip::-webkit-scrollbar { display: none; }
+.subtab-btn {
+  flex-shrink: 0;
+  background: none; border: none;
+  color: var(--cream-dim); cursor: pointer;
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.subtab-btn.active { color: var(--lime-pale); border-bottom-color: var(--lime); }
+
+/* Sub-tab panels */
+.subtab-panels { flex: 1; }
+.subtab-panel { display: none; padding: 1rem; padding-bottom: 5rem; }
+.subtab-panel.active { display: block; }
+
+/* ── SHARED COMPONENTS ── */
+.section-eyebrow {
+  font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cream); margin-bottom: 0.6rem; margin-top: 1.25rem;
+  padding-bottom: 0.3rem; border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.section-eyebrow:first-child { margin-top: 0; }
+
+.info-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 4px var(--card-shadow);
+}
+.info-card-title {
+  font-weight: 600; font-size: 0.88rem;
+  color: var(--forest); margin-bottom: 0.25rem;
+  font-family: var(--font-body);
+}
+.info-card-body { font-size: 0.78rem; color: var(--cream); line-height: 1.55; font-family: var(--font-body); }
+.info-card-body strong { color: var(--forest); }
+
+.tip-card {
+  background: #2E3A2C;
+  border-left: 3px solid var(--lime);
+  border-radius: 0 6px 6px 0;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.78rem;
+  color: var(--forest);
+  line-height: 1.5;
+}
+.warn-card {
+  background: #3A3220;
+  border-left: 3px solid var(--orange);
+  border-radius: 0 6px 6px 0;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.78rem;
+  color: #7a4010;
+  line-height: 1.5;
+}
+
+/* Calculator wrapper */
+.calc-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--forest-mid);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.calc-card-head {
+  background: #3E5C42;
+  padding: 0.65rem 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lime-pale);
+  font-weight: 600;
+}
+.calc-card-body { padding: 1rem; }
+
+/* Form fields */
+.field { margin-bottom: 0.75rem; }
+.field label { display: block; font-size: 0.73rem; color: var(--cream); font-weight: 600; margin-bottom: 0.3rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.field input, .field select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--forest);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus { border-color: var(--lime); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.unit-hint { font-size: 0.62rem; color: var(--cream); margin-top: 0.2rem; }
+
+/* Result boxes */
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.75rem 0; }
+.result-box {
+  background: #3E5C42;
+  border-radius: 6px;
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+}
+.result-val { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--lime-pale); line-height: 1; }
+.result-label { font-size: 0.6rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--cream-dim); margin-top: 0.2rem; }
+
+/* Amendment rows */
+.amend-row {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.amend-row:last-child { border-bottom: none; }
+.amend-name { font-size: 0.85rem; font-weight: 600; color: var(--forest); }
+.amend-dose { font-family: 'Courier Prime', monospace; font-size: 0.75rem; color: var(--orange-dim); margin: 0.1rem 0; }
+.amend-why { font-size: 0.73rem; color: var(--cream); line-height: 1.45; }
+
+/* Badges */
+.badge {
+  display: inline-block; font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.12rem 0.4rem; border-radius: 3px; margin-right: 0.25rem;
+}
+.badge-bio   { background: #2E3A2C; color: var(--forest); }
+.badge-npk   { background: #43371E; color: #E3B778; }
+.badge-ph    { background: #382A46; color: #CBAEE2; }
+.badge-pest  { background: #45261E; color: #E8A488; }
+.badge-build { background: #26374A; color: #A6C6E8; }
+
+/* Steps */
+.step { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start; }
+.step-num {
+  flex-shrink: 0; width: 1.5rem; height: 1.5rem;
+  background: #3E5C42; color: var(--lime-pale);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; font-family: 'Courier Prime', monospace;
+  margin-top: 0.1rem;
+}
+.step-text { font-size: 0.8rem; color: var(--cream); line-height: 1.5; }
+.step-text strong { color: var(--forest); }
+
+/* Checklist */
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--cream);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item input[type="checkbox"] {
+  width: 1.1rem; height: 1.1rem; flex-shrink: 0;
+  accent-color: var(--forest); margin-top: 0.1rem;
+  cursor: pointer;
+}
+.checklist-item.checked { color: var(--cream-dim); text-decoration: line-through; }
+
+/* Plan rows */
+.plan-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+.plan-row:last-child { border-bottom: none; }
+.plan-key { color: var(--cream); }
+.plan-val { font-family: 'Courier Prime', monospace; color: var(--forest); text-align: right; font-size: 0.78rem; }
+.plan-val.highlight { color: var(--orange-dim); font-weight: 700; }
+
+/* Mix bar */
+.mix-bar-track { display: flex; height: 10px; border-radius: 5px; overflow: hidden; width: 100%; margin: 0.4rem 0; }
+.mix-seg { height: 100%; }
+.seg-topsoil { background: #d4c47a; }
+.seg-compost { background: var(--lime); }
+.seg-perlite { background: #aaaaaa; }
+.seg-native  { background: #8B6914; }
+.mix-legend  { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.63rem; color: var(--cream); }
+.legend-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* Ref cards */
+.ref-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+.ref-card-head {
+  background: var(--bg-dark);
+  padding: 0.65rem 0.9rem;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.ref-card-name { font-weight: 700; font-size: 0.88rem; color: var(--cream); }
+.ref-card-npk  { font-family: 'Courier Prime', monospace; font-size: 0.7rem; color: var(--lime-pale); margin-top: 0.1rem; }
+.ref-card-body { padding: 0.75rem 0.9rem; }
+.ref-row { margin-bottom: 0.55rem; }
+.ref-row-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream); margin-bottom: 0.1rem; }
+.ref-row-text  { font-size: 0.78rem; color: var(--cream); line-height: 1.45; }
+.ref-row-text strong { color: var(--forest); }
+.caution-text  { font-size: 0.75rem; color: #8b3010; line-height: 1.45; }
+
+/* Collapsible */
+.collapsible-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-dark); border-radius: 6px;
+  cursor: pointer; margin-bottom: 0.5rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.collapsible-head .col-title { font-size: 0.85rem; font-weight: 600; color: var(--cream); }
+.collapsible-head .col-arrow { color: var(--lime-pale); font-size: 0.8rem; transition: transform 0.2s; }
+.collapsible-head.open .col-arrow { transform: rotate(180deg); }
+.collapsible-body { display: none; padding: 0 0.25rem 0.5rem; }
+.collapsible-body.open { display: block; }
+
+/* Bottom home button */
+.home-fab {
+  position: fixed; bottom: 1.25rem; right: 1.25rem;
+  background: #3E5C42;
+  color: var(--lime-pale);
+  border: 2px solid var(--lime);
+  border-radius: 50px;
+  padding: 0.6rem 1.1rem;
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  display: none; align-items: center; gap: 0.4rem;
+  z-index: 200;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-fab.visible { display: flex; }
+
+/* Divider */
+.divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+/* Coming soon */
+.coming-soon {
+  text-align: center; padding: 2.5rem 1rem;
+  color: var(--cream); font-size: 0.85rem;
+}
+.coming-soon .cs-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.coming-soon h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--forest); margin-bottom: 0.4rem; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOME SCREEN                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="home-header">
+    <div class="header-controls">
+      
+  <a href="/app.html" class="hdr-btn" style="text-decoration:none;">← App</a>
+    </div>
+    <div class="logo-text">Fun Guy Fungi</div>
+    <div class="logo-sub">&amp; Gardens</div>
+    <div class="logo-rule"></div>
+    <div class="manual-label">Farm Manual</div>
+    <div class="nav-links">
+    <a href="/app.html">Staff App</a>
+<a href="/admin.html">Admin</a>
+<a href="/data.html">Data</a>
+    </div>
+  </div>
+  <div class="home-intro">Select a topic to open its reference guide, calculators, and field notes.</div>
+  <div class="topic-grid">
+    <div class="topic-card" onclick="openTopic('soil')">
+      <span class="card-icon">🌱</span>
+      <div class="card-title">Soil &amp; Amendments</div>
+      <div class="card-desc">Mix guides, amendment doses, pH management</div>
+      <span class="card-badge">Calculator</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('concrete')">
+      <span class="card-icon">🪨</span>
+      <div class="card-title">Concrete &amp; Hardscape</div>
+      <div class="card-desc">Pavers, posts, troughs, mix ratios</div>
+      <span class="card-badge">Calculator</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('irrigation')">
+      <span class="card-icon">💧</span>
+      <div class="card-title">Irrigation &amp; Water</div>
+      <div class="card-desc">Scheduling, zones, drip rates, run times</div>
+      <span class="card-badge">Calculator</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('pest')">
+      <span class="card-icon">🛡️</span>
+      <div class="card-title">Pest &amp; Disease</div>
+      <div class="card-desc">ID guide, treatments, spray schedules</div>
+      <span class="card-badge">Reference</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('planting')">
+      <span class="card-icon">🗓️</span>
+      <div class="card-title">Planting &amp; Crops</div>
+      <div class="card-desc">Zone 9b calendar, spacing, companion planting</div>
+      <span class="card-badge">Reference</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('tools')">
+      <span class="card-icon">🔧</span>
+      <div class="card-title">Tools &amp; Equipment</div>
+      <div class="card-desc">Maintenance, cleaning, storage checklists</div>
+      <span class="card-badge">Checklists</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('records')" style="grid-column: span 2;">
+      <span class="card-icon">📋</span>
+      <div class="card-title">Farm Records</div>
+      <div class="card-desc">Observation log, harvest notes, experiment tracking</div>
+      <span class="card-badge">Log</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TOPIC SCREEN (shared shell)                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-topic">
+  <div class="topic-header">
+    <div class="topic-header-top">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="topic-header-title" id="topic-title">Topic</div>
+      <div class="topic-header-icon" id="topic-icon"></div>
+    </div>
+    <div class="subtab-strip" id="subtab-strip"></div>
+  </div>
+  <div class="subtab-panels" id="subtab-panels"></div>
+</div>
+
+<button class="home-fab" id="home-fab" onclick="goHome()">⌂ Home</button>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// TOPIC DEFINITIONS
+// ══════════════════════════════════════════════════════════════
+const TOPICS = {
+
+  // ── SOIL & AMENDMENTS ─────────────────────────────────────
+  soil: {
+    title: 'Soil & Amendments',
+    icon: '🌱',
+    tabs: ['Overview', 'Calculator', 'Amendments', 'Grow Plans'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">What this section covers</div>
+        <div class="info-card">
+          <div class="info-card-title">Soil is the foundation of everything</div>
+          <div class="info-card-body">Healthy soil grows healthy plants. Before adding any amendment, understand what your soil already has. Riverside's native soil is clay-heavy with pH typically 7.2–8.0 — most vegetables prefer 6.0–6.8.</div>
+        </div>
+        <div class="section-eyebrow">Your On-Hand Amendments</div>
+        ${['Worm Tea Concentrate','Liquid Iron','Organic Soil Acidifier','E.B. Stone Blood Meal (12-0-0)','Neem Oil (RTU)','Corrmaxx 245 Micronutrients','E.B. Stone Compost Maker'].map(a=>`<div class="info-card" style="padding:0.6rem 0.9rem;"><div class="info-card-title" style="font-size:0.82rem;">✓ ${a}</div></div>`).join('')}
+        <div class="tip-card">💡 Always do a soil test before amending. pH and nutrient levels tell you what's actually needed — guessing wastes product and can harm plants.</div>
+        <div class="section-eyebrow">Quick Soil pH Guide</div>
+        ${[['4.5–5.5','Blueberries, azaleas, rhododendrons'],['5.5–6.0','Potatoes, sweet potatoes'],['6.0–6.8','Most vegetables, herbs, strawberries'],['6.5–7.0','Corn, beans, brassicas'],['7.0+','Native Riverside soil — needs acidifying for most crops']].map(r=>`<div class="plan-row"><span class="plan-key">pH ${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `,
+
+      'Calculator': () => `
+        <div class="calc-card">
+          <div class="calc-card-head">📐 Plot Volume Calculator</div>
+          <div class="calc-card-body">
+            <div class="field">
+              <label>Plot Type</label>
+              <select id="s-plot" onchange="soilCalc()">
+                <option value="raised">Raised Bed</option>
+                <option value="tree-hole">Tree Planting Hole</option>
+                <option value="tree-top">Tree Dripline Top-Dress</option>
+                <option value="container">Container / Pot (gallons)</option>
+              </select>
+            </div>
+            <div id="s-dim-fields"></div>
+            <div class="field">
+              <label>Crop Type</label>
+              <select id="s-crop" onchange="soilCalc()">
+                <option value="veggie">Vegetables / Herbs</option>
+                <option value="fruit">Fruiting (tomato, pepper, squash)</option>
+                <option value="leafy">Leafy Greens</option>
+                <option value="root">Root Crops</option>
+                <option value="acid">Acid-Loving (blueberry)</option>
+                <option value="tree">Fruit Tree</option>
+              </select>
+            </div>
+            <div id="s-results"></div>
+          </div>
+        </div>
+      `,
+
+      'Amendments': () => `
+        ${renderAmendmentRef()}
+      `,
+
+      'Grow Plans': () => `
+        ${renderGrowPlans()}
+      `
+    }
+  },
+
+  // ── CONCRETE & HARDSCAPE ───────────────────────────────────
+  concrete: {
+    title: 'Concrete & Hardscape',
+    icon: '🪨',
+    tabs: ['Overview', 'Calculator', 'Mix Guide', 'Tips'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">What this section covers</div>
+        <div class="info-card">
+          <div class="info-card-title">On-farm concrete applications</div>
+          <div class="info-card-body">From garden pavers between raised beds to fence post footings and animal troughs. Your on-hand product is <strong>Quikrete High Strength #1101 (60 lb bags, 4,000 PSI)</strong>.</div>
+        </div>
+        <div class="section-eyebrow">Your Product</div>
+        <div class="info-card">
+          <div class="info-card-title">Quikrete High Strength Concrete Mix</div>
+          <div class="info-card-body"><strong>No. 1101 · 60 lb bag · 4,000 PSI</strong><br>Water: ~2.5 qts per 60 lb bag<br>Yield: ~0.45 cu ft per 60 lb bag<br>Walk-on time: 24 hrs · Full strength: 28 days</div>
+        </div>
+        <div class="tip-card">💡 Mix consistency should be thick peanut butter — holds shape when squeezed, doesn't drip. Too much water is the #1 mistake and reduces strength by up to 40%.</div>
+        <div class="warn-card">⚠️ Always wear gloves, eye protection, and N95 dust mask when mixing. Concrete is alkaline and causes skin burns with prolonged contact.</div>
+        <div class="section-eyebrow">Common Applications</div>
+        ${[['Garden Pavers','Paths between raised beds','1 bag ≈ 1 paver at 12×24×2"'],['Fence Post Footing','Gates, trellises, shade structures','1 bag per post (8" hole × 24" deep)'],['Raised Bed Cap','Coping on bed walls','Use Sand/Topping Mix #1103 for thin pours'],['Animal Trough','Watering stations','Use Crack-Resistant Mix #1006'],['Garden Pot','Hypertufa or cast planters','Substitute perlite for gravel']].map(r=>`<div class="info-card" style="padding:0.7rem 0.9rem;"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}<br><strong>${r[2]}</strong></div></div>`).join('')}
+      `,
+
+      'Calculator': () => `
+        <div class="calc-card">
+          <div class="calc-card-head">📐 Concrete Mix Calculator</div>
+          <div class="calc-card-body">
+            <div class="field">
+              <label>Project Type</label>
+              <select id="c-type" onchange="concreteCalc()">
+                <option value="paver">Garden Paver</option>
+                <option value="post">Fence Post Footing</option>
+                <option value="cap">Raised Bed Cap</option>
+                <option value="trough">Animal Trough</option>
+                <option value="slab">Poured Slab / Path</option>
+              </select>
+            </div>
+            <div id="c-dim-fields"></div>
+            <div id="c-results"></div>
+          </div>
+        </div>
+      `,
+
+      'Mix Guide': () => `
+        <div class="section-eyebrow">Quikrete Product Selection</div>
+        ${[
+          ['High Strength #1101','4,000 PSI','Pavers, general use. Your on-hand product.','2.5 qts / 60 lb'],
+          ['Sand/Topping #1103','4,500 PSI','Thin pours under 2". Bed caps, smooth finish.','3 qts / 60 lb'],
+          ['Crack-Resistant #1006','4,000 PSI','Fiber-reinforced. Troughs, large slabs.','2.5 qts / 60 lb'],
+          ['Fast-Setting #1004','4,000 PSI','Dry-pour for fence posts. Sets in 20–40 min.','1 gal / 50 lb'],
+          ['Hypertufa (DIY)','~1,800 PSI','1 part Portland + 1.5 peat + 1.5 perlite. Pots only.','To dough consistency'],
+        ].map(r=>`
+          <div class="ref-card">
+            <div class="ref-card-head"><div><div class="ref-card-name">${r[0]}</div><div class="ref-card-npk">${r[1]}</div></div></div>
+            <div class="ref-card-body">
+              <div class="ref-row"><div class="ref-row-label">Best For</div><div class="ref-row-text">${r[2]}</div></div>
+              <div class="ref-row"><div class="ref-row-label">Water per Bag</div><div class="ref-row-text"><strong>${r[3]}</strong></div></div>
+            </div>
+          </div>`).join('')}
+      `,
+
+      'Tips': () => `
+        <div class="section-eyebrow">Mold Ideas (Free / On-Hand)</div>
+        ${[
+          ['Wood scrap form','2×4s screwed into rectangle. Oil inside. Best for large pavers.'],
+          ['Plastic storage lid','Rubbermaid/Sterilite lids. Smooth finish, easy release.'],
+          ['Aluminum roasting pan','Disposable. Tear away after cure. Slightly rounded edges.'],
+          ['Nursery flat trays','Multiple pavers at once. Check depth — aim for 2".'],
+          ['Cardboard + garbage bag','Line box with bag. Disposable. Any size you cut it to.'],
+        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+        <div class="section-eyebrow">Curing Checklist</div>
+        ${['Cover with plastic sheeting immediately after pour','Keep moist — do not let surface dry out','Wait 24 hrs before demolding','Keep moist for 7 days total after demolding','Avoid foot traffic for 24–48 hrs','Full 4,000 PSI strength reached at 28 days','In Riverside summer: cure in shade, mist twice daily'].map((t,i)=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+        <div class="section-eyebrow">Troubleshooting</div>
+        ${[['Surface cracking','Mix too wet, or cured too fast in sun. Keep covered and moist next time.'],['Paver stuck in mold','Insufficient oil. Flex mold sides gently. Re-coat heavily next time.'],['Pitted surface','Air pockets. Tap mold sides more aggressively after each pour layer.'],['Weak / crumbly','Too much water. Mix should never flow freely.'],['White powder on surface','Efflorescence — normal mineral migration. Cosmetic only. Diluted vinegar removes it.']].map(r=>`<div class="info-card"><div class="info-card-title">⚠️ ${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+      `
+    }
+  },
+
+  // ── IRRIGATION ────────────────────────────────────────────
+  irrigation: {
+    title: 'Irrigation & Water',
+    icon: '💧',
+    tabs: ['Overview', 'Calculator', 'Scheduling', 'Reference'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">Zone 9b Water Context</div>
+        <div class="info-card">
+          <div class="info-card-title">Riverside Climate Basics</div>
+          <div class="info-card-body"><strong>~228 sunny days/year</strong> · Avg high summer 95–105°F<br>Annual rainfall ~10–12" · Rainy season Nov–Mar<br>Clay soil: holds water but drains poorly — overwatering is as common as underwatering.</div>
+        </div>
+        <div class="tip-card">💡 The finger test: push finger 2" into soil. If dry, water. If moist, wait. Clay soil feels cool when moist even when the surface looks dry.</div>
+        <div class="section-eyebrow">General Watering Guidelines</div>
+        ${[['Raised beds (summer)','Daily or every other day — beds dry faster than ground'],['Raised beds (winter)','Every 3–5 days depending on rainfall'],['Established fruit trees','Deep water every 7–14 days (not frequent shallow)'],['New tree plantings','Every 2–3 days for first 4–6 weeks'],['Seedling trays','Daily — small volume dries fast; bottom-water preferred'],['Container pots','When top 1" is dry — varies by pot size and sun exposure']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.7rem;max-width:55%;text-align:right;">${r[1]}</span></div>`).join('')}
+      `,
+      'Calculator': () => `
+        <div class="calc-card">
+          <div class="calc-card-head">💧 Irrigation Run Time Calculator</div>
+          <div class="calc-card-body">
+            <div class="field"><label>Emitter Flow Rate</label>
+              <select id="i-flow">
+                <option value="0.5">0.5 GPH — low-flow drip</option>
+                <option value="1" selected>1 GPH — standard drip</option>
+                <option value="2">2 GPH — high-flow drip</option>
+                <option value="0.25">0.25 GPH — micro emitter</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Bed Length (ft)</label><input type="number" id="i-len" value="4" oninput="irrigCalc()"></div>
+              <div class="field"><label>Bed Width (ft)</label><input type="number" id="i-wid" value="2" oninput="irrigCalc()"></div>
+            </div>
+            <div class="field"><label>Target water depth per session</label>
+              <select id="i-depth" onchange="irrigCalc()">
+                <option value="0.5">0.5" — light water / seedlings</option>
+                <option value="1" selected>1" — standard vegetables</option>
+                <option value="1.5">1.5" — fruiting crops in summer</option>
+                <option value="2">2" — deep water / trees</option>
+              </select>
+            </div>
+            <div class="field"><label>Emitters per bed</label><input type="number" id="i-emitters" value="4" oninput="irrigCalc()"></div>
+            <div id="i-results"></div>
+          </div>
+        </div>
+      `,
+      'Scheduling': () => `
+        <div class="section-eyebrow">Zone 9b Seasonal Schedule</div>
+        ${[['Dec–Feb (Cool/Rainy)','Reduce irrigation. Check soil before each run. Skip after any rainfall > 0.5".'],['Mar–Apr (Warming)','Gradually increase frequency as temps rise and plants put on new growth.'],['May–Jun (Heating up)','Daily or every-other-day for beds. Watch for wilting in afternoon heat.'],['Jul–Aug (Peak heat)','Water early morning only. Evening watering promotes fungal disease. Consider shade cloth.'],['Sep–Oct (Cooling)','Reduce frequency as temps drop. One of the best planting windows.'],['Nov (Cooling/Rainy)','Shut off auto irrigation if rain is forecast. Watch clay drainage.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+        <div class="warn-card">⚠️ Your Rain Dial controller: located at x=7.18, y=-0.93 from house GPS. Always check zone settings after any power outage.</div>
+      `,
+      'Reference': () => `
+        <div class="section-eyebrow">Drip System Quick Reference</div>
+        ${[['1 GPH emitter, 1 hr','= 1 gallon delivered'],['1" of water on 1 sq ft','= 0.623 gallons'],['1 sq ft bed, 1" water','= 1 emitter at 1 GPH for ~37 min'],['Pressure range','20–30 PSI for standard drip; use pressure regulator'],['Emitter spacing','12–18" for vegetables; 24" for trees'],['Filter','Always use inline filter; clay particles clog emitters']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.72rem;">${r[1]}</span></div>`).join('')}
+      `
+    }
+  },
+
+  // ── PEST & DISEASE ────────────────────────────────────────
+  pest: {
+    title: 'Pest & Disease',
+    icon: '🛡️',
+    tabs: ['Overview', 'ID Guide', 'Treatments', 'Schedule'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">Your On-Hand Treatment</div>
+        <div class="info-card">
+          <div class="info-card-title">Neem Oil (RTU)</div>
+          <div class="info-card-body">Ready-to-use spray. Controls aphids, spider mites, whitefly, mealybug, and fungal issues including powdery mildew. Apply to wet foliage top and bottom. <strong>Apply morning or evening only — never in direct sun.</strong></div>
+        </div>
+        <div class="warn-card">⚠️ Neem kills beneficial insects on contact. Never spray when pollinators are active. Target application only.</div>
+        <div class="section-eyebrow">Integrated Pest Management (IPM)</div>
+        <div class="info-card">
+          <div class="info-card-title">The IPM Ladder</div>
+          <div class="info-card-body">
+            <strong>1. Prevention</strong> — healthy soil, proper spacing, airflow<br>
+            <strong>2. Monitoring</strong> — scout weekly, catch early<br>
+            <strong>3. Cultural</strong> — remove affected leaves, hand-pick pests<br>
+            <strong>4. Biological</strong> — encourage beneficials (ladybugs, lacewings)<br>
+            <strong>5. Organic sprays</strong> — neem oil, insecticidal soap<br>
+            <strong>6. Chemical</strong> — last resort only
+          </div>
+        </div>
+      `,
+      'ID Guide': () => `
+        <div class="section-eyebrow">Common Pest Identification</div>
+        ${[
+          ['Aphids','Tiny soft-bodied insects, green/black/white. Cluster on new growth and undersides of leaves. Sticky residue (honeydew) below colonies.','Blast off with water. Neem oil. Encourage ladybugs.'],
+          ['Spider Mites','Tiny dots on leaf surface, fine webbing underneath. Thrive in hot dry conditions — common in Riverside summers.','Increase humidity, water foliage. Neem oil. Miticide if severe.'],
+          ['Whitefly','Small white flying insects that scatter when plant is disturbed. Undersides of leaves.','Yellow sticky traps. Neem oil. Remove heavily infested leaves.'],
+          ['Mealybug','White cottony masses in leaf joints and on stems. Slow-moving.','Isopropyl alcohol on cotton swab for small infestations. Neem oil spray.'],
+          ['Caterpillars','Chewed leaf edges and holes. Look for frass (droppings). Often hide on undersides or in soil.','Hand-pick. Bt (Bacillus thuringiensis) spray for heavy infestations.'],
+          ['Fungus Gnats','Small flies around soil surface. Larvae damage roots. Common in containers and indoor growing.','Let soil dry between waterings. Yellow sticky traps. Beneficial nematodes.'],
+        ].map(r=>`
+          <div class="ref-card">
+            <div class="ref-card-head"><div class="ref-card-name">${r[0]}</div></div>
+            <div class="ref-card-body">
+              <div class="ref-row"><div class="ref-row-label">What to look for</div><div class="ref-row-text">${r[1]}</div></div>
+              <div class="ref-row"><div class="ref-row-label">Treatment</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div>
+            </div>
+          </div>`).join('')}
+        <div class="section-eyebrow">Common Disease ID</div>
+        ${[
+          ['Powdery Mildew','White powdery coating on leaf surfaces. Worse in warm days + cool nights with poor airflow.','Improve airflow. Neem oil. Baking soda spray (1 tsp/qt water).'],
+          ['Damping Off','Seedlings collapse at soil line. Caused by fungal pathogens in wet soil.','Prevention only: sterile seed-starting mix, bottom-water, good airflow. No cure once started.'],
+          ['Root Rot','Yellowing, wilting despite adequate water. Roots brown and mushy.','Reduce watering. Improve drainage. Remove and discard affected plants. Do not compost.'],
+          ['Leaf Spot','Brown or yellow spots with defined edges. Various fungal causes.','Remove affected leaves. Avoid overhead watering. Copper fungicide if severe.'],
+        ].map(r=>`
+          <div class="ref-card">
+            <div class="ref-card-head"><div class="ref-card-name">${r[0]}</div></div>
+            <div class="ref-card-body">
+              <div class="ref-row"><div class="ref-row-label">What to look for</div><div class="ref-row-text">${r[1]}</div></div>
+              <div class="ref-row"><div class="ref-row-label">Treatment</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div>
+            </div>
+          </div>`).join('')}
+      `,
+      'Treatments': () => `
+        <div class="section-eyebrow">Neem Oil Application Guide</div>
+        <div class="calc-card">
+          <div class="calc-card-head">🌿 Neem Spray Checklist</div>
+          <div class="calc-card-body">
+            ${['Check weather — no rain for 24 hrs after application','Apply in early morning or evening only','Shake bottle well before use','Spray tops AND bottoms of all leaves','Spray soil surface around plant base','Repeat every 7 days for active infestation','Repeat every 14 days as preventive'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="section-eyebrow">What Neem Controls</div>
+        ${[['✅ Aphids','Excellent control'],['✅ Spider Mites','Good control — ensure leaf undersides are coated'],['✅ Whitefly','Good control'],['✅ Mealybug','Good with repeated applications'],['✅ Powdery Mildew','Good preventive and early-stage treatment'],['⚠️ Caterpillars','Limited — physical removal more effective'],['❌ Scale (hard)','Neem ineffective on hard scale — use horticultural oil']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `,
+      'Schedule': () => `
+        <div class="section-eyebrow">Zone 9b Pest Pressure Calendar</div>
+        ${[['Jan–Feb','Low pressure. Scout for overwintering scale on fruit trees. No spraying needed unless active pests found.'],['Mar–Apr','Aphid season begins. Scout weekly on new growth. First neem application if found.'],['May–Jun','Spider mite pressure rises with heat. Check undersides. Whitefly appears.'],['Jul–Aug','Peak pressure. Heat stresses plants making them more vulnerable. Scout every 3–4 days.'],['Sep–Oct','Pressure drops. Good time to clean up and remove any harboring debris.'],['Nov–Dec','Low pressure. Remove dead plant material. Treat scale on dormant fruit trees with dormant oil.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+      `
+    }
+  },
+
+  // ── PLANTING & CROPS ─────────────────────────────────────
+  planting: {
+    title: 'Planting & Crops',
+    icon: '🗓️',
+    tabs: ['Overview', 'Calendar', 'Spacing', 'Companions'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">Zone 9b Growing Conditions</div>
+        <div class="info-card">
+          <div class="info-card-title">Riverside, CA — USDA Zone 9b</div>
+          <div class="info-card-body"><strong>Last frost:</strong> ~Jan 15 · <strong>First frost:</strong> ~Dec 15<br><strong>Growing season:</strong> Nearly year-round<br><strong>Summer challenge:</strong> Extreme heat (95–110°F) limits cool-season crops Jun–Sep<br><strong>Sweet spots:</strong> Feb–May and Sep–Nov are the best planting windows</div>
+        </div>
+        <div class="tip-card">💡 Zone 9b has two main planting seasons — cool season (Sep–Feb) and warm season (Mar–Jun). The dead of summer is the hardest time to grow most vegetables.</div>
+        <div class="section-eyebrow">FGF Bed Quick Reference</div>
+        ${[['Zone 1 (Z1)','8 beds · 1.55×0.86m · 18" deep · Beds 1A–1H'],['Zone 2 (Z2)','6 beds · 3.08×1.53m · 24" deep · Beds 2A–2F'],['Zone 3 (Z3)','7 beds · 3.18×1.29m · 24" deep · Beds 3A–3G'],['Naval Orange Grove','SW of house — established grove'],['Palm Grove','West of house']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.7rem;max-width:60%;text-align:right;">${r[1]}</span></div>`).join('')}
+      `,
+      'Calendar': () => `
+        <div class="section-eyebrow">Zone 9b Planting Calendar</div>
+        ${[
+          ['🥬 Leafy Greens','Sep–Feb (cool season). Bolt in heat. Plant in fall for best results.'],
+          ['🍅 Tomatoes','Start indoors Feb, transplant Mar–Apr. Harvest Jul–Sep.'],
+          ['🫑 Peppers','Same as tomatoes. Need heat to fruit — thrive in Riverside summer.'],
+          ['🥒 Cucumber / Squash','Direct sow Apr–Jun. Fast producers. Struggles above 105°F.'],
+          ['🥕 Carrots / Beets','Sep–Feb. Prefer cool soil. Direct sow only.'],
+          ['🧄 Garlic','Plant Oct–Nov. Harvest Jun–Jul.'],
+          ['🌽 Corn','Apr–Jun. Needs space and heat. Plant in blocks, not rows.'],
+          ['🫘 Beans','Mar–May and Aug–Sep. Bush beans fastest (50–60 days).'],
+          ['🌿 Herbs (most)','Year-round. Basil struggles in winter. Rosemary/thyme thrive.'],
+          ['🍓 Strawberries','Plant Oct–Nov. Harvest Mar–May.'],
+          ['🍊 Citrus (feeding)','Fertilize Mar, Jun, Sep. Do not fertilize Nov–Feb.'],
+        ].map(r=>`<div class="info-card" style="padding:0.65rem 0.9rem;"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `,
+      'Spacing': () => `
+        <div class="section-eyebrow">Square Foot Spacing Guide</div>
+        ${[['Tomato','1 per sq ft (18–24" apart)'],['Pepper','1 per sq ft'],['Squash / Zucchini','1 per 4 sq ft'],['Cucumber','2 per sq ft (trellised)'],['Lettuce','4 per sq ft'],['Spinach / Arugula','9 per sq ft'],['Carrot','16 per sq ft'],['Radish','16 per sq ft'],['Beet','9 per sq ft'],['Garlic','9 per sq ft'],['Onion','9 per sq ft'],['Kale / Chard','1 per sq ft'],['Basil','1 per sq ft'],['Parsley','1–2 per sq ft'],['Bush Bean','9 per sq ft'],['Corn','4 per sq ft (plant in 4×4 block minimum)']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `,
+      'Companions': () => `
+        <div class="section-eyebrow">Companion Planting Guide</div>
+        <div class="tip-card">💡 Companion planting uses plant relationships to deter pests, attract beneficials, and improve yields — no extra products needed.</div>
+        ${[
+          ['Tomato','Basil (repels aphids, improves flavor), marigold (repels nematodes), carrot (loosens soil around roots)'],
+          ['Pepper','Basil, carrots, tomatoes'],
+          ['Squash','Corn + beans (Three Sisters), nasturtium (trap crop for aphids), marigold'],
+          ['Carrot','Tomatoes (shade), onion/leek (deters carrot fly), rosemary'],
+          ['Lettuce / Greens','Tall crops for afternoon shade in summer, strawberries, carrots'],
+          ['Garlic','Plant near roses, fruit trees, and most vegetables. Natural pest deterrent.'],
+          ['Avoid','Fennel near most vegetables — inhibits growth of many crops'],
+        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `
+    }
+  },
+
+  // ── TOOLS & EQUIPMENT ─────────────────────────────────────
+  tools: {
+    title: 'Tools & Equipment',
+    icon: '🔧',
+    tabs: ['Overview', 'Checklists', 'Maintenance', 'Storage'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">Tool Categories</div>
+        ${[['Soil & Bed Tools','Shovels, hoes, trowels, broadfork, hand cultivator'],['Watering','Hose, watering can, drip repair kit (Rain Bird on shelf)'],['Pest & Chemical','Neem RTU, Corrmaxx 245, Liquid Iron, Worm Tea, Soil Acidifier'],['Measuring','pH meter, moisture meter, measuring tape'],['Cutting','Pruners, loppers, garden scissors, grafting knife'],['Safety','Gloves, eye protection, N95 dust mask, knee pads']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `,
+      'Checklists': () => `
+        <div class="section-eyebrow">Daily Walk-Through</div>
+        <div class="calc-card">
+          <div class="calc-card-head">☀️ Morning Check</div>
+          <div class="calc-card-body">
+            ${['Check soil moisture in each zone (finger test)','Scout for pests on undersides of leaves','Note any wilting or discoloration','Check drip emitters — look for dry spots or flooding','Remove any debris, fallen fruit, dead leaves','Log anything unusual in Farm Records'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="calc-card" style="margin-top:0.75rem;">
+          <div class="calc-card-head">🌙 End of Day</div>
+          <div class="calc-card-body">
+            ${['All tools cleaned and returned to storage','Hoses drained and coiled (prevent algae)','Any chemicals closed tightly and stored properly','Gates and enclosures secured','Irrigation timer checked for next run'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="calc-card" style="margin-top:0.75rem;">
+          <div class="calc-card-head">📅 Weekly</div>
+          <div class="calc-card-body">
+            ${['Clean and oil cutting tools','Check irrigation lines for leaks or clogs','Weed all beds','Turn compost pile if active','Review and update farm records','Check amendment inventory'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+          </div>
+        </div>
+      `,
+      'Maintenance': () => `
+        <div class="section-eyebrow">Tool Cleaning Guide</div>
+        ${[['Metal cutting tools (pruners, loppers)','Wipe blades with isopropyl alcohol after each use. Oil with mineral oil weekly. Sharpen monthly with whetstone.'],['Shovels / Hoes','Knock off soil after each use. Wipe metal with oily rag. Sand handle if splinters develop.'],['Drip system / emitters','Flush lines monthly. Soak clogged emitters in white vinegar 30 min. Replace if clog persists.'],['Spray bottles / applicators','Rinse 3× with clean water after each chemical use. Label clearly — never mix chemicals.'],['pH / moisture meters','Rinse probes with distilled water after use. Do not submerge electronics.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `,
+      'Storage': () => `
+        <div class="section-eyebrow">Chemical Storage Rules</div>
+        <div class="warn-card">⚠️ Store all chemicals in original labeled containers. Never mix or transfer to unlabeled containers.</div>
+        ${[['Temperature','Keep between 40–90°F. Avoid freezing (ruins emulsions) and extreme heat.'],['Neem Oil','Shelf stable 1–2 years sealed. Solidifies below 65°F — warm in hand before use.'],['Liquid Iron','Keep sealed. Stains everything permanently — store on a tray or in secondary container.'],['Blood Meal','Keep dry and sealed. Attracts rodents if left open. Shelf life ~1 year.'],['Worm Tea Concentrate','Refrigerate after opening. Use within 6 months of opening.'],['Soil Acidifier','Keep dry. Clumps with moisture but still effective if broken up.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `
+    }
+  },
+
+  // ── FARM RECORDS ──────────────────────────────────────────
+  records: {
+    title: 'Farm Records',
+    icon: '📋',
+    tabs: ['Overview', 'Observation Log', 'Bed Status', 'Experiments'],
+    render: {
+      'Overview': () => `
+        <div class="section-eyebrow">About Farm Records</div>
+        <div class="info-card">
+          <div class="info-card-title">Why keep records?</div>
+          <div class="info-card-body">Records turn observations into data. Over time they reveal patterns — which beds drain poorly, which crops thrive in which zones, how amendments affected yield. For science coursework, records are essential for documenting experimental conditions and outcomes.</div>
+        </div>
+        <div class="tip-card">💡 The FGF web app (funguyfungi.org) is the primary record-keeping system. Use this manual for quick field notes when you don't have the app open.</div>
+        <div class="section-eyebrow">Record Categories</div>
+        ${[['Observation Log','Date, bed, what you saw — pests, growth, weather, anomalies'],['Amendment Log','What was applied, to which bed, at what rate, on what date'],['Harvest Log','Crop, bed, quantity, quality notes'],['Experiment Log','Control vs. treatment, variables, conditions, outcomes'],['Maintenance Log','Irrigation adjustments, repairs, tool maintenance']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+      `,
+      'Observation Log': () => `
+        <div class="section-eyebrow">Quick Field Note</div>
+        <div class="calc-card">
+          <div class="calc-card-head">📝 Today's Observation</div>
+          <div class="calc-card-body">
+            <div class="field"><label>Bed / Location</label>
+              <select id="r-bed">
+                <option>Z1 — 1A</option><option>Z1 — 1B</option><option>Z1 — 1C</option><option>Z1 — 1D</option>
+                <option>Z1 — 1E</option><option>Z1 — 1F</option><option>Z1 — 1G</option><option>Z1 — 1H</option>
+                <option>Z2 — 2A</option><option>Z2 — 2B</option><option>Z2 — 2C</option>
+                <option>Z2 — 2D</option><option>Z2 — 2E</option><option>Z2 — 2F</option>
+                <option>Z3 — 3A</option><option>Z3 — 3B</option><option>Z3 — 3C</option><option>Z3 — 3D</option>
+                <option>Z3 — 3E</option><option>Z3 — 3F</option><option>Z3 — 3G</option>
+                <option>Orange Grove</option><option>Palm Grove</option><option>General / Site</option>
+              </select>
+            </div>
+            <div class="field"><label>Category</label>
+              <select id="r-cat">
+                <option>Pest / Disease</option><option>Plant Health</option><option>Irrigation</option>
+                <option>Amendment Applied</option><option>Harvest</option><option>Maintenance</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label>Note</label>
+              <textarea id="r-note" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--forest);font-family:Inter,sans-serif;font-size:0.9rem;padding:0.6rem;outline:none;resize:vertical;" placeholder="What did you observe?"></textarea>
+            </div>
+            <button onclick="saveObs()" style="width:100%;background:#3E5C42;color:var(--cream);border:none;border-radius:6px;padding:0.75rem;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:0.25rem;">Save to Local Log</button>
+            <div id="r-saved" style="margin-top:0.5rem;font-size:0.75rem;color:var(--forest);"></div>
+          </div>
+        </div>
+        <div class="section-eyebrow">Saved Notes (This Session)</div>
+        <div id="obs-log" style="font-size:0.78rem;color:var(--cream);">No notes saved yet this session.</div>
+      `,
+      'Bed Status': () => `
+        <div class="section-eyebrow">FGF Bed Reference</div>
+        <div class="tip-card">💡 For live bed data, open the FGF app at funguyfungi.org. This is a quick offline reference for bed specs.</div>
+        ${[['Zone 1 (Z1)','8 beds · 1A–1H · 1.55×0.86m · 18" deep · Near house NW face'],['Zone 2 (Z2)','6 beds · 2A–2F · 3.08×1.53m · 24" deep · SW porch path'],['Zone 3 (Z3)','7 beds · 3A–3G · 3.18×1.29m · 24" deep · NW wall row']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+        <div class="section-eyebrow">Bed Volume Quick Reference</div>
+        ${[['Z1 bed (1.55×0.86×0.46m)','~18" deep · ~0.61 cu m · ~21.5 cu ft'],['Z2 bed (3.08×1.53×0.61m)','~24" deep · ~2.88 cu m · ~101 cu ft'],['Z3 bed (3.18×1.29×0.61m)','~24" deep · ~2.50 cu m · ~88 cu ft']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.68rem;max-width:40%;text-align:right;">${r[1]}</span></div>`).join('')}
+      `,
+      'Experiments': () => `
+        <div class="section-eyebrow">Experiment Design Basics</div>
+        <div class="info-card">
+          <div class="info-card-title">For Science-Grade Tracking</div>
+          <div class="info-card-body">Every experiment needs: <strong>a control</strong> (no treatment), <strong>one variable</strong> changed at a time, <strong>replication</strong> (same treatment in multiple beds), and <strong>consistent measurement</strong> of the same outcome at the same intervals.</div>
+        </div>
+        <div class="section-eyebrow">Amendment Experiment Template</div>
+        ${[['Hypothesis','Which amendment will most improve [outcome] in [crop]?'],['Control Bed','No amendment — identical soil, water, sun exposure'],['Treatment Beds','One amendment per bed at labeled rate'],['Measure','Plant height, leaf color, yield weight, pest incidence'],['Interval','Measure weekly from transplant to harvest'],['Document','Photo same time each week. Log in FGF app under bed comments.']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.68rem;max-width:55%;text-align:right;">${r[1]}</span></div>`).join('')}
+        <div class="tip-card">💡 Blood Meal, Worm Tea, and Corrmaxx 245 on your shelf are ideal experiment variables — each targets a different mechanism and they can be compared across identical beds.</div>
+      `
+    }
+  }
+};
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+let currentTopic = null;
+let currentSubTab = 0;
+let obsLog = [];
+
+function openTopic(key) {
+  currentTopic = key;
+  currentSubTab = 0;
+  const topic = TOPICS[key];
+  document.getElementById('topic-title').textContent = topic.title;
+  document.getElementById('topic-icon').textContent = topic.icon;
+
+  // Build subtab strip
+  const strip = document.getElementById('subtab-strip');
+  strip.innerHTML = topic.tabs.map((tab, i) =>
+    `<button class="subtab-btn ${i===0?'active':''}" onclick="showSubTab(${i})">${tab}</button>`
+  ).join('');
+
+  // Build panels
+  const panels = document.getElementById('subtab-panels');
+  panels.innerHTML = topic.tabs.map((tab, i) =>
+    `<div class="subtab-panel ${i===0?'active':''}" id="stpanel-${i}">${topic.render[tab]()}</div>`
+  ).join('');
+
+  // Show topic screen
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-topic').classList.add('active');
+  document.getElementById('home-fab').classList.add('visible');
+
+  // Init calculators if present
+  if (key === 'soil') { initSoilCalc(); }
+  if (key === 'concrete') { initConcreteCalc(); }
+  if (key === 'irrigation') { irrigCalc(); }
+
+  window.scrollTo(0,0);
+}
+
+function showSubTab(idx) {
+  currentSubTab = idx;
+  document.querySelectorAll('.subtab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.querySelectorAll('.subtab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  window.scrollTo(0,0);
+}
+
+function goHome() {
+  document.getElementById('screen-topic').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+  document.getElementById('home-fab').classList.remove('visible');
+  window.scrollTo(0,0);
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  el.querySelector('input').checked = el.classList.contains('checked');
+}
+
+// ══════════════════════════════════════════════════════════════
+// OBSERVATION LOG
+// ══════════════════════════════════════════════════════════════
+function saveObs() {
+  const bed  = document.getElementById('r-bed')?.value;
+  const cat  = document.getElementById('r-cat')?.value;
+  const note = document.getElementById('r-note')?.value;
+  if (!note.trim()) { document.getElementById('r-saved').textContent = 'Please enter a note.'; return; }
+  const entry = { date: new Date().toLocaleDateString(), bed, cat, note };
+  obsLog.push(entry);
+  document.getElementById('r-note').value = '';
+  document.getElementById('r-saved').textContent = '✓ Saved.';
+  const logEl = document.getElementById('obs-log');
+  if (logEl) {
+    logEl.innerHTML = obsLog.slice().reverse().map(e =>
+      `<div class="info-card" style="margin-bottom:0.5rem;">
+        <div style="font-size:0.65rem;color:var(--cream);margin-bottom:0.2rem;">${e.date} · ${e.bed} · ${e.cat}</div>
+        <div style="font-size:0.8rem;color:var(--forest);">${e.note}</div>
+      </div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SOIL CALCULATOR
+// ══════════════════════════════════════════════════════════════
+function initSoilCalc() {
+  renderSoilDims();
+  soilCalc();
+}
+
+function renderSoilDims() {
+  const type = document.getElementById('s-plot')?.value;
+  const fields = {
+    raised:     [['s-len','Length (in)',48],['s-wid','Width (in)',24],['s-dep','Depth (in)',12],['s-qty','# Beds',1]],
+    'tree-hole':[['s-diam','Hole Diam (in)',36],['s-dep','Hole Depth (in)',24],['s-qty','# Trees',1]],
+    'tree-top': [['s-diam','Canopy Diam (in)',96],['s-dep','Top-dress Depth (in)',2],['s-qty','# Trees',1]],
+    container:  [['s-gal','Size (gallons)',5],['s-qty','# Pots',1]],
+  };
+  const f = fields[type] || fields.raised;
+  const el = document.getElementById('s-dim-fields');
+  if (!el) return;
+  el.innerHTML = `<div class="field-row">${f.map(([id,lbl,def])=>`<div class="field"><label>${lbl}</label><input type="number" id="${id}" value="${def}" oninput="soilCalc()"></div>`).join('')}</div>`;
+  soilCalc();
+}
+
+function soilCalc() {
+  const type = document.getElementById('s-plot')?.value;
+  if (!type) return;
+  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
+  let vol = 0;
+  if (type === 'raised')     vol = g('s-len') * g('s-wid') * g('s-dep') / 1728;
+  if (type === 'tree-hole')  vol = Math.PI * Math.pow(g('s-diam')/24, 2) * (g('s-dep')/12) * 0.7;
+  if (type === 'tree-top')   vol = Math.PI * Math.pow(g('s-diam')/24, 2) * (g('s-dep')/12);
+  if (type === 'container')  vol = g('s-gal') * 0.1337;
+  const qty  = g('s-qty') || 1;
+  const total = vol * qty;
+  const bags  = Math.ceil(total / 1.5);
+  const res = document.getElementById('s-results');
+  if (!res) return;
+  res.innerHTML = `
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${total.toFixed(2)}</div><div class="result-label">Cu Ft Total</div></div>
+      <div class="result-box"><div class="result-val">${bags}</div><div class="result-label">1.5 cu ft Bags</div></div>
+    </div>
+    <div class="tip-card" style="margin-top:0.5rem;">💡 Recommended soil blend for this plot type shown in the Grow Plans tab.</div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════
+// CONCRETE CALCULATOR
+// ══════════════════════════════════════════════════════════════
+function initConcreteCalc() {
+  renderConcreteDims();
+}
+
+const C_FIELDS = {
+  paver:  [['c-len','Length (in)',12],['c-wid','Width (in)',24],['c-thk','Thickness (in)',2],['c-qty','# Pavers',1]],
+  post:   [['c-diam','Hole Diam (in)',8],['c-dep','Hole Depth (in)',24],['c-qty','# Posts',1]],
+  cap:    [['c-len','Bed Length (in)',48],['c-cwid','Cap Width (in)',6],['c-cthk','Cap Thick (in)',1.5],['c-qty','# Beds',1]],
+  trough: [['c-len','Int Length (in)',24],['c-wid','Int Width (in)',12],['c-ht','Int Height (in)',10],['c-wall','Wall Thick (in)',2],['c-qty','# Troughs',1]],
+  slab:   [['c-len','Length (in)',30],['c-wid','Width (in)',60],['c-thk','Thickness (in)',2],['c-qty','# Slabs',1]],
+};
+
+function renderConcreteDims() {
+  const type = document.getElementById('c-type')?.value;
+  const f = C_FIELDS[type] || C_FIELDS.paver;
+  const el = document.getElementById('c-dim-fields');
+  if (!el) return;
+  el.innerHTML = `<div class="field-row">${f.map(([id,lbl,def])=>`<div class="field"><label>${lbl}</label><input type="number" id="${id}" value="${def}" oninput="concreteCalc()"></div>`).join('')}</div>`;
+  concreteCalc();
+}
+
+function concreteCalc() {
+  const type = document.getElementById('c-type')?.value;
+  if (!type) return;
+  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
+  let vol = 0;
+  if (type === 'paver')  vol = g('c-len') * g('c-wid') * g('c-thk') / 1728;
+  if (type === 'post')   vol = Math.PI * Math.pow(g('c-diam')/24,2) * (g('c-dep')/12) * 0.75;
+  if (type === 'cap')    vol = (g('c-len') * g('c-cwid') * g('c-cthk')) / 1728;
+  if (type === 'trough') {
+    const oL=(g('c-len')+2*g('c-wall'))/12,oW=(g('c-wid')+2*g('c-wall'))/12,oH=(g('c-ht')+g('c-wall'))/12;
+    vol = oL*oW*oH - (g('c-len')/12)*(g('c-wid')/12)*(g('c-ht')/12);
+  }
+  if (type === 'slab')   vol = g('c-len') * g('c-wid') * g('c-thk') / 1728;
+  const qty   = g('c-qty') || 1;
+  const total = vol * qty;
+  const bags  = Math.ceil(total / 0.45);
+  const water = (bags * 2.5).toFixed(1);
+  const res = document.getElementById('c-results');
+  if (!res) return;
+  res.innerHTML = `
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${total.toFixed(2)}</div><div class="result-label">Cu Ft Total</div></div>
+      <div class="result-box"><div class="result-val">${bags}</div><div class="result-label">60 lb Bags</div></div>
+      <div class="result-box"><div class="result-val">${water}</div><div class="result-label">Qts Water</div></div>
+      <div class="result-box"><div class="result-val">4,000</div><div class="result-label">PSI (28-day)</div></div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════
+// IRRIGATION CALCULATOR
+// ══════════════════════════════════════════════════════════════
+function irrigCalc() {
+  const flow     = parseFloat(document.getElementById('i-flow')?.value) || 1;
+  const len      = parseFloat(document.getElementById('i-len')?.value)  || 4;
+  const wid      = parseFloat(document.getElementById('i-wid')?.value)  || 2;
+  const depth    = parseFloat(document.getElementById('i-depth')?.value)|| 1;
+  const emitters = parseFloat(document.getElementById('i-emitters')?.value)||4;
+  const area     = len * wid;
+  const gallons  = area * depth * 0.623;
+  const gphTotal = flow * emitters;
+  const minutes  = Math.ceil((gallons / gphTotal) * 60);
+  const res = document.getElementById('i-results');
+  if (!res) return;
+  res.innerHTML = `
+    <div class="result-grid">
+      <div class="result-box"><div class="result-val">${gallons.toFixed(1)}</div><div class="result-label">Gallons Needed</div></div>
+      <div class="result-box"><div class="result-val">${minutes}</div><div class="result-label">Run Time (min)</div></div>
+      <div class="result-box"><div class="result-val">${gphTotal.toFixed(1)}</div><div class="result-label">GPH Delivery</div></div>
+      <div class="result-box"><div class="result-val">${area.toFixed(0)}</div><div class="result-label">Sq Ft Area</div></div>
+    </div>
+    <div class="tip-card">Set your Rain Dial to <strong>${minutes} minutes</strong> for this zone to deliver ${depth}" of water to your ${len}×${wid} ft bed.</div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════
+// AMENDMENT REFERENCE (shared)
+// ══════════════════════════════════════════════════════════════
+function renderAmendmentRef() {
+  const items = [
+    { cat:'🦠 Biologicals', badge:'badge-bio', name:'Worm Tea Concentrate', npk:'~1-1-1', what:'Liquid worm casting extract — microbes, humic acids, soluble nutrients.', why:'Inoculates soil with beneficial bacteria and fungi. Improves nutrient uptake and soil structure.', when:'Every 2–4 weeks during active growth. Soil moist, temp above 55°F.', dose:'1 tbsp/gal water → 1 qt per sq ft', caution:null },
+    { cat:'🦠 Biologicals', badge:'badge-build', name:'E.B. Stone Compost Maker', npk:'~3-1-1', what:'Microbial inoculant + nitrogen that accelerates composting.', why:'Speeds decomposition by 30–50%. Useful worked into beds with raw organic matter.', when:'When building compost or incorporating raw organics into beds.', dose:'1 oz per 1 cu ft of organic material', caution:'Not a standalone fertilizer — needs organic material to activate.' },
+    { cat:'🌿 Nutrients', badge:'badge-npk', name:'Blood Meal (12-0-0)', npk:'12-0-0', what:'Dried animal blood. Highest-nitrogen organic amendment available.', why:'Corrects nitrogen deficiency (yellowing older leaves). Fast-releasing — available within days.', when:'Early season bed prep or when N deficiency symptoms appear.', dose:'1 tsp per cu ft mixed in, or 2 lbs per 100 sq ft broadcast', caution:'⚠️ Easy to over-apply. Burns seedlings. Attracts animals — work into soil. Zero P or K.' },
+    { cat:'🌿 Nutrients', badge:'badge-npk', name:'Liquid Iron (Chelated)', npk:'0-0-0 + Fe', what:'Chelated iron stays soluble in alkaline soils where standard iron locks up.', why:'Corrects iron chlorosis: young leaves yellow, veins stay green. Common in Riverside clay.', when:'At first sign of interveinal yellowing on new growth. Foliar works fastest (3–5 days).', dose:'2 tsp/gal water → 1 qt per sq ft drench', caution:'⚠️ Stains concrete and clothing permanently.' },
+    { cat:'⚗️ pH Management', badge:'badge-ph', name:'Organic Soil Acidifier', npk:'0-0-0 + S', what:'Elemental sulfur that lowers soil pH as bacteria convert it to sulfuric acid.', why:'Riverside soil pH 7.2–8.0. Most vegetables prefer 6.0–6.8. High pH locks out iron, Mn, Zn.', when:'Fall application ideal. Results take 6–12 weeks. Test pH before and after.', dose:'1–2 oz per 10 sq ft to drop ~0.5 pH units', caution:'⚠️ Slow acting — do not over-apply. Always test pH first.' },
+    { cat:'🛡️ Pest & Disease', badge:'badge-pest', name:'Neem Oil (RTU)', npk:'N/A', what:'Cold-pressed neem oil spray. Controls soft-bodied insects and fungal disease.', why:'Disrupts insect hormonal development. Controls aphids, mites, whitefly, powdery mildew.', when:'Morning or evening only. Every 7 days active; every 14 days preventive.', dose:'RTU — spray to wet all leaf surfaces top and bottom', caution:'⚠️ Kills beneficials on contact. Never spray in direct sun or when bees are active.' },
+    { cat:'🔬 Micronutrients', badge:'badge-npk', name:'Corrmaxx 245', npk:'Multi-micronutrient', what:'Blended micronutrient corrective — multiple trace elements for deficiency correction.', why:'Corrects multiple deficiencies common in alkaline, irrigated, or depleted soils.', when:'When multiple deficiency symptoms appear. Effective as foliar drench for fast uptake.', dose:'1–2 oz per gal foliar spray — check label for crop restrictions', caution:'⚠️ Do not exceed label rate. Verify label for edible crops before use.' },
+  ];
+
+  let html = '';
+  let lastCat = '';
+  items.forEach(item => {
+    if (item.cat !== lastCat) {
+      html += `<div class="section-eyebrow">${item.cat}</div>`;
+      lastCat = item.cat;
+    }
+    html += `
+      <div class="ref-card">
+        <div class="ref-card-head">
+          <div><div class="ref-card-name">${item.name}</div><div class="ref-card-npk">NPK: ${item.npk}</div></div>
+          <span class="badge ${item.badge}">${item.badge.replace('badge-','')}</span>
+        </div>
+        <div class="ref-card-body">
+          <div class="ref-row"><div class="ref-row-label">What it is</div><div class="ref-row-text">${item.what}</div></div>
+          <div class="ref-row"><div class="ref-row-label">Why use it</div><div class="ref-row-text">${item.why}</div></div>
+          <div class="ref-row"><div class="ref-row-label">When to apply</div><div class="ref-row-text">${item.when}</div></div>
+          <div class="ref-row"><div class="ref-row-label">Dose</div><div class="ref-row-text"><strong>${item.dose}</strong></div></div>
+          ${item.caution ? `<div class="ref-row"><div class="ref-row-label" style="color:var(--orange-dim);">Caution</div><div class="caution-text">${item.caution}</div></div>` : ''}
+        </div>
+      </div>`;
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// GROW PLANS (shared)
+// ══════════════════════════════════════════════════════════════
+function renderGrowPlans() {
+  const plans = [
+    { icon:'🥗', title:'Leafy Greens Bed', sub:'Lettuce, spinach, chard, herbs',
+      rows:[['Bed Type','Raised Shallow (6–8")'],['Soil Mix','40% potting + 40% compost + 20% perlite'],['Target pH','6.0–6.8'],['Week 0','Worm tea drench + Blood Meal ½ tsp/cu ft'],['Week 3','Worm tea drench'],['Week 6','Worm tea + scout for pests'],['Water','1"/week — daily in summer'],['Watch For','Yellowing → liquid iron']]},
+    { icon:'🍅', title:'Fruiting Bed', sub:'Tomato, pepper, squash',
+      rows:[['Bed Type','Raised Deep (14–18")'],['Soil Mix','40% potting + 35% compost + 15% perlite + 10% native'],['Target pH','6.2–6.8'],['Week 0','Blood Meal 1 tsp/cu ft + worm tea drench'],['Week 4','Worm tea drench'],['Week 6','Corrmaxx 245 if mottled leaves'],['Week 8+','Neem oil every 14 days preventive'],['Water','2"/week — deep watering']]},
+    { icon:'🍊', title:'Citrus / Fruit Tree', sub:'Orange, lemon, avocado',
+      rows:[['Hole','3× root ball width, same depth'],['Backfill','50% native + 30% compost + 20% perlite'],['Target pH','6.0–7.0'],['At Planting','Worm tea drench in hole'],['Month 1','No fertilizer — let roots establish'],['Month 2','Worm tea at dripline'],['Month 3','Liquid iron if chlorosis; acidifier if pH >7'],['Annual','Top-dress dripline 2" compost each spring']]},
+    { icon:'🫐', title:'Acid-Loving Bed', sub:'Blueberry, strawberry',
+      rows:[['Bed Type','Raised Deep or dedicated container'],['Soil Mix','40% peat + 30% compost + 20% perlite + 10% sand'],['Target pH','4.5–5.5 — test before planting!'],['Before Planting','Acidify and retest monthly until stable'],['Monthly','Worm tea + liquid iron'],['Annual','Retest pH and re-acidify each fall']]},
+    { icon:'🌿', title:'Seedling / Start Tray', sub:'Germination through first true leaves',
+      rows:[['Mix','40% perlite + 40% fine potting + 20% screened compost'],['pH Target','5.8–6.5'],['At Fill','Worm tea diluted 1:10 as moisture only'],['Germination','No amendments'],['First True Leaf','Worm tea 1:20 weekly'],['No Blood Meal','Never — burns seedlings'],['Water','Bottom-water only']]}
+  ];
+  return plans.map(p => `
+    <div class="ref-card" style="margin-bottom:0.75rem;">
+      <div class="ref-card-head"><div class="ref-card-name">${p.icon} ${p.title}</div><div class="ref-card-npk">${p.sub}</div></div>
+      <div class="ref-card-body">
+        ${p.rows.map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// HANDLE SELECT CHANGES (for dynamically rendered selects)
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('change', function(e) {
+  if (e.target.id === 's-plot') renderSoilDims();
+  if (e.target.id === 'c-type') renderConcreteDims();
+});
+
+// ══════════════════════════════════════════════════════════════
+// SUPABASE CONFIG (entries only — no auth)
+// ══════════════════════════════════════════════════════════════
+const SUPA_URL = 'https://gblizuknnvguxyxfequh.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
+
+async function supaFetch(path, options = {}) {
+  const headers = {
+    'apikey': SUPA_KEY,
+    'Authorization': `Bearer ${SUPA_KEY}`,
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+  const res = await fetch(`${SUPA_URL}/rest/v1/${path}`, { ...options, headers });
+  if (!res.ok) { const err = await res.text(); throw new Error(err); }
+  return res.status === 204 ? null : res.json();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN STATE — uses v2 Godisgood+MMDD password
+// ══════════════════════════════════════════════════════════════
+const BASE_PW = 'Godisgood';
+let isAdmin = false;
+
+function verifyAdminPw(pw) {
+  if (!pw || !pw.startsWith(BASE_PW)) return false;
+  return /^\d{4}$/.test(pw.slice(BASE_PW.length));
+}
+
+function checkExistingSession() {
+  const token = sessionStorage.getItem('fgf_token');
+  if (token && verifyAdminPw(token)) {
+    isAdmin = true;
+    updateAdminUI();
+  }
+}
+
+function updateAdminUI() {
+  const btn = document.getElementById('admin-btn');
+  if (!btn) return;
+  if (isAdmin) {
+    btn.textContent = '🔓 Admin';
+    btn.style.background = 'var(--lime)';
+    btn.style.color = 'var(--forest)';
+  } else {
+    btn.textContent = '🔒 Admin';
+    btn.style.background = 'transparent';
+    btn.style.color = 'var(--lime-pale)';
+  }
+  document.querySelectorAll('.add-entry-btn').forEach(b => {
+    b.style.display = isAdmin ? 'flex' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// DARK MODE — matches v2 pattern
+// ══════════════════════════════════════════════════════════════
+function toggleMode() {
+  const html = document.documentElement;
+  const dark = html.getAttribute('data-mode') === 'dark';
+  dark ? html.removeAttribute('data-mode') : html.setAttribute('data-mode', 'dark');
+  try { localStorage.setItem('lfg-mode', dark ? 'light' : 'dark'); } catch(e) {}
+  updateModeIcon();
+}
+function updateModeIcon() {
+  const dark = document.documentElement.getAttribute('data-mode') === 'dark';
+  const btn = document.getElementById('mode-btn');
+  if (btn) btn.textContent = dark ? '🌙' : '☀';
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAL SYSTEM
+// ══════════════════════════════════════════════════════════════
+function openModal(html) {
+  let overlay = document.getElementById('modal-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding:0;`;
+    overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div style="background:var(--card-bg);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:1.25rem;max-height:90vh;overflow-y:auto;box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
+      <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1rem;"></div>
+      ${html}
+    </div>`;
+  overlay.style.display = 'flex';
+}
+function closeModal() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN LOGIN MODAL
+// ══════════════════════════════════════════════════════════════
+function showLoginModal() {
+  if (isAdmin) {
+    openModal(`
+      <div style="text-align:center;margin-bottom:1rem;">
+        <div style="font-family:var(--font-head);font-style:italic;font-size:1.1rem;color:var(--forest);">Admin Active</div>
+        <div style="font-size:0.78rem;color:var(--cream);margin-top:0.25rem;">You can add and edit manual entries.</div>
+      </div>
+      <button onclick="doAdminLogout()" style="${btnStyle('var(--orange-dim)')}">Sign Out</button>
+      <button onclick="closeModal()" style="${btnStyle('var(--bg-dark)')}">Close</button>
+    `);
+    return;
+  }
+  openModal(`
+    <div style="font-family:var(--font-head);font-style:italic;font-size:1.15rem;color:var(--forest);margin-bottom:0.25rem;">Admin Sign In</div>
+    <div style="font-size:0.72rem;color:var(--cream);margin-bottom:1rem;font-family:var(--font-mono);">Staff password + your birthday MMDD</div>
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:0.65rem;color:var(--cream);display:block;margin-bottom:0.3rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;">Password</label>
+      <input id="login-pw" type="password" placeholder="e.g. Godisgood0315" style="${inputStyle()}" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <div id="login-err" style="font-size:0.75rem;color:var(--orange-dim);margin-bottom:0.5rem;display:none;"></div>
+    <button onclick="doAdminLogin()" style="${btnStyle('var(--forest)')}">Sign In</button>
+    <button onclick="closeModal()" style="${btnStyle('var(--bg-dark)')}">Cancel</button>
+  `);
+  setTimeout(() => document.getElementById('login-pw')?.focus(), 100);
+}
+
+function doAdminLogin() {
+  const pw = document.getElementById('login-pw')?.value;
+  const errEl = document.getElementById('login-err');
+  if (!verifyAdminPw(pw)) {
+    if (errEl) { errEl.textContent = 'Incorrect password.'; errEl.style.display = 'block'; }
+    return;
+  }
+  isAdmin = true;
+  sessionStorage.setItem('fgf_token', pw);
+  closeModal();
+  updateAdminUI();
+  showToast('✓ Admin access granted');
+}
+
+function doAdminLogout() {
+  isAdmin = false;
+  sessionStorage.removeItem('fgf_token');
+  closeModal();
+  updateAdminUI();
+  showToast('Signed out');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADD ENTRY MODAL
+// ══════════════════════════════════════════════════════════════
+function showAddEntryModal(topic, tab, defaultSection = '') {
+  if (!isAdmin) { showLoginModal(); return; }
+
+  const topicDef = TOPICS[topic];
+  const sectionOptions = getSectionOptions(topic, tab);
+
+  openModal(`
+    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--forest);margin-bottom:0.25rem;">Add Entry</div>
+    <div style="font-size:0.72rem;color:var(--cream);margin-bottom:1rem;">${topicDef.title} → ${tab}</div>
+
+    <div style="margin-bottom:0.75rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Entry Type</label>
+      <select id="ae-type" onchange="toggleNewSection()" style="${inputStyle()}">
+        <option value="card">New card in existing section</option>
+        <option value="section">New section + card</option>
+      </select>
+    </div>
+
+    <div id="ae-existing-section" style="margin-bottom:0.75rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Add under section</label>
+      <select id="ae-section" style="${inputStyle()}">
+        ${sectionOptions.map(s=>`<option value="${s}"${s===defaultSection?' selected':''}>${s || '(top of tab)'}</option>`).join('')}
+        <option value="__new__">+ New section…</option>
+      </select>
+    </div>
+
+    <div id="ae-new-section" style="margin-bottom:0.75rem;display:none;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">New Section Name</label>
+      <input id="ae-newsec-val" type="text" placeholder="e.g. 🧪 New Treatments" style="${inputStyle()}">
+    </div>
+
+    <div style="margin-bottom:0.75rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Title *</label>
+      <input id="ae-title" type="text" placeholder="Entry title" style="${inputStyle()}">
+    </div>
+
+    <div style="margin-bottom:0.75rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Subtitle / NPK / Category</label>
+      <input id="ae-subtitle" type="text" placeholder="Optional" style="${inputStyle()}">
+    </div>
+
+    <div style="margin-bottom:0.75rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Main Description *</label>
+      <textarea id="ae-body" rows="3" placeholder="What this entry covers…" style="${inputStyle()}resize:vertical;"></textarea>
+    </div>
+
+    <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--cream);margin-bottom:0.5rem;">Detail Fields (optional)</div>
+    ${[1,2,3,4].map(n=>`
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:0.4rem;margin-bottom:0.4rem;">
+        <input id="ae-f${n}l" type="text" placeholder="Label ${n}" style="${inputStyle()}font-size:0.78rem;">
+        <input id="ae-f${n}v" type="text" placeholder="Value ${n}" style="${inputStyle()}font-size:0.78rem;">
+      </div>`).join('')}
+
+    <div style="margin-bottom:0.75rem;margin-top:0.5rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">⚠️ Caution / Warning (optional)</label>
+      <input id="ae-caution" type="text" placeholder="Any warnings or cautions" style="${inputStyle()}">
+    </div>
+
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:0.73rem;color:var(--cream);display:block;margin-bottom:0.3rem;">Badge</label>
+      <select id="ae-badge" style="${inputStyle()}">
+        <option value="">None</option>
+        <option value="bio">Biological</option>
+        <option value="npk">Nutrient / NPK</option>
+        <option value="ph">pH</option>
+        <option value="pest">Pest / Disease</option>
+        <option value="build">Soil Building</option>
+      </select>
+    </div>
+
+    <div id="ae-err" style="font-size:0.75rem;color:var(--terra);margin-bottom:0.5rem;display:none;"></div>
+    <button onclick="submitEntry('${topic}','${tab}')" style="${btnStyle('var(--forest)')}">Save Entry</button>
+    <button onclick="closeModal()" style="${btnStyle('var(--bg-dark)')}">Cancel</button>
+  `);
+
+  // Watch section select for "+ New section"
+  document.getElementById('ae-section')?.addEventListener('change', function() {
+    const newSecDiv = document.getElementById('ae-new-section');
+    if (newSecDiv) newSecDiv.style.display = this.value === '__new__' ? 'block' : 'none';
+  });
+}
+
+function toggleNewSection() {
+  const type = document.getElementById('ae-type')?.value;
+  const existSec = document.getElementById('ae-existing-section');
+  const newSec   = document.getElementById('ae-new-section');
+  if (type === 'section') {
+    if (existSec) existSec.style.display = 'none';
+    if (newSec)   newSec.style.display = 'block';
+  } else {
+    if (existSec) existSec.style.display = 'block';
+  }
+}
+
+function getSectionOptions(topic, tab) {
+  // Return known section eyebrow labels for this topic+tab
+  const map = {
+    soil: {
+      'Overview':    ['Your On-Hand Amendments','Quick Soil pH Guide'],
+      'Amendments':  ['🦠 Biologicals','🌿 Nutrients','⚗️ pH Management','🛡️ Pest & Disease','🔬 Micronutrients'],
+      'Grow Plans':  [''],
+      'Calculator':  [''],
+    },
+    pest: {
+      'Overview':    ['Your On-Hand Treatment','Integrated Pest Management (IPM)'],
+      'ID Guide':    ['Common Pest Identification','Common Disease ID'],
+      'Treatments':  ['Neem Oil Application Guide','What Neem Controls'],
+      'Schedule':    ['Zone 9b Pest Pressure Calendar'],
+    },
+    concrete: {
+      'Overview':    ['Your Product','Common Applications'],
+      'Mix Guide':   ['Quikrete Product Selection'],
+      'Tips':        ['Mold Ideas (Free / On-Hand)','Curing Checklist','Troubleshooting'],
+      'Calculator':  [''],
+    },
+    irrigation: {
+      'Overview':    ['Zone 9b Water Context','General Watering Guidelines'],
+      'Scheduling':  ['Zone 9b Seasonal Schedule'],
+      'Reference':   ['Drip System Quick Reference'],
+      'Calculator':  [''],
+    },
+    planting: {
+      'Overview':    ['Zone 9b Growing Conditions','FGF Bed Quick Reference'],
+      'Calendar':    ['Zone 9b Planting Calendar'],
+      'Spacing':     ['Square Foot Spacing Guide'],
+      'Companions':  ['Companion Planting Guide'],
+    },
+    tools: {
+      'Overview':    ['Tool Categories'],
+      'Checklists':  ['Daily Walk-Through'],
+      'Maintenance': ['Tool Cleaning Guide'],
+      'Storage':     ['Chemical Storage Rules'],
+    },
+    records: {
+      'Overview':    ['Record Categories'],
+      'Observation Log': [''],
+      'Bed Status':  ['FGF Bed Quick Reference','Bed Volume Quick Reference'],
+      'Experiments': ['Experiment Design Basics','Amendment Experiment Template'],
+    },
+  };
+  return (map[topic]?.[tab]) || [''];
+}
+
+async function submitEntry(topic, tab) {
+  const g = id => document.getElementById(id)?.value?.trim() || '';
+  const title = g('ae-title');
+  const body  = g('ae-body');
+  if (!title || !body) { showErr(document.getElementById('ae-err'), 'Title and description are required.'); return; }
+
+  const entryType = g('ae-type');
+  let section = '', newSection = '';
+  if (entryType === 'section') {
+    newSection = g('ae-newsec-val');
+    if (!newSection) { showErr(document.getElementById('ae-err'), 'Enter a name for the new section.'); return; }
+  } else {
+    const secVal = g('ae-section');
+    section = secVal === '__new__' ? '' : secVal;
+    if (secVal === '__new__') newSection = g('ae-newsec-val');
+  }
+
+  const payload = {
+    topic, tab, section, new_section: newSection,
+    entry_type: entryType,
+    title, subtitle: g('ae-subtitle'), body,
+    field_1_label: g('ae-f1l'), field_1_value: g('ae-f1v'),
+    field_2_label: g('ae-f2l'), field_2_value: g('ae-f2v'),
+    field_3_label: g('ae-f3l'), field_3_value: g('ae-f3v'),
+    field_4_label: g('ae-f4l'), field_4_value: g('ae-f4v'),
+    caution: g('ae-caution'), badge: g('ae-badge'),
+    created_by: 'admin'
+  };
+
+  const btn = document.querySelector('#modal-overlay button');
+  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+
+  try {
+    await supaFetch('fgf_manual_entries', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    closeModal();
+    showToast('✓ Entry saved');
+    // Reload dynamic entries for this topic/tab
+    await loadDynamicEntries(topic, tab);
+  } catch(e) {
+    showErr(document.getElementById('ae-err'), 'Save failed. Check connection.');
+    if (btn) { btn.textContent = 'Save Entry'; btn.disabled = false; }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// LOAD DYNAMIC ENTRIES FROM SUPABASE
+// ══════════════════════════════════════════════════════════════
+async function loadDynamicEntries(topic, tab) {
+  try {
+    const entries = await supaFetch(
+      `fgf_manual_entries?topic=eq.${encodeURIComponent(topic)}&tab=eq.${encodeURIComponent(tab)}&is_active=eq.true&order=sort_order.asc,created_at.asc`,
+      { method: 'GET' }
+    );
+    if (!entries || entries.length === 0) return;
+    renderDynamicEntries(entries, topic, tab);
+  } catch(e) {
+    console.warn('Could not load manual entries:', e);
+  }
+}
+
+function renderDynamicEntries(entries, topic, tab) {
+  const container = document.getElementById(`dynamic-entries-${topic}-${tab.replace(/\s+/g,'-')}`);
+  if (!container) return;
+
+  let html = '';
+  let lastSection = null;
+
+  entries.forEach(entry => {
+    const sectionLabel = entry.new_section || entry.section;
+    if (sectionLabel && sectionLabel !== lastSection) {
+      html += `<div class="section-eyebrow" style="margin-top:1rem;">${sectionLabel}</div>`;
+      lastSection = sectionLabel;
+    }
+    html += renderEntryCard(entry, topic, tab);
+  });
+
+  container.innerHTML = html;
+  updateAdminUI(); // re-apply admin visibility to new edit buttons
+}
+
+function renderEntryCard(entry, topic, tab) {
+  const fields = [1,2,3,4].map(n => {
+    const l = entry[`field_${n}_label`], v = entry[`field_${n}_value`];
+    return l && v ? `<div class="ref-row"><div class="ref-row-label">${l}</div><div class="ref-row-text"><strong>${v}</strong></div></div>` : '';
+  }).join('');
+
+  const caution = entry.caution
+    ? `<div class="ref-row"><div class="ref-row-label" style="color:var(--orange-dim);">Caution</div><div class="caution-text">${entry.caution}</div></div>`
+    : '';
+
+  const badge = entry.badge
+    ? `<span class="badge badge-${entry.badge}">${entry.badge}</span>`
+    : '';
+
+  const deleteBtn = `<button onclick="deleteEntry('${entry.id}','${topic}','${tab}')" class="add-entry-btn" style="background:var(--terra);color:white;border:none;border-radius:4px;padding:0.2rem 0.5rem;font-size:0.65rem;cursor:pointer;display:${isAdmin?'flex':'none'};align-items:center;gap:0.2rem;margin-top:0.5rem;">🗑 Remove</button>`;
+
+  return `
+    <div class="ref-card" style="margin-bottom:0.75rem;" data-entry-id="${entry.id}">
+      <div class="ref-card-head">
+        <div>
+          <div class="ref-card-name">${entry.title}</div>
+          ${entry.subtitle ? `<div class="ref-card-npk">${entry.subtitle}</div>` : ''}
+        </div>
+        ${badge}
+      </div>
+      <div class="ref-card-body">
+        <div class="ref-row"><div class="ref-row-text">${entry.body}</div></div>
+        ${fields}
+        ${caution}
+        ${deleteBtn}
+      </div>
+    </div>`;
+}
+
+async function deleteEntry(id, topic, tab) {
+  if (!isAdmin) return;
+  if (!confirm('Remove this entry?')) return;
+  try {
+    await supaFetch(`fgf_manual_entries?id=eq.${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_active: false })
+    });
+    showToast('Entry removed');
+    await loadDynamicEntries(topic, tab);
+  } catch(e) {
+    showToast('Error removing entry');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// INJECT ADD BUTTONS + DYNAMIC CONTAINERS INTO RENDERED PANELS
+// ══════════════════════════════════════════════════════════════
+async function injectDynamicZones(topic) {
+  const topicDef = TOPICS[topic];
+  for (const tab of topicDef.tabs) {
+    const panelIdx = topicDef.tabs.indexOf(tab);
+    const panel = document.getElementById(`stpanel-${panelIdx}`);
+    if (!panel) continue;
+
+    const containerId = `dynamic-entries-${topic}-${tab.replace(/\s+/g,'-')}`;
+
+    // Add dynamic container + admin add button at bottom of each panel
+    const zone = document.createElement('div');
+    zone.innerHTML = `
+      <div id="${containerId}" style="margin-top:0.5rem;"></div>
+      <button class="add-entry-btn" onclick="showAddEntryModal('${topic}','${tab}')"
+        style="display:${isAdmin?'flex':'none'};align-items:center;gap:0.5rem;
+          width:100%;margin-top:1rem;padding:0.75rem 1rem;
+          background:#3E5C42;color:var(--lime-pale);
+          border:1px dashed var(--lime);border-radius:8px;
+          font-family:Inter,sans-serif;font-size:0.82rem;font-weight:600;
+          cursor:pointer;justify-content:center;
+          -webkit-tap-highlight-color:transparent;">
+        + Add Entry to ${tab}
+      </button>
+    `;
+    panel.appendChild(zone);
+
+    // Load existing entries
+    await loadDynamicEntries(topic, tab);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════
+function btnStyle(bg) {
+  return `width:100%;padding:0.75rem;background:${bg};color:var(--cream);border:none;border-radius:6px;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;margin-bottom:0.5rem;`;
+}
+function inputStyle() {
+  return `width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--forest);font-family:Inter,sans-serif;font-size:0.9rem;padding:0.55rem 0.7rem;outline:none;`;
+}
+function showErr(el, msg) {
+  if (!el) return;
+  el.textContent = msg; el.style.display = 'block';
+}
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = `position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:#3E5C42;color:var(--lime-pale);padding:0.6rem 1.2rem;border-radius:20px;font-size:0.8rem;font-weight:600;z-index:2000;transition:opacity 0.3s;`;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ══════════════════════════════════════════════════════════════
+// PATCH openTopic to inject dynamic zones after render
+// ══════════════════════════════════════════════════════════════
+(function() {
+  const orig = openTopic;
+  window.openTopic = async function(key) {
+    orig(key);
+    await injectDynamicZones(key);
+  };
+})();
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+(function init() {
+  updateModeIcon();
+  checkExistingSession();
+
+  // Inject admin button into home header controls
+  const controls = document.querySelector('.header-controls');
+  if (controls) {
+    const btn = document.createElement('button');
+    btn.id = 'admin-btn';
+    btn.onclick = showLoginModal;
+    btn.style.cssText = `background:transparent;border:1px solid rgba(184,224,96,0.4);color:var(--lime-pale);border-radius:20px;padding:0.3rem 0.6rem;font-size:0.65rem;font-weight:600;font-family:var(--font-mono);cursor:pointer;-webkit-tap-highlight-color:transparent;`;
+    btn.textContent = isAdmin ? '🔓 Admin' : '🔒 Admin';
+    controls.insertBefore(btn, controls.firstChild);
+  }
+  updateAdminUI();
+})();
+</script>
+<a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
+</body>
+</html>

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FGF Data — Fun Guy Fungi</title>
+<meta name="theme-color" content="#2A3A2E">
+<link rel="icon" type="image/png" href="lfg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>
+(function(){try{
+  var m = localStorage.getItem('lfg-mode');
+  if (m === 'dark') document.documentElement.setAttribute('data-mode','dark');
+}catch(e){}})();
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #2A2620;
+  --surface:    #34302A;
+  --card:       #34302A;
+  --card-border:#45423A;
+  --ink:        #F0EDE2;
+  --ink-soft:   #B0A99C;
+  --accent:     #7E9A6E;
+  --accent-2:   #A8B89A;
+  --on-accent:  #1B1B17;
+  --alert:      #C97A4A;
+  --mist:       #3A362E;
+  --forest:     #A8B89A;
+  --lime:       #7E9A6E;
+  --lime-pale:  #A8B89A;
+  --border-w:   1.5px;
+  --shadow:     0 2px 16px rgba(61,74,62,0.08);
+  --radius:     10px;
+  --font-head:  'IM Fell English', Georgia, serif;
+  --font-body:  'Source Sans 3', sans-serif;
+  --font-mono:  'Courier Prime', monospace;
+}
+
+[data-mode="dark"] {
+  --bg:         #24231E;
+  --surface:    #262626;
+  --card:       #383838;
+  --card-border:#45423A;
+  --ink:        #F0EDE6;
+  --ink-soft:   #A8A39A;
+  --accent:     #7E9A6E;
+  --mist:       #33312A;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.data-header {
+  background: var(--forest);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--lime);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.data-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.data-header img { width: 36px; height: 36px; object-fit: contain; }
+
+.data-header-title {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--lime-pale);
+}
+
+.data-header-sub {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lime-pale);
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hdr-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(184,224,96,0.3);
+  color: var(--lime-pale);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+}
+.hdr-btn:hover { background: rgba(255,255,255,0.18); }
+
+.last-updated {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--lime-pale);
+  opacity: 0.6;
+}
+
+/* ── Tab bar ── */
+.tab-bar {
+  background: var(--surface);
+  border-bottom: var(--border-w) solid var(--card-border);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 65px;
+  z-index: 40;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 12px 18px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  opacity: 0.65;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: opacity 150ms, color 150ms;
+}
+.tab-btn.active { opacity: 1; color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── Shell ── */
+.data-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* ── Tab panels ── */
+.tab-panel { display: none; flex-direction: column; gap: 20px; }
+.tab-panel.active { display: flex; }
+
+/* ── Stat grid ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media(min-width: 600px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.stat-card {
+  background: var(--card);
+  border: var(--border-w) solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-card.accent { border-color: var(--accent); }
+.stat-card.alert  { border-color: var(--alert); }
+
+.stat-num {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-card.accent .stat-num { color: var(--accent); }
+.stat-card.alert  .stat-num { color: var(--alert); }
+
+.stat-label {
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 5px;
+  font-family: var(--font-mono);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: var(--border-w) solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card h3 {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  opacity: 0.7;
+}
+
+/* ── Data rows ── */
+.data-list { display: flex; flex-direction: column; gap: 8px; }
+
+.data-row {
+  background: var(--surface);
+  border: var(--border-w) solid var(--card-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.data-row .row-main { flex: 1; min-width: 0; }
+.data-row .row-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.data-row .row-sub { font-size: 0.72rem; color: var(--ink-soft); opacity: 0.8; margin-top: 3px; font-family: var(--font-mono); }
+.data-row .row-badge { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+.badge-green  { background: #2E3A2C; color: #AEC69E; }
+.badge-amber  { background: #43371E; color: #E3B778; }
+.badge-red    { background: #45261E; color: #E8A488; }
+.badge-gray   { background: var(--mist); color: var(--ink-soft); }
+.badge-blue   { background: #26374A; color: #A6C6E8; }
+
+/* ── Bed grid ── */
+.bed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.bed-cell {
+  background: var(--surface);
+  border: var(--border-w) solid var(--card-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 150ms, transform 150ms;
+}
+.bed-cell:hover { border-color: var(--accent); transform: translateY(-1px); }
+.bed-cell.has-activity { border-color: var(--accent-2); }
+.bed-cell.no-activity { opacity: 0.6; }
+
+.bed-cell .bed-id {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.bed-cell .bed-name { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+.bed-cell .bed-mgr  { font-size: 0.65rem; color: var(--ink-soft); margin-top: 2px; }
+.bed-cell .bed-last { font-size: 0.6rem; font-family: var(--font-mono); color: var(--ink-soft); opacity: 0.7; margin-top: 4px; }
+
+/* ── Inventory grid ── */
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+.inv-cell {
+  background: var(--surface);
+  border: var(--border-w) solid var(--card-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.inv-cell.low { border-color: var(--alert); }
+.inv-cell .inv-name { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+.inv-cell .inv-qty  { font-family: var(--font-mono); font-size: 1.4rem; color: var(--ink); line-height: 1.1; margin-top: 2px; }
+.inv-cell.low .inv-qty { color: var(--alert); }
+.inv-cell .inv-sub  { font-size: 0.65rem; color: var(--ink-soft); opacity: 0.75; margin-top: 2px; }
+
+/* ── Photo grid ── */
+.photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+@media(min-width:600px) { .photo-grid { grid-template-columns: repeat(4,1fr); } }
+.photo-thumb { aspect-ratio:1; border-radius:8px; overflow:hidden; cursor:pointer; background:var(--mist); }
+.photo-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* ── Lightbox ── */
+.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:100; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
+.lightbox.open { display:flex; }
+.lightbox img { max-width:100%; max-height:70vh; border-radius:var(--radius); object-fit:contain; }
+.lightbox-meta { margin-top:14px; text-align:center; color:#fff; }
+.lightbox-meta h3 { font-family:var(--font-head); font-size:1rem; }
+.lightbox-meta p { font-size:0.75rem; opacity:0.7; font-family:var(--font-mono); margin-top:4px; }
+.lightbox-close { position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; border-radius:50%; width:36px; height:36px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+/* ── Empty / skeleton ── */
+.empty-state { text-align:center; padding:32px; color:var(--ink-soft); opacity:0.6; font-size:0.85rem; font-style:italic; }
+.skeleton { background:var(--mist); border-radius:8px; animation:shimmer 1.4s ease infinite; }
+@keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+/* ── Almanac ── */
+.alm-hero { background:linear-gradient(180deg,#2A3A2E,#2d5a3d); color:#fff; border-radius:var(--radius); padding:20px; text-align:center; }
+.alm-temp { font-family:var(--font-head); font-size:3rem; }
+.alm-cond { font-size:0.85rem; opacity:0.85; margin-top:4px; }
+.info-row { background:var(--card); border-radius:8px; padding:12px 16px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center; }
+.info-row .label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); font-family:var(--font-mono); }
+.info-row .value { font-size:0.9rem; font-weight:600; color:var(--ink); text-align:right; max-width:60%; }
+
+/* ── Read-only banner ── */
+.readonly-banner {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: var(--border-w) solid var(--accent-2);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); color:var(--ink); padding:10px 20px; border-radius:20px; font-size:0.82rem; font-family:var(--font-mono); transition:transform 0.3s ease; z-index:999; white-space:nowrap; border:var(--border-w) solid var(--card-border); box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+@media(max-width:480px) {
+  .data-shell { padding: 16px 12px 48px; }
+  .data-header { padding: 12px 16px; }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="data-header">
+  <div class="data-header-left">
+    <img src="lfg-logo.png" alt="FGF">
+    <div>
+      <div class="data-header-title">Fun Guy Fungi &amp; Gardens</div>
+      <div class="data-header-sub">Live Farm Data · Read Only</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">Refreshing…</span>
+    <button class="hdr-btn" onclick="refreshAll()">↻ Refresh</button>
+    <button class="hdr-btn" onclick="toggleMode()">☀</button>
+    <a href="/" class="hdr-btn">← Home</a>
+  </div>
+</div>
+
+<!-- ── Tab bar ── -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="switchTab('beds',this)">Beds</button>
+  <button class="tab-btn" onclick="switchTab('log',this)">Field Log</button>
+  <button class="tab-btn" onclick="switchTab('inventory',this)">Inventory</button>
+  <button class="tab-btn" onclick="switchTab('photos',this)">Photos</button>
+  <button class="tab-btn" onclick="switchTab('almanac',this)">Almanac</button>
+</div>
+
+<!-- ── Shell ── -->
+<div class="data-shell">
+
+  <div class="readonly-banner">📊 Read-only view · Data refreshes live from the farm · No login required</div>
+
+  <!-- OVERVIEW -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="stat-grid" id="overview-stats">
+      <div class="stat-card accent"><div class="stat-num" id="stat-areas">—</div><div class="stat-label">Growing Areas</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-events">—</div><div class="stat-label">Events Logged</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-photos">—</div><div class="stat-label">Photos</div></div>
+      <div class="stat-card alert"><div class="stat-num" id="stat-low">—</div><div class="stat-label">Low Stock Items</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Recent Field Log</h3>
+      <div class="data-list" id="overview-log">
+        <div class="skeleton" style="height:52px;"></div>
+        <div class="skeleton" style="height:52px;margin-top:8px;"></div>
+        <div class="skeleton" style="height:52px;margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Recent Activity by Area</h3>
+      <div class="data-list" id="overview-events">
+        <div class="skeleton" style="height:52px;"></div>
+        <div class="skeleton" style="height:52px;margin-top:8px;"></div>
+        <div class="skeleton" style="height:52px;margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEDS -->
+  <div class="tab-panel" id="tab-beds">
+    <div class="card">
+      <h3>All Growing Areas</h3>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="bed-zone-filter"></div>
+      <div class="bed-grid" id="beds-grid">
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;"></div>
+      </div>
+    </div>
+    <div class="card" id="bed-detail-card" style="display:none;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <h3 id="bed-detail-name" style="margin:0;flex:1;">—</h3>
+        <button onclick="closeBedDetail()" style="background:none;border:none;color:var(--ink-soft);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="bed-detail-info"></div>
+      <div class="section-label" style="margin-top:16px;margin-bottom:8px;">Event History</div>
+      <div class="data-list" id="bed-detail-events"></div>
+    </div>
+  </div>
+
+  <!-- FIELD LOG -->
+  <div class="tab-panel" id="tab-log">
+    <div class="card">
+      <h3>Field Log</h3>
+      <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <label style="font-size:0.72rem;color:var(--ink-soft);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;">From</label>
+          <input type="date" id="log-from" style="background:var(--bg);border:var(--border-w) solid var(--card-border);border-radius:6px;padding:6px 10px;font-size:0.82rem;color:var(--ink);outline:none;">
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <label style="font-size:0.72rem;color:var(--ink-soft);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;">To</label>
+          <input type="date" id="log-to" style="background:var(--bg);border:var(--border-w) solid var(--card-border);border-radius:6px;padding:6px 10px;font-size:0.82rem;color:var(--ink);outline:none;">
+        </div>
+        <button onclick="loadLog()" style="background:var(--accent);color:var(--on-accent);border:none;border-radius:6px;padding:7px 14px;font-size:0.8rem;font-family:var(--font-mono);cursor:pointer;">Filter</button>
+      </div>
+      <div class="data-list" id="log-list">
+        <div class="skeleton" style="height:52px;"></div>
+        <div class="skeleton" style="height:52px;margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTORY -->
+  <div class="tab-panel" id="tab-inventory">
+    <div class="card">
+      <h3>Current Inventory</h3>
+      <div id="inventory-content">
+        <div class="skeleton" style="height:80px;"></div>
+        <div class="skeleton" style="height:80px;margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="tab-panel" id="tab-photos">
+    <div class="card">
+      <h3>Farm Photos</h3>
+      <div class="photo-grid" id="photo-grid">
+        <div class="skeleton" style="height:100px;"></div>
+        <div class="skeleton" style="height:100px;"></div>
+        <div class="skeleton" style="height:100px;"></div>
+        <div class="skeleton" style="height:100px;"></div>
+        <div class="skeleton" style="height:100px;"></div>
+        <div class="skeleton" style="height:100px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALMANAC -->
+  <div class="tab-panel" id="tab-almanac">
+    <div class="alm-hero">
+      <div class="alm-temp" id="alm-temp">…</div>
+      <div class="alm-cond" id="alm-cond">Checking weather…</div>
+    </div>
+    <div class="info-row"><span class="label">Wind</span><span class="value" id="alm-wind">—</span></div>
+    <div class="info-row"><span class="label">Sunrise</span><span class="value" id="alm-sunrise">—</span></div>
+    <div class="info-row"><span class="label">Sunset</span><span class="value" id="alm-sunset">—</span></div>
+    <div class="info-row"><span class="label">Daylight</span><span class="value" id="alm-daylight">—</span></div>
+    <div class="info-row"><span class="label">Moon</span><span class="value" id="alm-moon">—</span></div>
+    <div class="section-label" style="margin-top:8px;">Forecast</div>
+    <div id="alm-forecast" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
+</div><!-- /data-shell -->
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-meta">
+    <h3 id="lightbox-title"></h3>
+    <p id="lightbox-date"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DB ────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://gblizuknnvguxyxfequh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
+const DB_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
+
+async function sbGet(table, params) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params ? '?' + params : ''}`, { headers: DB_HEADERS });
+  if (!res.ok) throw new Error(`GET ${table} failed: ${res.status}`);
+  return res.json();
+}
+
+function esc(s) { const d = document.createElement('div'); d.appendChild(document.createTextNode(String(s||''))); return d.innerHTML; }
+function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); } catch(e) { return ''; } }
+function fmtDateTime(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); } catch(e) { return ''; } }
+function showToast(msg) { const t = document.getElementById('toast'); if (!t) return; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
+
+const FARM_LAT = 33.9281417, FARM_LNG = -117.4301472;
+
+// ── Mode ──────────────────────────────────────────────────────
+window.toggleMode = function() {
+  const html = document.documentElement;
+  const dark = html.getAttribute('data-mode') === 'dark';
+  dark ? html.removeAttribute('data-mode') : html.setAttribute('data-mode','dark');
+  try { localStorage.setItem('lfg-mode', dark ? 'light' : 'dark'); } catch(e) {}
+  updateModeIcon();
+};
+function updateModeIcon() {
+  const dark = document.documentElement.getAttribute('data-mode') === 'dark';
+  document.querySelectorAll('.hdr-btn[onclick="toggleMode()"]').forEach(b => b.textContent = dark ? '🌙' : '☀');
+}
+
+// ── Tabs ──────────────────────────────────────────────────────
+window.switchTab = function(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'almanac') loadAlmanac();
+  if (tab === 'photos')  loadPhotos();
+  if (tab === 'log')     loadLog();
+  if (tab === 'inventory') loadInventory();
+  if (tab === 'beds')    loadBeds();
+};
+
+// ── Overview ──────────────────────────────────────────────────
+async function loadOverview() {
+  try {
+    const [areas, events, photos, inventory] = await Promise.all([
+      sbGet('fgf_growing_areas','archived_at=is.null'),
+      sbGet('fgf_area_events','order=event_date.desc&limit=200'),
+      sbGet('fgf_photos','select=id'),
+      sbGet('fgf_inventory','order=category.asc,item_name.asc')
+    ]);
+
+    const lowStock = inventory.filter(i => Number(i.par_level) > 0 && Number(i.quantity) <= Number(i.par_level));
+
+    document.getElementById('stat-areas').textContent = areas.length;
+    document.getElementById('stat-events').textContent = events.length;
+    document.getElementById('stat-photos').textContent = photos.length;
+    document.getElementById('stat-low').textContent = lowStock.length;
+
+    // Recent log
+    const log = await sbGet('fgf_log','order=logged_at.desc&limit=8');
+    const logBox = document.getElementById('overview-log');
+    if (!log.length) { logBox.innerHTML = '<div class="empty-state">No log entries yet.</div>'; }
+    else {
+      logBox.innerHTML = log.map(e => `
+        <div class="data-row">
+          <div class="row-main">
+            <div class="row-title">${esc(e.note)}</div>
+            <div class="row-sub">${esc(e.location_label || 'Farm')} · ${esc(e.logged_by || '')} · ${fmtDateTime(e.logged_at)}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    // Recent events
+    const evBox = document.getElementById('overview-events');
+    const areaMap = {};
+    areas.forEach(a => { areaMap[a.id] = a.name; });
+    if (!events.length) { evBox.innerHTML = '<div class="empty-state">No events logged yet.</div>'; }
+    else {
+      evBox.innerHTML = events.slice(0,10).map(e => `
+        <div class="data-row">
+          <div class="row-main">
+            <div class="row-title">${esc(areaMap[e.area_id] || 'Unknown area')} — ${esc(e.event_type)}</div>
+            <div class="row-sub">${esc(e.plant_name || e.notes || '—')} · ${esc(e.performed_by || '')} · ${fmtDate(e.event_date)}</div>
+          </div>
+          <span class="row-badge badge-green">${esc(e.event_type)}</span>
+        </div>`).join('');
+    }
+
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  } catch(e) { console.error('Overview load error:', e); }
+}
+
+// ── Beds ──────────────────────────────────────────────────────
+let allAreas = [];
+let activeZone = '';
+
+async function loadBeds() {
+  const grid = document.getElementById('beds-grid');
+  try {
+    allAreas = await sbGet('fgf_growing_areas','archived_at=is.null&order=zone.asc,name.asc');
+    const events = await sbGet('fgf_area_events','order=event_date.desc&limit=500');
+
+    // Map last event per area
+    const lastEvent = {};
+    events.forEach(e => { if (!lastEvent[e.area_id]) lastEvent[e.area_id] = e; });
+
+    // Zone filter
+    const zones = [...new Set(allAreas.map(a => a.zone || 'Unzoned'))].sort();
+    const filterEl = document.getElementById('bed-zone-filter');
+    filterEl.innerHTML = `<button class="tab-btn active" style="padding:6px 12px;border-radius:20px;border:var(--border-w) solid var(--card-border);background:var(--accent);color:var(--on-accent);" onclick="filterBedZone('',this)">All</button>` +
+      zones.map(z => `<button class="tab-btn" style="padding:6px 12px;border-radius:20px;border:var(--border-w) solid var(--card-border);" onclick="filterBedZone('${esc(z)}',this)">${esc(z)}</button>`).join('');
+
+    renderBedGrid(allAreas, lastEvent);
+    window._lastEventMap = lastEvent;
+  } catch(e) { grid.innerHTML = '<div class="empty-state">Could not load beds.</div>'; }
+}
+
+window.filterBedZone = function(zone, btn) {
+  activeZone = zone;
+  document.querySelectorAll('#bed-zone-filter button').forEach(b => {
+    b.style.background = '';
+    b.style.color = '';
+  });
+  btn.style.background = 'var(--accent)';
+  btn.style.color = 'var(--on-accent)';
+  const filtered = zone ? allAreas.filter(a => (a.zone||'Unzoned') === zone) : allAreas;
+  renderBedGrid(filtered, window._lastEventMap || {});
+};
+
+function renderBedGrid(areas, lastEvent) {
+  const grid = document.getElementById('beds-grid');
+  grid.innerHTML = areas.map(a => {
+    const last = lastEvent[a.id];
+    const hasActivity = !!last;
+    return `<div class="bed-cell ${hasActivity ? 'has-activity' : 'no-activity'}" onclick="showBedDetail('${a.id}')">
+      <div class="bed-id">${esc(a.zone || '')}</div>
+      <div class="bed-name">${esc(a.name)}</div>
+      <div class="bed-mgr">${esc(a.manager || 'Unassigned')}</div>
+      <div class="bed-last">${last ? fmtDate(last.event_date) : 'No activity'}</div>
+    </div>`;
+  }).join('');
+}
+
+window.showBedDetail = function(areaId) {
+  const area = allAreas.find(a => a.id === areaId);
+  if (!area) return;
+  const card = document.getElementById('bed-detail-card');
+  document.getElementById('bed-detail-name').textContent = area.name;
+  document.getElementById('bed-detail-info').innerHTML = [
+    ['Zone', area.zone || '—'],
+    ['Type', area.area_type?.replace('_',' ') || '—'],
+    ['Manager', area.manager || 'Unassigned'],
+    ['Description', area.description || '—'],
+    ['Blessing', area.blessing ? `"${area.blessing}"${area.blessing_ref ? ' — ' + area.blessing_ref : ''}` : '—']
+  ].map(([l,v]) => `<div class="info-row"><span class="label">${l}</span><span class="value" style="font-size:0.82rem;font-weight:400;">${esc(v)}</span></div>`).join('');
+
+  card.style.display = '';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const evBox = document.getElementById('bed-detail-events');
+  evBox.innerHTML = '<div class="skeleton" style="height:52px;"></div>';
+  sbGet('fgf_area_events', `area_id=eq.${areaId}&order=event_date.desc&limit=15`).then(events => {
+    if (!events.length) { evBox.innerHTML = '<div class="empty-state">No events logged for this area.</div>'; return; }
+    evBox.innerHTML = events.map(e => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(e.event_type)}${e.plant_name ? ' — ' + esc(e.plant_name) : ''}</div>
+          <div class="row-sub">${esc(e.notes || '—')} · ${esc(e.performed_by || '')} · ${fmtDate(e.event_date)}</div>
+        </div>
+        <span class="row-badge badge-green">${esc(e.event_type)}</span>
+      </div>`).join('');
+  }).catch(() => { evBox.innerHTML = '<div class="empty-state">Could not load events.</div>'; });
+};
+
+window.closeBedDetail = function() {
+  document.getElementById('bed-detail-card').style.display = 'none';
+};
+
+// ── Field Log ─────────────────────────────────────────────────
+async function loadLog() {
+  const box = document.getElementById('log-list');
+  const from = document.getElementById('log-from').value;
+  const to   = document.getElementById('log-to').value;
+  let params = 'order=logged_at.desc&limit=100';
+  if (from) params += `&logged_at=gte.${from}`;
+  if (to)   params += `&logged_at=lte.${to}T23:59:59`;
+  try {
+    const log = await sbGet('fgf_log', params);
+    if (!log.length) { box.innerHTML = '<div class="empty-state">No log entries in this range.</div>'; return; }
+    box.innerHTML = log.map(e => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(e.note)}</div>
+          <div class="row-sub">${esc(e.location_label || 'Farm')} · ${esc(e.logged_by || '')} · ${fmtDateTime(e.logged_at)}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load log.</div>'; }
+}
+
+// ── Inventory ─────────────────────────────────────────────────
+async function loadInventory() {
+  const box = document.getElementById('inventory-content');
+  try {
+    const items = await sbGet('fgf_inventory','order=category.asc,item_name.asc');
+    if (!items.length) { box.innerHTML = '<div class="empty-state">No inventory items yet.</div>'; return; }
+    const groups = {};
+    items.forEach(i => { const c = i.category || 'Other'; if (!groups[c]) groups[c] = []; groups[c].push(i); });
+    let html = '';
+    Object.keys(groups).sort().forEach(cat => {
+      html += `<div class="section-label" style="margin-top:14px;margin-bottom:8px;">${esc(cat)}</div>
+               <div class="inv-grid">`;
+      groups[cat].forEach(item => {
+        const qty = Number(item.quantity || 0);
+        const par = Number(item.par_level || 0);
+        const low = par > 0 && qty <= par;
+        html += `<div class="inv-cell ${low ? 'low' : ''}">
+          <div class="inv-name">${esc(item.item_name)}${low ? ' ⚠' : ''}</div>
+          <div class="inv-qty">${qty}</div>
+          <div class="inv-sub">${esc(item.unit || '')}${par ? ' · Par: ' + par : ''}${item.notes ? ' · ' + esc(item.notes) : ''}</div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+    box.innerHTML = html;
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load inventory.</div>'; }
+}
+
+// ── Photos ────────────────────────────────────────────────────
+let lbData = [];
+
+async function loadPhotos() {
+  const grid = document.getElementById('photo-grid');
+  try {
+    const photos = await sbGet('fgf_photos','order=uploaded_at.desc&limit=80');
+    if (!photos.length) { grid.innerHTML = '<div class="empty-state">No photos yet.</div>'; return; }
+    lbData = [];
+    grid.innerHTML = photos.map((ph, idx) => {
+      const thumb = ph.thumbnail_url || ph.cloudinary_url.replace('/upload/','/upload/w_300,h_300,c_fill/');
+      lbData.push({ src: ph.cloudinary_url, title: ph.caption || 'Farm photo', date: fmtDate(ph.uploaded_at), by: ph.uploaded_by || '' });
+      return `<div class="photo-thumb" onclick="openLightbox(${idx})"><img src="${esc(thumb)}" alt="${esc(ph.caption||'')}" loading="lazy"></div>`;
+    }).join('');
+  } catch(e) { grid.innerHTML = '<div class="empty-state">Could not load photos.</div>'; }
+}
+
+window.openLightbox = function(idx) {
+  const d = lbData[idx]; if (!d) return;
+  document.getElementById('lightbox-img').src = d.src;
+  document.getElementById('lightbox-title').textContent = d.title;
+  document.getElementById('lightbox-date').textContent = d.date + (d.by ? ' · ' + d.by : '');
+  document.getElementById('lightbox').classList.add('open');
+};
+window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
+
+// ── Almanac ───────────────────────────────────────────────────
+async function loadAlmanac() {
+  const n = new Date();
+  const sun = sunTimes(n);
+  document.getElementById('alm-sunrise').textContent = fmtAlmTime(sun.sunrise);
+  document.getElementById('alm-sunset').textContent = fmtAlmTime(sun.sunset);
+  if (sun.sunrise && sun.sunset) {
+    const mins = Math.round((sun.sunset - sun.sunrise) / 60000);
+    document.getElementById('alm-daylight').textContent = Math.floor(mins/60) + 'h ' + (mins%60) + 'm';
+  }
+  document.getElementById('alm-moon').textContent = moonPhase(n);
+  try {
+    let cached = null;
+    try { cached = JSON.parse(sessionStorage.getItem('lfg-wx') || 'null'); } catch(e) {}
+    let periods;
+    if (cached && (Date.now() - cached.at) < 1800000) {
+      periods = cached.periods;
+    } else {
+      const pt = await (await fetch(`https://api.weather.gov/points/${FARM_LAT},${FARM_LNG}`)).json();
+      const fc = await (await fetch(pt.properties.forecast)).json();
+      periods = fc.properties.periods.slice(0,5);
+      try { sessionStorage.setItem('lfg-wx', JSON.stringify({ at:Date.now(), periods })); } catch(e) {}
+    }
+    const p = periods[0];
+    document.getElementById('alm-temp').textContent = p.temperature + '°' + p.temperatureUnit;
+    document.getElementById('alm-cond').textContent = p.shortForecast + ' · ' + p.name;
+    document.getElementById('alm-wind').textContent = p.windSpeed + ' ' + p.windDirection;
+    document.getElementById('alm-forecast').innerHTML = periods.slice(1).map(pd =>
+      `<div class="info-row"><span class="label">${esc(pd.name)}</span><span class="value">${pd.temperature}°${pd.temperatureUnit} · ${esc(pd.shortForecast)}</span></div>`
+    ).join('');
+  } catch(e) {
+    document.getElementById('alm-temp').textContent = '—';
+    document.getElementById('alm-cond').textContent = 'Weather unavailable';
+  }
+}
+
+function fmtAlmTime(d) { return d ? d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '—'; }
+
+function sunTimes(date) {
+  const rad = Math.PI/180, lat = FARM_LAT, lng = FARM_LNG;
+  const doy = Math.floor((date - new Date(date.getFullYear(),0,0)) / 86400000);
+  function calc(rising) {
+    const z=90.833, lh=lng/15, t=doy+((rising?6:18)-lh)/24, M=0.9856*t-3.289;
+    let L=M+1.916*Math.sin(M*rad)+0.020*Math.sin(2*M*rad)+282.634;
+    L=((L%360)+360)%360;
+    let RA=Math.atan(0.91764*Math.tan(L*rad))/rad;
+    RA=((RA%360)+360)%360;
+    RA+=(Math.floor(L/90)*90-Math.floor(RA/90)*90); RA/=15;
+    const sd=0.39782*Math.sin(L*rad), cd=Math.cos(Math.asin(sd));
+    const ch=(Math.cos(z*rad)-(sd*Math.sin(lat*rad)))/(cd*Math.cos(lat*rad));
+    if(ch>1||ch<-1) return null;
+    let H=rising?360-Math.acos(ch)/rad:Math.acos(ch)/rad; H/=15;
+    const T=H+RA-0.06571*t-6.622;
+    let UT=((T-lh)%24+24)%24;
+    const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+    d.setUTCMinutes(Math.round(UT*60)); return d;
+  }
+  return { sunrise:calc(true), sunset:calc(false) };
+}
+
+function moonPhase(date) {
+  const syn=29.53058867, known=Date.UTC(2000,0,6,18,14);
+  let age=((date.getTime()-known)/86400000)%syn;
+  if(age<0) age+=syn;
+  const names=[[1.85,'🌑 New Moon'],[5.54,'🌒 Waxing Crescent'],[9.23,'🌓 First Quarter'],[12.91,'🌔 Waxing Gibbous'],[16.61,'🌕 Full Moon'],[20.30,'🌖 Waning Gibbous'],[23.99,'🌗 Last Quarter'],[27.68,'🌘 Waning Crescent'],[99,'🌑 New Moon']];
+  for(const [l,n] of names) if(age<l) return n;
+  return '🌙';
+}
+
+// ── Refresh ───────────────────────────────────────────────────
+window.refreshAll = function() {
+  showToast('Refreshing…');
+  loadOverview();
+  const activeTab = document.querySelector('.tab-panel.active')?.id?.replace('tab-','');
+  if (activeTab && activeTab !== 'overview') {
+    if (activeTab === 'beds')      loadBeds();
+    if (activeTab === 'log')       loadLog();
+    if (activeTab === 'inventory') loadInventory();
+    if (activeTab === 'photos')    loadPhotos();
+    if (activeTab === 'almanac')   loadAlmanac();
+  }
+};
+
+// ── Init ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  updateModeIcon();
+  // Set default log date range (last 30 days)
+  const today = new Date().toISOString().slice(0,10);
+  const from = new Date(); from.setDate(from.getDate() - 30);
+  document.getElementById('log-to').value = today;
+  document.getElementById('log-from').value = from.toISOString().slice(0,10);
+  loadOverview();
+});
+</script>
+<a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
+</body>
+</html>

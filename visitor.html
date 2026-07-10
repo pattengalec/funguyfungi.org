@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fun Guy Fungi &amp; Gardens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F0EDE2; --ink-soft:#B0A99C; --paper:#2A2620; --card:#34302A;
+    --line:#45423A; --line-strong:#5A554A;
+    --green:#7E9A6E; --green-d:#2A2620; --leaf:#A8B89A; --amber:#C9973F;
+    --shadow:0 1px 0 rgba(32,38,28,.04), 0 2px 8px rgba(32,38,28,.06);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; min-height:100%;}
+  body{font-family:'Source Sans 3',system-ui,sans-serif; color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; margin:0;}
+  button{font-family:inherit; cursor:pointer;}
+
+  #app{max-width:520px; margin:0 auto; min-height:100dvh; display:flex; flex-direction:column;}
+
+  .topbar{height:56px; flex:0 0 56px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 12px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--paper); z-index:40;}
+  .iconbtn{width:44px; height:44px; border:none; background:transparent; border-radius:12px; font-size:24px;
+    display:flex; align-items:center; justify-content:center; color:var(--ink);}
+  .iconbtn:active{background:rgba(0,0,0,.05);}
+  .topbar .title{font-family:'Fraunces',serif; font-weight:600; font-size:18px;}
+  .lang-mini{border:1.5px solid var(--line-strong); background:var(--card); color:var(--ink-soft);
+    border-radius:999px; padding:6px 13px; font-size:13px; font-weight:600;}
+
+  /* hamburger panel */
+  #scrim{position:fixed; inset:0; background:rgba(20,24,16,.45); z-index:90; opacity:0; pointer-events:none; transition:opacity .25s;}
+  #scrim.show{opacity:1; pointer-events:auto;}
+  #panel{position:fixed; top:0; left:0; bottom:0; width:280px; max-width:82%; background:var(--card);
+    z-index:100; transform:translateX(-100%); transition:transform .28s cubic-bezier(.3,.7,.3,1);
+    box-shadow:2px 0 24px rgba(0,0,0,.18); display:flex; flex-direction:column; padding:18px 14px;}
+  #panel.show{transform:translateX(0);}
+  #panel .phead{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .menu-item{display:flex; align-items:center; gap:13px; min-height:52px; padding:0 12px; border-radius:12px;
+    border:none; background:transparent; width:100%; font-size:16px; color:var(--ink); text-align:left;}
+  .menu-item:active{background:var(--paper);}
+  .menu-item .ic{font-size:22px; width:24px; text-align:center;}
+  .menu-label{font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--ink-soft); margin:14px 12px 4px;}
+
+  main{flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px;}
+  .intro{font-size:15px; color:var(--ink-soft); margin:2px 0 18px;}
+
+  /* four-tile hub */
+  .hub-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .tile{border-radius:20px; padding:20px 16px; min-height:150px; border:none; display:flex;
+    flex-direction:column; justify-content:space-between; box-shadow:var(--shadow); text-align:left; color:#fff;}
+  .tile:active{transform:scale(.98);}
+  .tile .ic{font-size:34px;}
+  .tile .tname{font-family:'Fraunces',serif; font-weight:600; font-size:22px;}
+  .tile .tsub{font-size:13px; opacity:.9; margin-top:3px; line-height:1.3;}
+  .tile.see{background:#4a86a8;}
+  .tile.learn{background:var(--green);}
+  .tile.do{background:var(--amber); color:#3a2c08;}
+  .tile.share{background:#8a6d9e;}
+
+  /* sub screen (coming soon) */
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .back{display:flex; align-items:center; gap:6px; border:none; background:transparent; color:var(--green);
+    font-size:16px; font-weight:600; padding:6px 0; margin-bottom:8px;}
+  .soon{text-align:center; padding:56px 24px; color:var(--ink-soft);}
+  .soon .ic{font-size:52px; display:block; margin-bottom:14px; opacity:.5;}
+  .soon h2{font-size:24px; color:var(--ink); margin-bottom:8px;}
+  .soon p{font-size:15px; line-height:1.5; max-width:320px; margin:0 auto;}
+
+  /* photo gallery */
+  .see-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .photo{border-radius:14px; overflow:hidden; background:var(--card); border:1px solid var(--line); position:relative; aspect-ratio:1;}
+  .photo img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo .cap{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(transparent,rgba(0,0,0,.6));
+    color:#fff; font-size:12px; padding:18px 8px 7px; line-height:1.25;}
+
+
+
+  /* ---------- DO: grow plan ---------- */
+  .grow-plan-head{margin-bottom:6px;}
+  .gp-type{display:inline-block; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.5px;
+    color:#AEC69E; background:#2E3A2C; border-radius:999px; padding:4px 11px; margin-top:6px;}
+  .gp-type.peren{color:#E3B778; background:#43371E;}
+  .calc-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px; margin-bottom:13px;}
+  .calc-h{font-family:'Fraunces',serif; font-size:16px; font-weight:600; margin-bottom:11px; display:flex; align-items:center; gap:8px;}
+  .calc-h .ic{font-size:19px;}
+  .calc-in-row{display:flex; gap:9px; margin-bottom:11px;}
+  .calc-field{flex:1; min-width:0;}
+  .calc-field label{display:block; font-size:12px; color:var(--ink-soft); margin-bottom:4px; font-weight:600;}
+  .calc-field input{width:100%; border:1.5px solid var(--line-strong); border-radius:10px; padding:10px;
+    font-size:16px; font-family:inherit; background:var(--paper); color:var(--ink);}
+  .calc-field input:focus{outline:none; border-color:var(--green);}
+  .calc-out{background:#2E342A; border-radius:12px; padding:12px 14px; font-size:15px; line-height:1.55;}
+  .calc-out b{color:#AEC69E; font-size:19px;}
+  .calc-note{font-size:12.5px; color:var(--ink-soft); margin-top:9px; line-height:1.45;}
+  /* timeline / cycle strip */
+  .tl{margin:4px 0 2px;}
+  .tl-stage{display:flex; gap:12px; padding:9px 0 9px 15px; border-left:2px solid var(--leaf);
+    margin-left:6px; position:relative;}
+  .tl-stage:last-child{border-left-color:transparent;}
+  .tl-stage:before{content:''; position:absolute; left:-6px; top:13px; width:11px; height:11px;
+    border-radius:50%; background:var(--green); border:2px solid var(--paper);}
+  .tl-stage .sd{flex:0 0 96px; font-size:12.5px; color:var(--ink-soft); line-height:1.3;}
+  .tl-stage .sd .cd{display:block; color:#AEC69E; font-weight:600;}
+  .tl-stage .sl{font-size:14.5px; font-weight:600;}
+  .tl-stage .sn{font-size:12.5px; color:var(--ink-soft);}
+  .harvest-callout{background:#3A3220; border:1px solid var(--amber); border-radius:14px; padding:13px 15px; margin:14px 0;}
+  .harvest-callout .k{font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#E3B778; font-weight:700;}
+  .harvest-callout .v{font-family:'Fraunces',serif; font-size:21px; font-weight:600; color:#F0EDE2; margin-top:2px;}
+  .do-share{display:block; width:100%; text-align:center; background:var(--green); color:#fff; border:none;
+    border-radius:14px; padding:14px; font-weight:600; font-size:16px; margin:18px 0 4px;}
+  .do-share:active{background:var(--green-d);}
+  .do-actions{display:flex; gap:10px; margin:18px 0 4px;}
+  .do-actions .do-share{margin:0; flex:1;}
+  .do-share.alt{background:transparent; color:var(--green); border:1.5px solid var(--green);}
+
+  /* ---------- LEARN: knowledge base ---------- */
+  .learn-search{width:100%; border:1.5px solid var(--line-strong); border-radius:14px; padding:12px 15px;
+    font-size:16px; font-family:inherit; background:var(--card); color:var(--ink); margin-bottom:12px;}
+  .learn-search:focus{outline:none; border-color:var(--green);}
+  .cat-chips{display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:12px; -webkit-overflow-scrolling:touch;}
+  .cat-chip{flex:0 0 auto; border:1.5px solid var(--line-strong); background:var(--card); color:var(--ink-soft);
+    border-radius:999px; padding:7px 14px; font-size:13px; font-weight:600; white-space:nowrap;}
+  .cat-chip.on{background:var(--green); color:#1B1B17; border-color:var(--green);}
+  .plant-row{display:flex; align-items:center; gap:13px; width:100%; text-align:left; border:1px solid var(--line);
+    background:var(--card); border-radius:14px; padding:10px 12px; margin-bottom:9px;}
+  .plant-row:active{background:var(--paper);}
+  .plant-thumb{flex:0 0 auto; width:48px; height:48px; border-radius:11px; background:var(--green);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .plant-thumb img{width:100%; height:100%; object-fit:cover;}
+  .plant-thumb .lf{font-size:24px;}
+  .plant-row .nm{font-family:'Fraunces',serif; font-weight:600; font-size:17px; line-height:1.15;}
+  .plant-row .bt{font-size:12.5px; color:var(--ink-soft); font-style:italic; margin-top:1px;}
+  .plant-tag{margin-left:auto; flex:0 0 auto; font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+    color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:3px 9px;}
+  .learn-empty{color:var(--ink-soft); font-size:14px; padding:20px 2px; text-align:center;}
+
+  /* plant detail */
+  .pd-hero{width:100%; aspect-ratio:16/10; border-radius:18px; overflow:hidden; margin-bottom:14px;
+    background:linear-gradient(135deg,var(--green),var(--green-d)); display:flex; align-items:center; justify-content:center;}
+  .pd-hero img{width:100%; height:100%; object-fit:cover;}
+  .pd-hero .ph{color:rgba(255,255,255,.9); text-align:center; font-size:13px; padding:14px;}
+  .pd-hero .ph .lf{font-size:46px; display:block; margin-bottom:6px;}
+  .pd-title{font-size:27px; line-height:1.1;}
+  .pd-common{font-size:14px; color:var(--ink-soft); margin-top:2px;}
+  .pd-bot{font-size:14.5px; font-style:italic; color:var(--ink-soft); margin-top:2px;}
+  .pd-badge{display:inline-block; margin-top:9px; font-size:12px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.5px; color:#AEC69E; background:#2E3A2C; border-radius:999px; padding:4px 11px;}
+  .pd-summary{font-size:16px; line-height:1.5; margin:15px 0 6px;}
+  .fact-group{margin-top:18px;}
+  .fact-h{font-family:'Fraunces',serif; font-size:17px; font-weight:600; margin-bottom:8px;
+    padding-bottom:5px; border-bottom:1.5px solid var(--line);}
+  .fact{display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line); font-size:14.5px;}
+  .fact:last-child{border-bottom:none;}
+  .fact .k{flex:0 0 42%; color:var(--ink-soft); font-weight:600;}
+  .fact .v{flex:1 1 auto;}
+  .blessing{background:#34302A; border:1px solid var(--line-strong); border-left:4px solid var(--amber);
+    border-radius:12px; padding:12px 15px; margin-top:16px; font-size:15px; font-style:italic; line-height:1.5;}
+  .grow-nudge{display:block; width:100%; text-align:center; background:var(--amber); color:#3a2c08; border:none;
+    border-radius:14px; padding:15px; font-weight:600; font-size:16px; margin:22px 0 6px;}
+  .grow-nudge:active{filter:brightness(.95);}
+  .grow-nudge small{display:block; font-weight:400; font-size:12.5px; opacity:.8; margin-top:2px;}
+
+  /* comment form */
+  .cform{display:flex; flex-direction:column; gap:10px;}
+  .c-in{width:100%; border:1.5px solid var(--line-strong); border-radius:14px; padding:13px 15px;
+    font-size:16px; font-family:inherit; background:var(--card); color:var(--ink);}
+  .c-in:focus{outline:none; border-color:var(--green);}
+  .c-area{min-height:88px; resize:vertical;}
+  .c-send{min-height:52px; border-radius:14px; border:none; background:var(--green); color:#fff;
+    font-size:17px; font-weight:600;}
+  .c-send:active{background:var(--green-d);}
+  .c-send:disabled{background:var(--line-strong);}
+  .c-item{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:9px;}
+  .c-item .who{font-weight:600; font-size:14px; color:var(--accent);}
+  .c-item .txt{font-size:15px; margin-top:3px; line-height:1.4;}
+  .c-empty{color:var(--ink-soft); font-size:14px; padding:14px 2px;}
+  .donate-btn{display:block; text-align:center; background:var(--amber); color:#3a2c08; text-decoration:none;
+    border-radius:14px; padding:14px; font-weight:600; font-size:16px; margin-top:14px;}
+  .donate-note{font-size:12px; color:var(--ink-soft); line-height:1.45; margin-top:9px; text-align:center; padding:0 4px;}
+
+  .ph-filters{display:flex;gap:8px;margin:0 0 12px;}
+  .ph-filters select{flex:1;min-width:0;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:9px;font-size:14px;font-family:inherit;}
+  .photo .cap b{color:var(--accent-2);font-weight:600;}
+
+  .see-add{display:block;width:100%;text-align:center;background:var(--green);color:#1B1B17;border:none;border-radius:14px;padding:13px;font-weight:600;font-size:15px;margin:0 0 12px;cursor:pointer;}
+  .vs-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:flex-end;justify-content:center;}
+  .vs-sheet{background:var(--card);width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;border-radius:18px 18px 0 0;}
+  .vs-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:600;}
+  .vs-x{background:none;border:0;color:var(--ink-soft);font-size:26px;line-height:1;cursor:pointer;}
+  #vsub-list{overflow-y:auto;padding:8px 16px;flex:1;}
+  .vs-card{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .vs-card img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
+  .vs-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .vs-fields select,.vs-fields input{width:100%;min-width:0;background:var(--card);color:var(--ink);border:1.5px solid var(--line-strong);border-radius:8px;padding:8px;font-size:14px;font-family:inherit;}
+  .vs-actions{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);}
+  .vs-btn{flex:1;border:none;border-radius:12px;padding:13px;font-weight:600;font-size:15px;cursor:pointer;font-family:inherit;}
+  .vs-btn.go{background:var(--green);color:#1B1B17;}
+  .vs-btn.cancel{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong);}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+<script src="i18n.js"></script>
+</head>
+<body>
+
+<div id="scrim" onclick="closeMenu()"></div>
+<nav id="panel">
+  <div class="phead"><h2 data-i18n="menu.title">Menu</h2><button class="iconbtn" onclick="closeMenu()">&times;</button></div>
+  <button class="menu-item" onclick="location.href='/index.html'"><span class="ic">&#127968;</span> Home</button>
+  <div class="menu-label">Explore</div>
+  <button class="menu-item" onclick="show('see');closeMenu()"><span class="ic">&#128247;</span> See</button>
+  <button class="menu-item" onclick="show('learn');closeMenu()"><span class="ic">&#127793;</span> Learn</button>
+  <button class="menu-item" onclick="show('do');closeMenu()"><span class="ic">&#9998;</span> Do</button>
+  <button class="menu-item" onclick="show('share');closeMenu()"><span class="ic">&#128172;</span> Share</button>
+  <div class="menu-label">More</div>
+  <button class="menu-item" onclick="location.href='/manual.html'"><span class="ic">&#128214;</span> Farm manual</button>
+  <div class="menu-label">Language</div>
+  <div class="menu-item" style="display:flex;align-items:center;gap:10px"><span class="ic">&#127760;</span> <span data-lang-switch></span></div>
+</nav>
+
+<div id="app">
+  <div class="topbar">
+    <button class="iconbtn" onclick="openMenu()">&#9776;</button>
+    <span class="title" id="bar-title">Fun Guy Fungi</span>
+    <span data-lang-switch></span>
+  </div>
+
+  <main>
+    <!-- HUB -->
+    <section class="screen active" id="screen-hub">
+      <p class="intro" data-i18n="hub.intro">Welcome. Wander the farm, learn what grows here, and plan your own.</p>
+      <div class="hub-grid">
+        <button class="tile see" onclick="show('see')">
+          <span class="ic">&#128247;</span>
+          <span><span class="tname" data-i18n="tile.see">See</span><span class="tsub" data-i18n="tile.see_sub">Photos from the farm</span></span>
+        </button>
+        <button class="tile learn" onclick="show('learn')">
+          <span class="ic">&#127793;</span>
+          <span><span class="tname" data-i18n="tile.learn">Learn</span><span class="tsub" data-i18n="tile.learn_sub">About the plants</span></span>
+        </button>
+        <button class="tile do" onclick="show('do')">
+          <span class="ic">&#9998;</span>
+          <span><span class="tname" data-i18n="tile.do">Do</span><span class="tsub" data-i18n="tile.do_sub">Plan your grow</span></span>
+        </button>
+        <button class="tile share" onclick="show('share')">
+          <span class="ic">&#128172;</span>
+          <span><span class="tname" data-i18n="tile.share">Share</span><span class="tsub" data-i18n="tile.share_sub">Leave a note</span></span>
+        </button>
+      </div>
+      <div class="about-farm" style="margin-top:26px;padding:16px 18px;background:var(--mist);border:1px solid var(--card-border);border-radius:var(--radius,10px)">
+        <h3 style="margin:0 0 8px;font-family:var(--font-head);font-size:1.05rem;color:var(--ink)" data-i18n="about.title">About Fun Guy Fungi</h3>
+        <p style="margin:0;font-size:.9rem;line-height:1.55;color:var(--ink-soft)" data-i18n="about.body">Fun Guy Fungi is a working teaching garden located on the campus of California Baptist University in Riverside, California. This website and the tools within it are independently created and maintained &mdash; they are not an official product of, affiliated with, or endorsed by California Baptist University.</p>
+      </div>
+    </section>
+
+    <!-- SEE -->
+    <section class="screen" id="screen-see">
+      <button class="back" onclick="show('hub')">&#8592; <span data-i18n="back">Back</span></button>
+      <h2 style="margin-bottom:4px" data-i18n="tile.see">See</h2>
+      <p class="intro" data-i18n="see.intro">Photos from around the farm.</p>
+      <button class="see-add" onclick="document.getElementById('vphoto-file').click()">📷 Add a photo</button>
+      <input type="file" id="vphoto-file" accept="image/*" multiple style="display:none" onchange="vsubPick(this)">
+      <div id="see-filters" class="ph-filters"></div>
+      <div id="see-grid"><div class="soon"><span class="ic">&#8987;</span><p data-i18n="loading.photos">Loading photos&hellip;</p></div></div>
+    </section>
+
+    <!-- LEARN -->
+    <section class="screen" id="screen-learn">
+      <!-- list sub-view -->
+      <div id="learn-list-view">
+        <button class="back" onclick="show('hub')">&#8592; <span data-i18n="back">Back</span></button>
+        <h2 style="margin-bottom:4px" data-i18n="tile.learn">Learn</h2>
+        <p class="intro" data-i18n="learn.intro">Every plant growing on the farm &mdash; what it is, and how it grows.</p>
+        <input id="learn-search" class="learn-search" placeholder="Search plants&hellip;" data-i18n-ph="ph.search" autocomplete="off" oninput="renderPlantList()">
+        <div class="cat-chips" id="learn-chips"></div>
+        <div id="learn-list"><div class="learn-empty" data-i18n="loading.plants">Loading plants&hellip;</div></div>
+      </div>
+      <!-- detail sub-view -->
+      <div id="learn-detail-view" style="display:none"></div>
+    </section>
+
+    <!-- DO -->
+    <section class="screen" id="screen-do">
+      <div id="do-list-view">
+        <button class="back" onclick="show('hub')">&#8592; <span data-i18n="back">Back</span></button>
+        <h2 style="margin-bottom:4px" data-i18n="tile.do">Do</h2>
+        <p class="intro" data-i18n="do.intro">Pick a plant and get a grow plan &mdash; the numbers worked out for your space.</p>
+        <input id="do-search" class="learn-search" placeholder="Search plants&hellip;" data-i18n-ph="ph.search" autocomplete="off" oninput="renderDoList()">
+        <div class="cat-chips" id="do-chips"></div>
+        <div id="do-list"><div class="learn-empty" data-i18n="loading.plants">Loading plants&hellip;</div></div>
+      </div>
+      <div id="do-detail-view" style="display:none"></div>
+    </section>
+
+    <!-- SHARE -->
+    <section class="screen" id="screen-share">
+      <button class="back" onclick="show('hub')">&#8592; <span data-i18n="back">Back</span></button>
+      <h2 style="margin-bottom:4px" data-i18n="tile.share">Share</h2>
+      <p class="intro" data-i18n="share.intro">Leave a note for the farm. Comments appear after a quick review.</p>
+      <div class="cform">
+        <input id="c-name" class="c-in" placeholder="Your name (optional)" data-i18n-ph="ph.name" autocomplete="off">
+        <textarea id="c-msg" class="c-in c-area" placeholder="Your message&hellip;" data-i18n-ph="ph.msg"></textarea>
+        <button class="c-send" id="c-send" onclick="submitComment()">Send</button>
+      </div>
+      <div id="c-donate" style="display:none"></div>
+      <h3 style="font-size:16px; margin:24px 0 10px" data-i18n="share.recent">Recent notes</h3>
+      <div id="c-list"><div class="soon" style="padding:24px"><span class="ic">&#8987;</span><p>Loading&hellip;</p></div></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL='https://gblizuknnvguxyxfequh.supabase.co';
+var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+var TITLES={hub:'Fun Guy Fungi',see:'See',learn:'Learn',do:'Do',share:'Share'};
+function show(scr){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  var el=document.getElementById('screen-'+scr); if(el) el.classList.add('active');
+  window.curScreen=scr;
+  document.getElementById('bar-title').textContent=(scr==='hub'?'Fun Guy Fungi':t('tile.'+scr))||'Fun Guy Fungi';
+  document.querySelector('main').scrollTop=0;
+  if(scr==='see') loadPhotos();
+  if(scr==='share'){ loadComments(); loadDonation(); }
+  if(scr==='learn') openLearn();
+  if(scr==='do') openDo();
+}
+function openMenu(){ document.getElementById('panel').classList.add('show'); document.getElementById('scrim').classList.add('show'); }
+function closeMenu(){ document.getElementById('panel').classList.remove('show'); document.getElementById('scrim').classList.remove('show'); }
+
+/* ---------- SEE: approved photo gallery ---------- */
+var photosLoaded=false;
+var seePhotos=[], seeAreaMap={};
+function _capW(x){ x=String(x||''); return x?x.charAt(0).toUpperCase()+x.slice(1):''; }
+var VCLOUD='ddbsuxerb', VPRESET='lfg-photos';
+var vsubFiles=[], vsubURLs=[];
+function vTypeOptions(){ return '<option value="">What is it?</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option>'; }
+function vsubPick(input){
+  var files=input.files; if(!files||!files.length) return;
+  vsubFiles=Array.prototype.slice.call(files);
+  vsubURLs.forEach(function(u){URL.revokeObjectURL(u);}); vsubURLs=[];
+  var html='';
+  vsubFiles.forEach(function(f,i){
+    var u=URL.createObjectURL(f); vsubURLs.push(u);
+    html+='<div class="vs-card"><img src="'+u+'"><div class="vs-fields"><select class="vs-type">'+vTypeOptions()+'</select><input class="vs-cap" placeholder="Caption (optional)" autocomplete="off"></div></div>';
+  });
+  document.getElementById('vsub-list').innerHTML=html;
+  document.getElementById('vsub-title').textContent='Add '+vsubFiles.length+' photo'+(vsubFiles.length===1?'':'s');
+  document.getElementById('vsub').style.display='flex';
+}
+function vsubClose(){
+  document.getElementById('vsub').style.display='none';
+  vsubURLs.forEach(function(u){URL.revokeObjectURL(u);}); vsubURLs=[]; vsubFiles=[];
+  var inp=document.getElementById('vphoto-file'); if(inp) inp.value='';
+}
+async function vsubSubmit(){
+  if(!vsubFiles.length) return;
+  var types=document.querySelectorAll('#vsub-list .vs-type');
+  var caps=document.querySelectorAll('#vsub-list .vs-cap');
+  var btn=document.getElementById('vsub-go'); btn.disabled=true;
+  var rows=[], ok=0;
+  for(var i=0;i<vsubFiles.length;i++){
+    btn.textContent='Uploading '+(i+1)+' of '+vsubFiles.length+'…';
+    var fd=new FormData(); fd.append('file',vsubFiles[i]); fd.append('upload_preset',VPRESET);
+    try{
+      var res=await fetch('https://api.cloudinary.com/v1_1/'+VCLOUD+'/image/upload',{method:'POST',body:fd});
+      var j=await res.json();
+      if(!j.secure_url) throw new Error('no url');
+      var url=j.secure_url, thumb=url.replace('/upload/','/upload/w_400,h_400,c_fill/');
+      rows.push({cloudinary_url:url, thumbnail_url:thumb, caption:(caps[i].value.trim()||null), subject_type:(types[i].value||null), approval_status:'pending', uploaded_by:'visitor', submitted_by:'visitor'});
+      ok++;
+    }catch(e){}
+  }
+  btn.disabled=false; btn.textContent='Submit';
+  if(!rows.length){ alert('Upload failed — please try again.'); return; }
+  var r=await sb.from('fgf_photos').insert(rows);
+  vsubClose();
+  if(r.error){ alert('Could not submit right now.'); return; }
+  alert('Thanks! Your photo'+(ok===1?'':'s')+' will appear after review.');
+}
+
+async function loadPhotos(force){
+  if(photosLoaded && !force) return;
+  var el=document.getElementById('see-grid');
+  var res = await sb.from('fgf_photos').select('*').eq('approval_status','approved').order('uploaded_at',{ascending:false});
+  if(res.error){ el.innerHTML='<div class="soon"><p>Couldn’t load photos right now.</p></div>'; return; }
+  seePhotos=res.data||[];
+  var fb=document.getElementById('see-filters');
+  if(!seePhotos.length){ el.innerHTML='<div class="soon"><span class="ic">&#128247;</span><p>No photos yet — check back soon.</p></div>'; el.className=''; if(fb) fb.innerHTML=''; return; }
+  try{ var ar=await sb.from('fgf_growing_areas').select('id,name,zone').is('archived_at',null); seeAreaMap={}; (ar.data||[]).forEach(function(a){ seeAreaMap[a.id]=a; }); }catch(e){}
+  buildSeeFilters(); applySeeFilter(); photosLoaded=true;
+}
+function buildSeeFilters(){
+  var fb=document.getElementById('see-filters'); if(!fb) return;
+  var present={}, hasNone=false; seePhotos.forEach(function(p){ if(p.area_id) present[p.area_id]=1; else hasNone=true; });
+  var opts='<option value="">All areas</option>'+(hasNone?'<option value="__none__">General</option>':'');
+  Object.keys(present).forEach(function(id){ if(seeAreaMap[id]) opts+='<option value="'+id+'">'+esc(seeAreaMap[id].name)+'</option>'; });
+  var types={}; seePhotos.forEach(function(p){ if(p.subject_type) types[p.subject_type]=1; });
+  var topts='<option value="">All types</option>'+Object.keys(types).map(function(t){ return '<option value="'+t+'">'+_capW(t)+'</option>'; }).join('');
+  fb.innerHTML='<select id="sf-area" onchange="applySeeFilter()">'+opts+'</select><select id="sf-type" onchange="applySeeFilter()">'+topts+'</select>';
+}
+function applySeeFilter(){
+  var fa=(document.getElementById('sf-area')||{}).value||'', ft=(document.getElementById('sf-type')||{}).value||'';
+  var list=seePhotos;
+  if(fa==='__none__') list=list.filter(function(p){return !p.area_id;}); else if(fa) list=list.filter(function(p){return p.area_id===fa;});
+  if(ft) list=list.filter(function(p){return p.subject_type===ft;});
+  var el=document.getElementById('see-grid'); el.className='see-grid';
+  if(!list.length){ el.innerHTML='<div class="soon"><p>No photos match.</p></div>'; return; }
+  el.innerHTML=list.map(function(p){
+    var area=p.area_id?((seeAreaMap[p.area_id]||{}).name||''):'General';
+    var meta=[area, p.subject_type?_capW(p.subject_type):''].filter(Boolean).join(' · ');
+    var capLine=(meta||p.caption)?'<div class="cap">'+(meta?'<b>'+esc(meta)+'</b>':'')+(p.caption?(meta?'<br>':'')+esc(p.caption):'')+'</div>':'';
+    return '<div class="photo"><img src="'+esc(p.thumbnail_url||p.cloudinary_url)+'" loading="lazy" alt="'+esc(p.caption||'Farm photo')+'">'+capLine+'</div>';
+  }).join('');
+}
+
+/* ---------- SHARE: comments (moderated) ---------- */
+async function loadDonation(){
+  var box=document.getElementById('c-donate');
+  if(!box) return;
+  box.style.display='none'; box.innerHTML='';
+  var res = await sb.from('fgf_settings').select('value').eq('key','donation').maybeSingle();
+  if(res.error || !res.data) return;
+  var d=res.data.value||{};
+  if(!d.enabled || !d.url) return;              // off OR no url -> stays invisible
+  box.innerHTML =
+    '<a class="donate-btn" href="'+esc(d.url)+'" target="_blank" rel="noopener">'+esc(d.label||'Support the developer')+'</a>'+
+    (d.note?'<div class="donate-note">'+esc(d.note)+'</div>':'');
+  box.style.display='block';
+}
+
+async function loadComments(){
+  var el=document.getElementById('c-list');
+  var res = await sb.from('fgf_comments').select('*').eq('status','reviewed').order('submitted_at',{ascending:false}).limit(50);
+  if(res.error){ el.innerHTML='<div class="c-empty">Couldn\u2019t load notes right now.</div>'; return; }
+  var data=res.data||[];
+  if(!data.length){ el.innerHTML='<div class="c-empty">No notes yet. Be the first to leave one.</div>'; return; }
+  el.innerHTML=data.map(function(c){
+    return '<div class="c-item"><div class="who">'+esc(c.commenter_name||'Visitor')+'</div><div class="txt">'+esc(c.message)+'</div></div>';
+  }).join('');
+}
+async function submitComment(){
+  var msg=document.getElementById('c-msg').value.trim();
+  if(!msg){ return; }
+  var name=document.getElementById('c-name').value.trim() || 'Visitor';
+  var btn=document.getElementById('c-send'); btn.disabled=true; btn.textContent='Sending\u2026';
+  var res = await sb.from('fgf_comments').insert({commenter_name:name, message:msg, status:'new'});
+  btn.disabled=false; btn.textContent='Send';
+  if(res.error){ btn.textContent='Try again'; setTimeout(function(){btn.textContent='Send';},1500); return; }
+  document.getElementById('c-msg').value='';
+  document.getElementById('c-name').value='';
+  var el=document.getElementById('c-list');
+  el.insertAdjacentHTML('afterbegin','<div class="c-item" style="border-color:var(--amber)"><div class="who">Thanks!</div><div class="txt">Your note was sent and will appear after a quick review.</div></div>');
+}
+
+/* ---------- LEARN: knowledge base ---------- */
+var plantsCache=null, learnCat='All', LEAF='\uD83C\uDF31';
+async function loadPlants(){
+  if(plantsCache) return plantsCache;
+  var res = await sb.from('fgf_master_plants').select('*').eq('approval_status','approved').order('plant_name',{ascending:true});
+  if(res.error){ return null; }
+  plantsCache = res.data||[];
+  return plantsCache;
+}
+async function openLearn(){
+  showLearnList();               // always land on the list
+  var data = await loadPlants();
+  if(data===null){ document.getElementById('learn-list').innerHTML='<div class="learn-empty">Couldn\u2019t load plants right now.</div>'; return; }
+  renderChips(data);
+  renderPlantList();
+}
+function showLearnList(){
+  document.getElementById('learn-detail-view').style.display='none';
+  document.getElementById('learn-list-view').style.display='block';
+  document.getElementById('bar-title').textContent=t('tile.learn');
+  document.querySelector('main').scrollTop=0;
+}
+function renderChips(data){
+  var cats=['All'].concat(Array.from(new Set(data.map(function(p){return p.category;}))).sort());
+  document.getElementById('learn-chips').innerHTML = cats.map(function(c){
+    return '<button class="cat-chip'+(c===learnCat?' on':'')+'" onclick="setLearnCat(\''+c.replace(/'/g,"\\'")+'\')">'+esc(c)+'</button>';
+  }).join('');
+}
+function setLearnCat(c){ learnCat=c; if(plantsCache) renderChips(plantsCache); renderPlantList(); }
+function renderPlantList(){
+  if(!plantsCache) return;
+  var q=(document.getElementById('learn-search').value||'').trim().toLowerCase();
+  var list=plantsCache.filter(function(p){
+    if(learnCat!=='All' && p.category!==learnCat) return false;
+    if(!q) return true;
+    return (p.plant_name||'').toLowerCase().indexOf(q)>-1
+        || (p.common_name||'').toLowerCase().indexOf(q)>-1
+        || (p.botanical_name||'').toLowerCase().indexOf(q)>-1
+        || (p.category||'').toLowerCase().indexOf(q)>-1;
+  });
+  var el=document.getElementById('learn-list');
+  if(!list.length){ el.innerHTML='<div class="learn-empty">No plants match that.</div>'; return; }
+  el.innerHTML=list.map(function(p){
+    var thumb = p.stock_image_url
+      ? '<img src="'+esc(p.stock_image_url)+'" loading="lazy" alt="">'
+      : '<span class="lf">'+LEAF+'</span>';
+    return '<button class="plant-row" onclick="openPlant(\''+p.id+'\')">'+
+      '<span class="plant-thumb">'+thumb+'</span>'+
+      '<span><span class="nm">'+esc(p.plant_name)+'</span>'+
+      (p.botanical_name?'<span class="bt">'+esc(p.botanical_name)+'</span>':'')+'</span>'+
+      '<span class="plant-tag">'+esc(p.category||'')+'</span></button>';
+  }).join('');
+}
+function factRow(k,v){ return v ? '<div class="fact"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>' : ''; }
+function openPlant(id){
+  var p=(plantsCache||[]).find(function(x){return x.id===id;});
+  if(!p) return;
+  var perennial = (p.days_to_maturity==null);
+  var hero = p.stock_image_url
+    ? '<img src="'+esc(p.stock_image_url)+'" alt="'+esc(p.plant_name)+'">'
+    : '<div class="ph"><span class="lf">'+LEAF+'</span>Photo coming soon</div>';
+  var about = factRow('Common name',p.common_name)+factRow('Botanical name',p.botanical_name)+
+              factRow('Category',p.category)+factRow('Common uses',p.common_uses);
+  var grow = factRow('How to plant',p.preferred_method)+
+             factRow('When (Zone 9b)',p.planting_windows)+
+             factRow('USDA zones',p.zone_ranges)+
+             (perennial ? factRow('Type','Perennial \u2014 see grow plan for its seasonal cycle')
+                        : factRow('Days to harvest', p.days_to_maturity+' days'))+
+             (p.spacing_inches!=null ? factRow('Spacing', p.spacing_inches+'\u2033 apart') : '')+
+             factRow('Soil / media',p.growth_media)+
+             factRow('Watering',p.watering_plans)+
+             factRow('Best temp',p.optimum_temp_range)+
+             factRow('Cold handling',p.cold_handling);
+  var html =
+    '<button class="back" onclick="showLearnList()">&#8592; '+t('back.allplants')+'</button>'+
+    '<div class="pd-hero">'+hero+'</div>'+
+    '<h2 class="pd-title">'+esc(p.plant_name)+'</h2>'+
+    (p.common_name && p.common_name!==p.plant_name ? '<div class="pd-common">'+esc(p.common_name)+'</div>' : '')+
+    (p.botanical_name?'<div class="pd-bot">'+esc(p.botanical_name)+'</div>':'')+
+    (p.category?'<span class="pd-badge">'+esc(p.category)+'</span>':'')+
+    (p.summary?'<p class="pd-summary">'+esc(p.summary)+'</p>':'')+
+    (about?'<div class="fact-group"><div class="fact-h">About</div>'+about+'</div>':'')+
+    (grow?'<div class="fact-group"><div class="fact-h">How to grow</div>'+grow+'</div>':'')+
+    (p.blessing?'<div class="blessing">'+esc(p.blessing)+'</div>':'')+
+    '<button class="grow-nudge" onclick="goDo(\''+p.id+'\')">Ready to grow your own?<small>Get a grow plan for '+esc(p.plant_name)+'</small></button>'+
+    (p.source_url?'<div style="text-align:center;margin-top:6px"><a href="'+esc(p.source_url)+'" target="_blank" rel="noopener" style="color:var(--ink-soft);font-size:13px">Source</a></div>':'');
+  var dv=document.getElementById('learn-detail-view');
+  dv.innerHTML=html;
+  document.getElementById('learn-list-view').style.display='none';
+  dv.style.display='block';
+  document.getElementById('bar-title').textContent=p.plant_name;
+  document.querySelector('main').scrollTop=0;
+}
+/* Do integration lands in the next build step; for now route to the Do screen. */
+var pendingDoId=null;
+function goDo(id){ pendingDoId=id; show('do'); }
+
+/* ---------- DO: grow plan (Option 2: annuals get calculators, perennials get seasonal view) ---------- */
+var doCat='All', doPlant=null;
+async function openDo(){
+  showDoList();
+  var data = await loadPlants();
+  if(data===null){ document.getElementById('do-list').innerHTML='<div class="learn-empty">Couldn\u2019t load plants right now.</div>'; return; }
+  renderDoChips(data);
+  renderDoList();
+  if(pendingDoId){ var t=pendingDoId; pendingDoId=null; openDoPlant(t); }
+}
+function showDoList(){
+  document.getElementById('do-detail-view').style.display='none';
+  document.getElementById('do-list-view').style.display='block';
+  document.getElementById('bar-title').textContent=t('tile.do');
+  document.querySelector('main').scrollTop=0;
+}
+function renderDoChips(data){
+  var cats=['All'].concat(Array.from(new Set(data.map(function(p){return p.category;}))).sort());
+  document.getElementById('do-chips').innerHTML=cats.map(function(c){
+    return '<button class="cat-chip'+(c===doCat?' on':'')+'" onclick="setDoCat(\''+c.replace(/'/g,"\\'")+'\')">'+esc(c)+'</button>';
+  }).join('');
+}
+function setDoCat(c){ doCat=c; if(plantsCache) renderDoChips(plantsCache); renderDoList(); }
+function renderDoList(){
+  if(!plantsCache) return;
+  var q=(document.getElementById('do-search').value||'').trim().toLowerCase();
+  var list=plantsCache.filter(function(p){
+    if(doCat!=='All' && p.category!==doCat) return false;
+    if(!q) return true;
+    return (p.plant_name||'').toLowerCase().indexOf(q)>-1 || (p.common_name||'').toLowerCase().indexOf(q)>-1
+        || (p.botanical_name||'').toLowerCase().indexOf(q)>-1 || (p.category||'').toLowerCase().indexOf(q)>-1;
+  });
+  var el=document.getElementById('do-list');
+  if(!list.length){ el.innerHTML='<div class="learn-empty">No plants match that.</div>'; return; }
+  el.innerHTML=list.map(function(p){
+    var tag = (p.days_to_maturity==null) ? 'perennial' : (p.days_to_maturity+'d');
+    return '<button class="plant-row" onclick="openDoPlant(\''+p.id+'\')">'+
+      '<span class="plant-thumb"><span class="lf">'+LEAF+'</span></span>'+
+      '<span><span class="nm">'+esc(p.plant_name)+'</span><span class="bt">'+esc(p.category||'')+'</span></span>'+
+      '<span class="plant-tag">'+tag+'</span></button>';
+  }).join('');
+}
+
+/* --- date helpers --- */
+function todayStr(){ var d=new Date(); return d.toISOString().slice(0,10); }
+function addDays(str,n){ var d=new Date(str+'T00:00:00'); if(isNaN(d)) return null; d.setDate(d.getDate()+n); return d; }
+function fmtDate(d){ if(!d) return '\u2014'; return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+
+function openDoPlant(id){
+  var p=(plantsCache||[]).find(function(x){return x.id===id;});
+  if(!p) return;
+  doPlant=p;
+  var perennial=(p.days_to_maturity==null);
+  var dv=document.getElementById('do-detail-view');
+  dv.innerHTML = perennial ? perennialPlan(p) : annualPlan(p);
+  document.getElementById('do-list-view').style.display='none';
+  dv.style.display='block';
+  document.getElementById('bar-title').textContent=p.plant_name;
+  document.querySelector('main').scrollTop=0;
+  if(!perennial) recomputeAnnual();
+}
+
+/* ---------- ANNUAL plan: 4 calculators + dated stage timeline ---------- */
+function annualPlan(p){
+  var st=(p.stage_timeline&&p.stage_timeline.stages)?p.stage_timeline.stages:[];
+  var tl=st.map(function(s){
+    return '<div class="tl-stage" data-start="'+s.start_day+'">'+
+      '<div class="sd">day '+s.start_day+(s.end_day&&s.end_day!==s.start_day?'\u2013'+s.end_day:'')+
+        '<span class="cd" data-stagedate="'+s.start_day+'"></span></div>'+
+      '<div><div class="sl">'+esc(s.label)+'</div></div></div>';
+  }).join('');
+  return ''+
+  '<button class="back" onclick="showDoList()">&#8592; '+t('back.allplants')+'</button>'+
+  '<div class="grow-plan-head"><h2 class="pd-title">'+esc(p.plant_name)+'</h2>'+
+    '<span class="gp-type">Annual \u00b7 grow plan</span></div>'+
+  '<p class="calc-note" style="margin-top:8px">Enter your bed size once \u2014 the calculators below all update. Nothing is saved; this is just for planning.</p>'+
+  // shared bed inputs
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83D\uDCCF</span>Your bed</div>'+
+    '<div class="calc-in-row">'+
+      '<div class="calc-field"><label>Length (ft)</label><input id="do-L" type="number" inputmode="decimal" value="4" min="0" oninput="recomputeAnnual()"></div>'+
+      '<div class="calc-field"><label>Width (ft)</label><input id="do-W" type="number" inputmode="decimal" value="2" min="0" oninput="recomputeAnnual()"></div>'+
+      '<div class="calc-field"><label>Depth (in)</label><input id="do-D" type="number" inputmode="decimal" value="12" min="0" oninput="recomputeAnnual()"></div>'+
+    '</div>'+
+  '</div>'+
+  // spacing / sun
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83C\uDF31</span>Spacing &amp; sun</div>'+
+    '<div class="calc-out" id="do-out-space"></div>'+
+    '<div class="calc-note">Recommended spacing for '+esc(p.plant_name)+': <b style="font-size:13px">'+(p.spacing_inches!=null?p.spacing_inches+'\u2033':'\u2014')+'</b>. Most edibles want full sun (6+ hrs/day).</div>'+
+  '</div>'+
+  // soil
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83E\uDEA3</span>Soil to fill the bed</div>'+
+    '<div class="calc-out" id="do-out-soil"></div>'+
+    '<div class="calc-note">Media: '+esc(p.growth_media||'well-draining raised-bed mix')+'.</div>'+
+  '</div>'+
+  // water
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83D\uDCA7</span>Water per week</div>'+
+    '<div class="calc-in-row"><div class="calc-field"><label>Inches / week</label>'+
+      '<input id="do-IN" type="number" inputmode="decimal" value="1" min="0" step="0.25" oninput="recomputeAnnual()"></div>'+
+      '<div class="calc-field" style="flex:2"><label>&nbsp;</label><div class="calc-out" id="do-out-water" style="padding:10px 12px"></div></div>'+
+    '</div>'+
+    '<div class="calc-note">Guide: '+esc(p.watering_plans||'~1\u20131.5 in/week')+'. 1 inch over 1 sq ft \u2248 0.62 gal.</div>'+
+  '</div>'+
+  // harvest date
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83D\uDCC5</span>Harvest date</div>'+
+    '<div class="calc-in-row"><div class="calc-field"><label>'+esc(p.transplant_flag?'Transplant / start date':'Sow date')+'</label>'+
+      '<input id="do-START" type="date" oninput="recomputeAnnual()"></div></div>'+
+    '<div class="calc-out" id="do-out-harvest"></div>'+
+    (tl?'<div class="tl" style="margin-top:12px">'+tl+'</div>':'')+
+  '</div>'+
+  '<div class="do-actions"><button class="do-share" onclick="printPlan()">Download / Print PDF</button><button class="do-share alt" onclick="sharePlan()">Share</button></div>';
+}
+function num(id){ var v=parseFloat((document.getElementById(id)||{}).value); return isNaN(v)?0:v; }
+function recomputeAnnual(){
+  var p=doPlant; if(!p) return;
+  var L=num('do-L'), W=num('do-W'), D=num('do-D'), inWk=num('do-IN');
+  var area=L*W;
+  // spacing
+  var sp=p.spacing_inches;
+  var spaceHtml;
+  if(sp && L>0 && W>0){
+    var perRow=Math.floor((L*12)/sp), rows=Math.floor((W*12)/sp);
+    var count=Math.max(0, perRow*rows);
+    spaceHtml='About <b>'+count+'</b> plant'+(count===1?'':'s')+' fit in a '+L+'\u00d7'+W+' ft bed at '+sp+'\u2033 spacing.';
+  } else { spaceHtml='Enter a bed size to see how many fit.'; }
+  document.getElementById('do-out-space').innerHTML=spaceHtml;
+  // soil
+  var cuft=area*(D/12);
+  var bags=Math.ceil(cuft/1.5);
+  document.getElementById('do-out-soil').innerHTML = area>0
+    ? '<b>'+cuft.toFixed(1)+'</b> cubic feet of soil<br><span style="font-size:13.5px;color:var(--ink-soft)">\u2248 '+bags+' bag'+(bags===1?'':'s')+' (1.5 cu ft each)</span>'
+    : 'Enter a bed size.';
+  // water
+  var gal=area*inWk*0.623;
+  document.getElementById('do-out-water').innerHTML = area>0 ? '<b style="font-size:17px">'+gal.toFixed(1)+'</b> gal/wk' : '\u2014';
+  // harvest date
+  var startEl=document.getElementById('do-START'); if(startEl && !startEl.value){ startEl.value=todayStr(); }
+  var start=startEl?startEl.value:todayStr();
+  var st=(p.stage_timeline&&p.stage_timeline.stages)?p.stage_timeline.stages:[];
+  var harvestStage=st.filter(function(s){return s.key==='harvest';})[0];
+  var hDay=harvestStage?harvestStage.start_day:p.days_to_maturity;
+  var hDate=addDays(start,hDay||0);
+  document.getElementById('do-out-harvest').innerHTML = hDate
+    ? 'First harvest around <b style="font-size:17px">'+hDate.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})+'</b><br><span style="font-size:13px;color:var(--ink-soft)">~'+(hDay||p.days_to_maturity)+' days from '+(p.transplant_flag?'transplant':'sowing')+'</span>'
+    : 'Pick a start date.';
+  // stage dates
+  document.querySelectorAll('#do-detail-view [data-stagedate]').forEach(function(n){
+    var d=addDays(start, parseInt(n.getAttribute('data-stagedate'),10));
+    n.textContent = d?fmtDate(d):'';
+  });
+}
+
+/* ---------- PERENNIAL plan: seasonal cycle + harvest window + care ---------- */
+function perennialPlan(p){
+  var cyc=(p.stage_timeline&&p.stage_timeline.cycle)?p.stage_timeline.cycle:[];
+  var strip=cyc.map(function(s){
+    return '<div class="tl-stage"><div class="sd">'+esc(s.season||'')+'</div>'+
+      '<div><div class="sl">'+esc(s.phase||'')+'</div>'+(s.note?'<div class="sn">'+esc(s.note)+'</div>':'')+'</div></div>';
+  }).join('');
+  var hw=(p.stage_timeline&&p.stage_timeline.harvest_window)?p.stage_timeline.harvest_window:'seasonal';
+  var care=doFact('Plant during (9b)',p.planting_windows)+doFact('Planting distance',p.spacing_inches!=null?p.spacing_inches+'\u2033 apart':'')+
+           doFact('Soil / media',p.growth_media)+doFact('Watering',p.watering_plans)+
+           doFact('Best temp',p.optimum_temp_range)+doFact('Cold handling',p.cold_handling);
+  return ''+
+  '<button class="back" onclick="showDoList()">&#8592; '+t('back.allplants')+'</button>'+
+  '<div class="grow-plan-head"><h2 class="pd-title">'+esc(p.plant_name)+'</h2>'+
+    '<span class="gp-type peren">Perennial \u00b7 seasonal cycle</span></div>'+
+  '<p class="calc-note" style="margin-top:8px">A '+esc(p.plant_name.toLowerCase())+' grows over years, not one season \u2014 so here\u2019s its yearly cycle and when it bears, instead of a from-seed countdown.</p>'+
+  '<div class="harvest-callout"><div class="k">Harvest window</div><div class="v">'+esc(hw)+'</div></div>'+
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83D\uDD01</span>Yearly cycle</div><div class="tl">'+strip+'</div></div>'+
+  '<div class="calc-card"><div class="calc-h"><span class="ic">\uD83C\uDF31</span>Care at a glance</div>'+
+    '<div class="fact-group" style="margin-top:0">'+care+'</div></div>'+
+  '<div class="do-actions"><button class="do-share" onclick="printPlan()">Download / Print PDF</button><button class="do-share alt" onclick="sharePlan()">Share</button></div>';
+}
+function doFact(k,v){ return v ? '<div class="fact"><span class="k">'+esc(k)+'</span><span class="v">'+esc(v)+'</span></div>' : ''; }
+
+/* ---------- share (native sheet, falls back to print) ---------- */
+function sharePlan(){
+  var p=doPlant; if(!p) return;
+  var lines=['Grow plan \u2014 '+p.plant_name+' ('+(p.botanical_name||'')+')'];
+  if(p.days_to_maturity==null){
+    lines.push('Perennial \u00b7 harvest: '+((p.stage_timeline||{}).harvest_window||'seasonal'));
+    lines.push('Plant during: '+(p.planting_windows||''));
+  } else {
+    lines.push('~'+p.days_to_maturity+' days to harvest \u00b7 space '+p.spacing_inches+'\u2033');
+    lines.push('Plant during: '+(p.planting_windows||''));
+    lines.push('Water: '+(p.watering_plans||''));
+  }
+  lines.push('\u2014 Fun Guy Fungi · managed by grush');
+  var text=lines.join('\n');
+  if(navigator.share){ navigator.share({title:p.plant_name+' grow plan', text:text}).catch(function(){}); }
+  else { window.print(); }
+}
+
+/* ---------- Download / Print PDF: captures the fully computed plan ---------- */
+function printPlan(){
+  var p=doPlant; if(!p) return;
+  var perennial=(p.days_to_maturity==null);
+  function txt(id){ var e=document.getElementById(id); return e?e.textContent.trim():''; }
+  function val(id){ var e=document.getElementById(id); return e?(e.value||''):''; }
+  var rows=[];
+  if(!perennial){
+    rows.push(['Your bed', val('do-L')+' ft × '+val('do-W')+' ft, '+val('do-D')+' in deep']);
+    if(txt('do-out-space')) rows.push(['Spacing & sun', txt('do-out-space')]);
+    if(txt('do-out-soil')) rows.push(['Soil to fill', txt('do-out-soil')]);
+    var w=txt('do-out-water'); rows.push(['Water', val('do-IN')+' in/week'+(w?' — '+w:'')]);
+    var sd=val('do-START'); rows.push([(p.transplant_flag?'Start / transplant date':'Sow date'), sd||'—']);
+    if(txt('do-out-harvest')) rows.push(['Harvest', txt('do-out-harvest')]);
+  } else {
+    rows.push(['Type','Perennial']);
+    rows.push(['Harvest window', (p.stage_timeline||{}).harvest_window||'seasonal']);
+    if(p.planting_windows) rows.push(['Plant during', p.planting_windows]);
+  }
+  if(p.spacing_inches!=null) rows.push(['Recommended spacing', p.spacing_inches+'″']);
+  if(p.watering_plans) rows.push(['Watering guide', p.watering_plans]);
+  if(p.days_to_maturity!=null) rows.push(['Days to maturity', String(p.days_to_maturity)]);
+  var tl='';
+  document.querySelectorAll('#do-detail-view .tl-stage').forEach(function(st){
+    var d=st.querySelector('.sd'), l=st.querySelector('.sl');
+    if(l){ tl+='<tr><td class="d">'+esc(d?d.textContent.trim():'')+'</td><td>'+esc(l.textContent.trim())+'</td></tr>'; }
+  });
+  var rowsHtml=''; rows.forEach(function(r){ rowsHtml+='<tr><td class="k">'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>'; });
+  var css='body{font-family:Georgia,serif;color:#23262b;margin:32px;line-height:1.5}h1{margin:0 0 2px;font-size:26px}.bot{font-style:italic;color:#6b6760}.type{color:#8f2228;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-size:12px;margin:4px 0 18px}h2{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#8f2228;border-bottom:1px solid #ddd;padding-bottom:4px;margin:22px 0 8px}table{width:100%;border-collapse:collapse;margin-bottom:8px}td{padding:6px 4px;vertical-align:top;border-bottom:1px solid #eee;font-size:14px}td.k{width:42%;color:#6b6760;font-weight:bold}td.d{width:34%;color:#6b6760}.foot{margin-top:28px;padding-top:10px;border-top:1px solid #ddd;font-size:11px;color:#8a857a;text-align:center}';
+  var html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc(p.plant_name)+' — grow plan</title><style>'+css+'</style></head><body><h1>'+esc(p.plant_name)+'</h1>'+(p.botanical_name?'<div class="bot">'+esc(p.botanical_name)+'</div>':'')+'<div class="type">'+(perennial?'Perennial':'Annual')+' · grow plan</div><table>'+rowsHtml+'</table>'+(tl?'<h2>Timeline</h2><table>'+tl+'</table>':'')+'<div class="foot">Fun Guy Fungi · managed by grush · funguyfungi.org</div></body></html>';
+  var ifr=document.getElementById('lfg-print-frame'); if(ifr) ifr.parentNode.removeChild(ifr);
+  ifr=document.createElement('iframe'); ifr.id='lfg-print-frame'; ifr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+  document.body.appendChild(ifr);
+  var doc=ifr.contentWindow.document; doc.open(); doc.write(html); doc.close();
+  setTimeout(function(){ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(e){ window.print(); } }, 500);
+}
+
+var LANGS=['en','es','fr','pt'], LNAMES={en:'English',es:'Espa\u00f1ol',fr:'Français',pt:'Portugu\u00eas'}, LSHORT={en:'EN',es:'ES',fr:'FR',pt:'PT'};
+function refreshBarTitle(){
+  var scr=window.curScreen; if(!scr) return;
+  document.getElementById('bar-title').textContent=(scr==='hub'?'Fun Guy Fungi':t('tile.'+scr))||'Fun Guy Fungi';
+}
+window.onLangChange=function(l){ refreshBarTitle(); };
+</script>
+<div id="vsub" class="vs-overlay" style="display:none"><div class="vs-sheet"><div class="vs-head"><span id="vsub-title">Add photos</span><button class="vs-x" onclick="vsubClose()">&times;</button></div><div id="vsub-list"></div><div class="vs-actions"><button class="vs-btn cancel" onclick="vsubClose()">Cancel</button><button class="vs-btn go" id="vsub-go" onclick="vsubSubmit()">Submit</button></div></div></div>
+<a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
+</body>
+</html>

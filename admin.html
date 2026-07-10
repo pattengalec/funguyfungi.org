@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FGF Admin — Fun Guy Fungi</title>
+<link rel="icon" type="image/png" href="lfg-logo.png">
+<link rel="stylesheet" href="lfg-theme.css">
+<script>
+(function(){try{
+  var m = localStorage.getItem('lfg-mode');
+  if (m === 'dark') document.documentElement.setAttribute('data-mode','dark');
+}catch(e){}})();
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime&display=swap');
+
+body { display:flex; flex-direction:column; align-items:center; background:var(--bg); margin:0; min-height:100vh; }
+
+.shell { width:100%; max-width:800px; min-height:100vh; display:flex; flex-direction:column; }
+
+/* ── AUTH WALL ── */
+.auth-wall { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px; }
+.auth-card { background:var(--card); border:var(--border-w) solid var(--card-border); border-radius:16px; padding:32px 28px; max-width:340px; width:100%; text-align:center; box-shadow:var(--shadow); }
+.auth-card h2 { font-family:'IM Fell English',serif; font-size:1.4rem; margin:0 0 6px; }
+.auth-card p { font-size:0.8rem; color:var(--ink-soft); margin:0 0 20px; }
+
+/* ── HEADER ── */
+.admin-header { background:var(--surface); padding:14px 24px 0; border-bottom:var(--border-w) solid var(--card-border); position:sticky; top:0; z-index:50; }
+.admin-header-top { display:flex; align-items:center; justify-content:space-between; padding-bottom:10px; gap:12px; }
+.admin-header h1 { font-family:'IM Fell English',serif; font-size:1.2rem; color:var(--ink); margin:0; display:flex; align-items:center; gap:8px; }
+.admin-header h1 span { font-size:0.65rem; font-family:'Courier Prime',monospace; opacity:0.6; text-transform:uppercase; letter-spacing:0.08em; }
+.header-controls { display:flex; gap:8px; align-items:center; }
+
+/* ── DASHBOARD ── */
+.dashboard { padding:20px 24px; display:flex; flex-direction:column; gap:20px; }
+
+.stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+@media(min-width:600px){ .stat-grid { grid-template-columns:repeat(4,1fr); } }
+
+.stat-card { background:var(--card); border:var(--border-w) solid var(--card-border); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:transform 150ms ease, box-shadow 150ms ease; }
+.stat-card:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.10); }
+.stat-card.alert { border-color:var(--alert); }
+.stat-num { font-family:'Courier Prime',monospace; font-size:2rem; font-weight:700; color:var(--ink); line-height:1; }
+.stat-card.alert .stat-num { color:var(--alert); }
+.stat-label { font-size:0.7rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; font-family:'Courier Prime',monospace; }
+
+/* ── NAV TABS ── */
+.tab-bar { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; padding-bottom:1px; }
+.tab-bar::-webkit-scrollbar { display:none; }
+.tab-btn { font-family:'Courier Prime',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; padding:10px 14px; border:none; background:none; color:var(--ink-soft); opacity:0.65; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:opacity 150ms, color 150ms; }
+.tab-btn.active { opacity:1; color:var(--ink); border-bottom-color:var(--accent); }
+.tab-btn:hover { opacity:0.9; }
+
+/* ── PANELS ── */
+.tab-panel { display:none; flex:1; padding:24px; flex-direction:column; gap:16px; }
+.tab-panel.active { display:flex; }
+
+/* ── CARDS ── */
+.card { background:var(--card); border:var(--border-w) solid var(--card-border); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow); }
+.card h3 { font-family:'IM Fell English',serif; font-size:1.05rem; color:var(--ink); margin:0; }
+
+/* ── FORM LAYOUT ── */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:520px){ .form-row { grid-template-columns:1fr; } }
+
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid transparent; border-radius:8px; padding:10px 18px; font-size:0.88rem; font-weight:600; font-family:var(--font-body); cursor:pointer; transition:transform 150ms ease, box-shadow 150ms ease; }
+.btn:active { transform:scale(0.98); }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+.btn-primary { background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 100%,white 8%), var(--accent)); color:var(--on-accent); border-color:color-mix(in srgb,var(--accent) 100%,black 14%); box-shadow:0 1px 2px rgba(0,0,0,0.10),0 3px 8px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.25); }
+.btn-primary:hover { transform:translateY(-1px); }
+
+.btn-danger { background:linear-gradient(180deg, color-mix(in srgb,var(--alert) 100%,white 8%), var(--alert)); color:var(--on-alert); border-color:color-mix(in srgb,var(--alert) 100%,black 14%); font-size:0.78rem; padding:7px 13px; }
+.btn-danger:hover { transform:translateY(-1px); }
+
+.btn-success { background:linear-gradient(180deg,#5B7A50,#47654A); color:#fff; border-color:#35503A; font-size:0.78rem; padding:7px 13px; }
+.btn-success:hover { transform:translateY(-1px); }
+
+.btn-ghost { background:transparent; color:var(--ink); border:1px solid color-mix(in srgb,var(--ink) 22%,transparent); font-size:0.78rem; padding:7px 13px; }
+.btn-ghost:hover { background:color-mix(in srgb,var(--ink) 6%,transparent); transform:translateY(-1px); }
+
+.btn-sm { font-size:0.75rem; padding:6px 12px; }
+
+/* ── DATA LIST ── */
+.section-label { font-family:'Courier Prime',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-soft); opacity:0.7; }
+
+.data-list { display:flex; flex-direction:column; gap:8px; }
+
+.data-row { background:var(--surface); border:var(--border-w) solid var(--card-border); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.data-row.overdue { border-color:var(--alert); }
+.data-row .row-main { flex:1; min-width:0; }
+.data-row .row-title { font-size:0.9rem; font-weight:600; color:var(--ink); }
+.data-row .row-sub { font-size:0.72rem; color:var(--ink-soft); opacity:0.8; margin-top:3px; font-family:'Courier Prime',monospace; }
+.data-row .row-actions { display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; align-items:center; }
+
+/* ── BADGES ── */
+.badge { font-family:'Courier Prime',monospace; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.06em; padding:2px 7px; border-radius:4px; white-space:nowrap; }
+.badge-new     { background:var(--accent); color:var(--on-accent); }
+.badge-done    { background:var(--card-border); color:var(--ink-soft); }
+.badge-urgent  { background:var(--alert); color:var(--on-alert); }
+.badge-routine { background:var(--surface); border:1px solid var(--card-border); color:var(--ink-soft); }
+.badge-core    { background:#3A5A4A; color:#fff; }
+.badge-visit   { background:var(--accent-2); color:#fff; }
+
+/* ── RECURRING FIELDS ── */
+.recurring-fields { display:none; flex-direction:column; gap:12px; padding:14px; background:var(--surface); border-radius:8px; border:var(--border-w) solid var(--card-border); }
+.recurring-fields.visible { display:flex; }
+
+.day-checkboxes { display:flex; gap:8px; flex-wrap:wrap; }
+.day-check { display:flex; align-items:center; gap:5px; font-size:0.82rem; cursor:pointer; }
+.day-check input { width:15px; height:15px; accent-color:var(--accent); cursor:pointer; }
+
+/* ── COMPLETE PROMPT ── */
+.name-prompt { background:var(--surface); border:var(--border-w) solid var(--card-border); border-radius:12px; padding:16px; display:none; flex-direction:column; gap:10px; }
+.name-prompt.visible { display:flex; }
+.name-prompt p { font-size:0.82rem; color:var(--ink-soft); margin:0; }
+
+/* ── INVENTORY GRID ── */
+.inventory-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+@media(max-width:480px){ .inventory-grid { grid-template-columns:1fr; } }
+.inv-card { background:var(--surface); border:var(--border-w) solid var(--card-border); border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:4px; }
+.inv-card.low { border-color:var(--alert); }
+.inv-card .inv-name { font-size:0.88rem; font-weight:600; color:var(--ink); }
+.inv-card .inv-qty { font-family:'Courier Prime',monospace; font-size:1.4rem; color:var(--ink); }
+.inv-card.low .inv-qty { color:var(--alert); }
+.inv-card .inv-sub { font-size:0.68rem; color:var(--ink-soft); opacity:0.7; }
+
+/* ── AREAS ── */
+.area-type-badge { font-size:0.62rem; font-family:'Courier Prime',monospace; text-transform:uppercase; letter-spacing:0.05em; padding:2px 6px; border-radius:4px; background:var(--mist); color:var(--ink-soft); }
+
+/* ── EMPTY / SPINNER ── */
+.empty-state { text-align:center; padding:32px; color:var(--ink-soft); opacity:0.6; font-size:0.85rem; font-style:italic; }
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--card-border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.6s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); color:var(--ink); padding:12px 22px; border-radius:24px; font-size:0.85rem; font-family:'Courier Prime',monospace; transition:transform 0.3s ease; z-index:999; white-space:nowrap; border:var(--border-w) solid var(--card-border); box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── MODE TOGGLE ── */
+.mode-toggle { width:36px; height:36px; border-radius:50%; background:var(--card); color:var(--ink-soft); border:var(--border-w) solid var(--card-border); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 150ms ease; }
+.mode-toggle:hover { transform:translateY(-1px); color:var(--ink); }
+
+/* ── COMPLETION LOG VIEW ── */
+.completion-log { display:flex; flex-direction:column; gap:6px; max-height:300px; overflow-y:auto; }
+.comp-row { background:var(--surface); border:var(--border-w) solid var(--card-border); border-radius:6px; padding:10px 14px; font-size:0.8rem; display:flex; justify-content:space-between; gap:8px; }
+.comp-row .comp-who { font-weight:600; color:var(--ink); }
+.comp-row .comp-when { font-family:'Courier Prime',monospace; color:var(--ink-soft); opacity:0.75; font-size:0.7rem; }
+
+.rv-card{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line,#dcdcdc);border-radius:10px;margin-bottom:10px;background:var(--card,#fff);}
+.rv-thumb{width:72px;height:72px;border-radius:8px;object-fit:cover;flex:0 0 auto;}
+.rv-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.rv-selects{display:flex;gap:6px;}
+.rv-card input,.rv-card select{width:100%;min-width:0;padding:7px;border:1px solid var(--line,#ccc);border-radius:6px;font-size:13px;background:var(--bg,#fff);color:var(--ink,#111);font-family:inherit;}
+.rv-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── AUTH WALL ── -->
+  <div class="auth-wall" id="auth-wall">
+    <div class="auth-card">
+      <div style="font-size:2rem;margin-bottom:8px;">🌿</div>
+      <h2>FGF Admin</h2>
+      <p>Enter your admin credentials</p>
+      <div class="form-group" style="margin-bottom:12px;text-align:left;">
+        <label>Admin Password</label>
+        <input type="password" id="auth-pw" placeholder="Admin password" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="doAuth()">Sign In</button>
+      <p style="margin-top:16px;font-size:0.72rem;opacity:0.55;">
+        <a href="/app.html" style="color:var(--ink-soft);">← Staff ops</a>
+        &nbsp;·&nbsp;
+        <a href="/" style="color:var(--ink-soft);">Farm home</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── MAIN UI ── -->
+  <div id="main-ui" style="display:none;flex-direction:column;flex:1;width:100%;">
+
+    <div class="admin-header">
+      <div class="admin-header-top">
+        <h1>🌿 FGF Admin <span>Fun Guy Fungi &amp; Gardens</span></h1>
+        <div class="header-controls">
+          <button class="mode-toggle" onclick="toggleMode()" aria-label="Toggle dark mode">☀</button>
+          <button class="btn btn-ghost btn-sm" onclick="signOut()">Sign out</button>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('review',this);loadReview()">Review <span class="badge" id="review-count" style="display:none"></span></button>
+        <button class="tab-btn" onclick="switchTab('dashboard',this)">Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('tasks',this)">Tasks</button>
+        <button class="tab-btn" onclick="switchTab('areas',this)">Areas</button>
+        <button class="tab-btn" onclick="switchTab('inventory',this)">Inventory</button>
+        <button class="tab-btn" onclick="switchTab('reports',this)">Reports</button>
+        <button class="tab-btn" onclick="switchTab('requests',this)">Requests</button>
+        <button class="tab-btn" onclick="switchTab('log',this)">Field Log</button>
+        <button class="tab-btn" onclick="switchTab('comments',this)">Comments</button>
+        <button class="tab-btn" onclick="switchTab('completions',this)">Task Log</button>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="tab-panel active" id="tab-review">
+      <div class="section-label">Review queue</div>
+      <div class="data-list" id="review-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-dashboard">
+      <div class="stat-grid" id="stat-grid">
+        <div class="stat-card" onclick="switchTab('tasks',document.querySelectorAll('.tab-btn')[1])">
+          <div class="stat-num" id="stat-tasks">—</div>
+          <div class="stat-label">Tasks today</div>
+        </div>
+        <div class="stat-card alert" onclick="switchTab('reports',document.querySelectorAll('.tab-btn')[4])">
+          <div class="stat-num" id="stat-reports">—</div>
+          <div class="stat-label">Open reports</div>
+        </div>
+        <div class="stat-card" onclick="switchTab('requests',document.querySelectorAll('.tab-btn')[5])">
+          <div class="stat-num" id="stat-requests">—</div>
+          <div class="stat-label">Requests</div>
+        </div>
+        <div class="stat-card alert" onclick="switchTab('inventory',document.querySelectorAll('.tab-btn')[3])">
+          <div class="stat-num" id="stat-low">—</div>
+          <div class="stat-label">Low stock</div>
+        </div>
+      </div>
+
+      <div class="section-label">Quick Links</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="/calendar.html" target="_blank" class="btn btn-ghost btn-sm" style="text-decoration:none;">📅 Farm Calendar</a>
+        <a href="/app.html" target="_blank" class="btn btn-ghost btn-sm" style="text-decoration:none;">← Staff App</a>
+        <a href="/data.html" target="_blank" class="btn btn-ghost btn-sm" style="text-decoration:none;">📊 Data Dashboard</a>
+      </div>
+
+      <div class="section-label">Overdue / Due Today</div>
+      <div class="data-list" id="dash-tasks"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+
+      <div class="section-label">Site Settings</div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div>
+          <div style="font-size:0.9rem;font-weight:600;color:var(--ink);">Support the Farm (Donations)</div>
+          <div style="font-size:0.72rem;color:var(--ink-soft);margin-top:2px;">Show or hide the donate button on the public guest page</div>
+          <div style="margin-top:8px;">
+            <label style="font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.06em;font-family:'Courier Prime',monospace;">Donation URL</label>
+            <input type="text" id="donations-url-input" placeholder="https://venmo.com/yourname" style="margin-top:4px;width:100%;background:var(--bg);border:var(--border-w) solid var(--card-border);border-radius:6px;padding:8px 10px;font-size:0.85rem;color:var(--ink);outline:none;">
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;">
+          <div id="donations-status" style="font-family:'Courier Prime',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);">—</div>
+          <button id="donations-toggle-btn" class="btn btn-ghost btn-sm" onclick="toggleDonations()" style="min-width:80px;">—</button>
+        </div>
+      </div>
+
+      <div class="section-label">Recent Field Log</div>
+      <div class="data-list" id="dash-log"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ TASKS ══ -->
+    <div class="tab-panel" id="tab-tasks">
+      <div class="card">
+        <h3>Add a Task</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Task Title *</label>
+            <input type="text" id="t-title" placeholder="e.g. Water all Zone 2 beds">
+          </div>
+          <div class="form-group">
+            <label>Area (optional)</label>
+            <select id="t-area"><option value="">Farm-wide</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Instructions (shown to staff when they tap the task)</label>
+          <textarea id="t-instructions" placeholder="Step-by-step details, safety notes, tools needed…" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Recurrence</label>
+            <select id="t-recurrence" onchange="toggleRecurringFields()">
+              <option value="visit">Every visit (Mon &amp; Fri)</option>
+              <option value="weekly">Weekly — specific day</option>
+              <option value="biweekly">Multiple days per week</option>
+              <option value="interval">Every N days</option>
+              <option value="one_time">One-time</option>
+              <option value="seasonal">Seasonal (date range)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Priority (1=highest)</label>
+            <select id="t-priority">
+              <option value="1">1 — Critical</option>
+              <option value="2">2 — High</option>
+              <option value="3" selected>3 — Normal</option>
+              <option value="4">4 — Low</option>
+              <option value="5">5 — Whenever</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sort Order <span style="font-weight:400;opacity:0.6;">(position in list — lower = earlier)</span></label>
+            <input type="number" id="t-sort-order" placeholder="99" min="1" max="999" value="99">
+          </div>
+        </div>
+
+        <div class="recurring-fields" id="recurring-fields">
+          <!-- Weekly -->
+          <div id="rf-weekly" style="display:none;">
+            <div class="form-group">
+              <label>Which day?</label>
+              <select id="t-weekly-day">
+                <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+              </select>
+            </div>
+          </div>
+          <!-- Biweekly -->
+          <div id="rf-biweekly" style="display:none;">
+            <div class="form-group">
+              <label>Which days?</label>
+              <div class="day-checkboxes">
+                <label class="day-check"><input type="checkbox" value="Monday"> Mon</label>
+                <label class="day-check"><input type="checkbox" value="Tuesday"> Tue</label>
+                <label class="day-check"><input type="checkbox" value="Wednesday"> Wed</label>
+                <label class="day-check"><input type="checkbox" value="Thursday"> Thu</label>
+                <label class="day-check"><input type="checkbox" value="Friday"> Fri</label>
+                <label class="day-check"><input type="checkbox" value="Saturday"> Sat</label>
+                <label class="day-check"><input type="checkbox" value="Sunday"> Sun</label>
+              </div>
+            </div>
+          </div>
+          <!-- Interval -->
+          <div id="rf-interval" style="display:none;">
+            <div class="form-group">
+              <label>Every how many days?</label>
+              <input type="number" id="t-interval" placeholder="14" min="1" max="365">
+            </div>
+          </div>
+          <!-- One-time -->
+          <div id="rf-onetime" style="display:none;">
+            <div class="form-group">
+              <label>Due date</label>
+              <input type="date" id="t-due-date">
+            </div>
+          </div>
+          <!-- Seasonal -->
+          <div id="rf-seasonal" style="display:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Season start</label>
+                <input type="date" id="t-season-start">
+              </div>
+              <div class="form-group">
+                <label>Season end</label>
+                <input type="date" id="t-season-end">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <label class="day-check"><input type="checkbox" id="t-core"> <span style="font-size:0.85rem;font-weight:600;">Core task</span> <span style="font-size:0.75rem;color:var(--ink-soft);margin-left:4px;">(always pinned to top)</span></label>
+        </div>
+        <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+        <button class="btn btn-ghost" id="task-cancel-btn" style="display:none;" onclick="cancelTaskEdit()">Cancel edit</button>
+      </div>
+
+      <div class="section-label">All Active Tasks</div>
+      <div class="data-list" id="tasks-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+
+      <div class="name-prompt" id="name-prompt">
+        <p>Who is completing this task?</p>
+        <div class="form-group">
+          <input type="text" id="completer-name" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label>Optional note</label>
+          <input type="text" id="completer-note" placeholder="Any observations…">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-success" style="flex:1;" onclick="confirmComplete()">✓ Mark Done</button>
+          <button class="btn btn-ghost" onclick="cancelComplete()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AREAS ══ -->
+    <div class="tab-panel" id="tab-areas">
+      <div class="card">
+        <h3>Add / Edit Growing Area</h3>
+        <input type="hidden" id="area-edit-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Area Name *</label>
+            <input type="text" id="area-name" placeholder="e.g. Bed 1A, Naval Orange Grove">
+          </div>
+          <div class="form-group">
+            <label>Type *</label>
+            <select id="area-type">
+              <option value="raised_bed">Raised Bed</option>
+              <option value="tree">Tree</option>
+              <option value="shrub">Shrub / Bush</option>
+              <option value="ground">Ground Planting</option>
+              <option value="container">Container</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Zone / Group</label>
+            <input type="text" id="area-zone" placeholder="e.g. Zone 1, Orchard, Perimeter">
+          </div>
+          <div class="form-group">
+            <label>Manager</label>
+            <input type="text" id="area-manager" placeholder="First Last">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description / Notes</label>
+          <textarea id="area-desc" placeholder="Dimensions, soil mix, history…" style="min-height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Bible Passage or Blessing</label>
+          <textarea id="area-blessing" placeholder="Verse shown on this area's page…" style="min-height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Reference (e.g. Psalm 24:1)</label>
+          <input type="text" id="area-blessing-ref" placeholder="Psalm 24:1">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="saveArea()">Save Area</button>
+          <button class="btn btn-ghost" id="area-cancel-btn" style="display:none;" onclick="cancelAreaEdit()">Cancel edit</button>
+        </div>
+      </div>
+
+      <div class="section-label">All Growing Areas</div>
+      <div class="data-list" id="areas-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ INVENTORY ══ -->
+    <div class="tab-panel" id="tab-inventory">
+      <div class="card">
+        <h3>Add / Update Item</h3>
+        <input type="hidden" id="inv-edit-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Item Name *</label>
+            <input type="text" id="inv-name" placeholder="e.g. Compost bags">
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="inv-cat">
+              <option>Soil &amp; Amendments</option>
+              <option>Seeds &amp; Starts</option>
+              <option>Irrigation</option>
+              <option>Hand Tools</option>
+              <option>Power Equipment</option>
+              <option>Pest Control</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" id="inv-qty" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>Unit</label>
+            <input type="text" id="inv-unit" placeholder="bags / units / rolls">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Par Level (reorder point)</label>
+            <input type="number" id="inv-par" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" id="inv-notes" placeholder="Storage location, vendor…">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="saveInventoryItem()">Save Item</button>
+          <button class="btn btn-ghost" id="inv-cancel-btn" style="display:none;" onclick="cancelInvEdit()">Cancel edit</button>
+        </div>
+      </div>
+
+      <div class="section-label">Current Inventory</div>
+      <div id="inventory-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ REPORTS ══ -->
+    <div class="tab-panel" id="tab-reports">
+      <div class="section-label">Open Damage Reports</div>
+      <div class="data-list" id="reports-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+
+      <div class="card" style="margin-top:4px;">
+        <h3>Submit a Report</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="rpt-name" placeholder="First name">
+          </div>
+          <div class="form-group">
+            <label>Area</label>
+            <select id="rpt-area"><option value="">General Farm</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Issue Type</label>
+          <select id="rpt-type">
+            <option>Damaged structure or materials</option>
+            <option>Pest or disease signs</option>
+            <option>Irrigation problem</option>
+            <option>Vandalism</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea id="rpt-desc" placeholder="Describe what you observed…"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitReport()">Submit Report</button>
+      </div>
+    </div>
+
+    <!-- ══ REQUESTS ══ -->
+    <div class="tab-panel" id="tab-requests">
+      <div class="section-label">Open Requests</div>
+      <div class="data-list" id="requests-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ FIELD LOG ══ -->
+    <div class="tab-panel" id="tab-log">
+      <div class="card">
+        <h3>Add Log Entry</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Area / Location</label>
+            <select id="log-area"><option value="">General Farm</option></select>
+          </div>
+          <div class="form-group" style="align-self:flex-end;">
+            <button class="btn btn-primary" style="width:100%;" onclick="submitLog()">Add Entry</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>What did you observe or do? *</label>
+          <textarea id="log-note" placeholder="Transplanted seedlings, watered Zone 2, spotted aphids on 1C…"></textarea>
+        </div>
+      </div>
+      <div class="section-label">Recent Entries</div>
+      <div class="data-list" id="log-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ COMMENTS ══ -->
+    <div class="tab-panel" id="tab-comments">
+      <div class="section-label">All Comments</div>
+      <div class="data-list" id="comments-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+    <!-- ══ TASK COMPLETION LOG ══ -->
+    <div class="tab-panel" id="tab-completions">
+      <div class="card">
+        <h3>Filter by date range</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>From</label>
+            <input type="date" id="comp-from">
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <input type="date" id="comp-to">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="loadCompletions()">Filter</button>
+      </div>
+      <div class="section-label">Completion Log</div>
+      <div class="data-list" id="completions-list"><div class="empty-state"><span class="spinner"></span> Loading…</div></div>
+    </div>
+
+  </div><!-- /main-ui -->
+</div><!-- /shell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Inlined DB functions ─────────────────────────────────────
+const SUPABASE_URL = 'https://gblizuknnvguxyxfequh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
+const DB_HEADERS = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' };
+
+async function sbGet(table, params) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params ? '?' + params : ''}`, { headers: DB_HEADERS });
+  if (!res.ok) throw new Error(`GET ${table} failed: ${res.status}`);
+  return res.json();
+}
+async function sbPost(table, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method:'POST', headers:{...DB_HEADERS, Prefer:'return=representation'}, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`POST ${table} failed: ${res.status}`);
+  return res.json();
+}
+async function sbPatch(table, match, body) {
+  const qs = Object.entries(match).map(([k,v]) => `${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${qs}`, { method:'PATCH', headers:{...DB_HEADERS, Prefer:'return=representation'}, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`PATCH ${table} failed: ${res.status}`);
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
+}
+async function sbDelete(table, match) {
+  const qs = Object.entries(match).map(([k,v]) => `${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${qs}`, { method:'DELETE', headers: DB_HEADERS });
+  if (!res.ok) throw new Error(`DELETE ${table} failed: ${res.status}`);
+  return true;
+}
+
+function today() { return new Date().toISOString().slice(0,10); }
+function fmtDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); } catch(e) { return String(iso).slice(0,10); } }
+function fmtTime(iso) { if (!iso) return ''; try { return new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); } catch(e) { return ''; } }
+function esc(s) { const d = document.createElement('div'); d.appendChild(document.createTextNode(String(s||''))); return d.innerHTML; }
+function showToast(msg, duration) { const t = document.getElementById('toast'); if (!t) return; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), duration||2800); }
+
+function verifyStaffPassword(pw) {
+  if (!pw || !pw.startsWith('Godisgood')) return false;
+  return /^\d{4}$/.test(pw.slice('Godisgood'.length));
+}
+
+let _configCache = null;
+async function getConfig() {
+  if (_configCache) return _configCache;
+  const rows = await sbGet('fgf_config');
+  _configCache = {};
+  rows.forEach(r => { _configCache[r.key] = r.value; });
+  return _configCache;
+}
+
+async function getVisitDays() {
+  const cfg = await getConfig();
+  try { return JSON.parse(cfg.visit_days || '["Monday","Friday"]'); } catch(e) { return ['Monday','Friday']; }
+}
+
+let _areasCache = null, _areasCacheTime = 0;
+async function getAreas(force) {
+  if (_areasCache && !force && (Date.now()-_areasCacheTime)<300000) return _areasCache;
+  _areasCache = await sbGet('fgf_growing_areas','archived_at=is.null&order=zone.asc,name.asc');
+  _areasCacheTime = Date.now();
+  return _areasCache;
+}
+async function createArea(fields) { _areasCache=null; return sbPost('fgf_growing_areas', fields); }
+async function updateArea(id, fields) { _areasCache=null; return sbPatch('fgf_growing_areas',{id},fields); }
+async function archiveArea(id) { _areasCache=null; return sbPatch('fgf_growing_areas',{id},{archived_at:new Date().toISOString()}); }
+
+function buildAreaOptions(areas, includeGeneral) {
+  const zones = {};
+  areas.forEach(a => { const z=a.zone||'General'; if(!zones[z]) zones[z]=[]; zones[z].push(a); });
+  let html = includeGeneral ? '<option value="">— Select area —</option>' : '';
+  Object.keys(zones).sort().forEach(zone => {
+    html += `<optgroup label="${esc(zone)}">`;
+    zones[zone].forEach(a => { html += `<option value="${a.id}">${esc(a.name)}${a.area_type!=='raised_bed'?' ('+a.area_type.replace('_',' ')+')':''}</option>`; });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
+async function getTasks() { return sbGet('fgf_tasks','archived_at=is.null&order=sort_order.asc,priority.asc,created_at.asc'); }
+async function archiveTask(id) { return sbPatch('fgf_tasks',{id},{archived_at:new Date().toISOString()}); }
+async function getTaskCompletions(since) { return sbGet('fgf_task_completions',`visit_date=gte.${since}&order=completed_at.desc`); }
+async function dbAddTask(fields) { return sbPost('fgf_tasks', fields); }
+async function dbCompleteTask(task_id, task_title, completed_by, notes) {
+  return sbPost('fgf_task_completions', { task_id, task_title, completed_by, visit_date:today(), notes:notes||null });
+}
+
+async function getTodaysTasks() {
+  const [tasks, config] = await Promise.all([getTasks(), getConfig()]);
+  const visitDays = JSON.parse(config.visit_days||'["Monday","Friday"]');
+  const todayDate = today();
+  const todayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+  const todayTs = new Date(todayDate).getTime();
+  const completions = await getTaskCompletions(todayDate);
+  const completedIds = new Set(completions.filter(c=>c.visit_date===todayDate).map(c=>c.task_id));
+  const isVisitDay = visitDays.includes(todayName);
+  const due = [];
+  for (const task of tasks) {
+    const done = completedIds.has(task.id);
+    let isDue = false;
+    switch(task.recurrence_type) {
+      case 'visit': isDue = isVisitDay; break;
+      case 'weekly': case 'biweekly': isDue = (task.recurrence_days||[]).includes(todayName); break;
+      case 'interval': {
+        const interval = task.recurrence_interval||1;
+        const last = completions.filter(c=>c.task_id===task.id).sort((a,b)=>new Date(b.completed_at)-new Date(a.completed_at))[0];
+        isDue = !last || (todayTs-new Date(last.visit_date).getTime())/86400000 >= interval;
+        break;
+      }
+      case 'one_time': isDue = !done && (!task.due_date||task.due_date<=todayDate); break;
+      case 'seasonal': isDue = task.season_start<=todayDate && task.season_end>=todayDate; break;
+    }
+    if (isDue) due.push({...task, _dueToday:true, _doneToday:done, _overdue:!done&&task.recurrence_type!=='one_time'});
+  }
+  return due.sort((a,b) => { if(a.is_core!==b.is_core) return a.is_core?-1:1; if(a._doneToday!==b._doneToday) return a._doneToday?1:-1; return (a.priority||3)-(b.priority||3); });
+}
+
+async function getLog(limit) { return sbGet('fgf_log',`order=logged_at.desc&limit=${limit||30}`); }
+async function addLog(area_id, location_label, note, logged_by) {
+  return sbPost('fgf_log', { area_id:area_id||null, location_label:location_label||null, note, logged_by:logged_by||'Admin' });
+}
+async function getReports(status) { return sbGet('fgf_reports',`status=eq.${status||'open'}&order=created_at.asc`); }
+async function addReport(area_id, report_type, description, reporter_name) {
+  return sbPost('fgf_reports', { area_id:area_id||null, report_type:report_type||null, description, reporter_name:reporter_name||null });
+}
+async function resolveReport(id, resolve_note, resolved_by) {
+  return sbPatch('fgf_reports',{id},{status:'resolved',resolve_note:resolve_note||null,resolved_by:resolved_by||'Admin',resolved_at:new Date().toISOString()});
+}
+async function getRequests(status) { return sbGet('fgf_requests',`status=eq.${status||'open'}&order=created_at.asc`); }
+async function resolveRequest(id) { return sbPatch('fgf_requests',{id},{status:'resolved'}); }
+async function getInventory() { return sbGet('fgf_inventory','order=category.asc,item_name.asc'); }
+async function addInventoryItem(fields) { return sbPost('fgf_inventory',{...fields,updated_at:new Date().toISOString()}); }
+async function updateInventoryItem(id, fields) { return sbPatch('fgf_inventory',{id},{...fields,updated_at:new Date().toISOString()}); }
+async function deleteInventoryItem(id) { return sbDelete('fgf_inventory',{id}); }
+async function getComments() { return sbGet('fgf_comments','order=submitted_at.desc'); }
+async function markCommentReviewed(id) { return sbPatch('fgf_comments',{id},{status:'reviewed'}); }
+
+// ─── Admin password check ────────────────────────────────────
+// Admin password is stored in fgf_config under key 'admin_password'
+// Set it in Supabase → Table Editor → fgf_config → insert row:
+//   key: admin_password  value: YourSecretAdminPassword
+
+const ADMIN_PW_KEY = 'fgf_admin_token';
+let adminPw = '';
+let pendingComplete = null;
+
+// ─── Mode toggle ─────────────────────────────────────────────
+window.toggleMode = function() {
+  const html = document.documentElement;
+  const dark = html.getAttribute('data-mode') === 'dark';
+  dark ? html.removeAttribute('data-mode') : html.setAttribute('data-mode','dark');
+  try { localStorage.setItem('lfg-mode', dark ? 'light' : 'dark'); } catch(e){}
+  updateModeIcon();
+};
+function updateModeIcon() {
+  const dark = document.documentElement.getAttribute('data-mode') === 'dark';
+  document.querySelectorAll('.mode-toggle').forEach(b => b.textContent = dark ? '🌙' : '☀');
+}
+
+// ─── Auth ────────────────────────────────────────────────────
+window.doAuth = async function() {
+  const pw = document.getElementById('auth-pw').value.trim();
+  if (!pw) { showToast('Enter a password'); return; }
+  try {
+    const cfg = await getConfig();
+    const correct = cfg.admin_password;
+    if (!correct) {
+      showToast('Admin password not set in config — add key "admin_password" to fgf_config table');
+      return;
+    }
+    if (pw !== correct) { showToast('Incorrect password'); return; }
+    adminPw = pw;
+    sessionStorage.setItem(ADMIN_PW_KEY, pw);
+    sessionStorage.setItem('fgf_admin_token', pw);
+    window._lfgAdminPw = pw;
+    showMain();
+  } catch(e) {
+    showToast('Could not verify — check connection');
+  }
+};
+
+window.signOut = function() {
+  sessionStorage.removeItem(ADMIN_PW_KEY);
+  location.reload();
+};
+
+function showMain() {
+  document.getElementById('auth-wall').style.display = 'none';
+  const mu = document.getElementById('main-ui');
+  mu.style.display = 'flex';
+  loadAll();
+}
+
+// ─── Tab switching ────────────────────────────────────────────
+window.switchTab = function(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelector(`.tab-btn[onclick*="'${name}'"]`)?.classList.add('active');
+};
+
+// ─── Load all ────────────────────────────────────────────────
+async function loadAll() {
+  updateModeIcon();
+  await populateAreaDropdowns();
+  loadReview();
+  loadDashboard();
+  loadDonationsSettings();
+  loadTasks();
+  loadAreas();
+  loadInventory();
+  loadReports();
+  loadRequests();
+  loadLog();
+  loadComments();
+  setDefaultDateRange();
+}
+
+// ─── Area dropdowns (shared across tabs) ─────────────────────
+async function populateAreaDropdowns() {
+  try {
+    const areas = await getAreas();
+    const opts = buildAreaOptions(areas, true);
+    ['t-area','rpt-area','log-area'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = (id === 't-area' ? '<option value="">Farm-wide</option>' : '<option value="">General Farm</option>') + opts.replace('<option value="">— Select area —</option>','');
+    });
+  } catch(e) {}
+}
+
+// ─── Dashboard ───────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [tasks, reports, requests, inventory] = await Promise.all([
+      getTodaysTasks(), getReports('open'), getRequests('open'), getInventory()
+    ]);
+    const overdueTasks = tasks.filter(t => t._overdue && !t._doneToday);
+    const lowStock = inventory.filter(i => Number(i.par_level) > 0 && Number(i.quantity) <= Number(i.par_level));
+
+    document.getElementById('stat-tasks').textContent = tasks.filter(t => !t._doneToday).length;
+    document.getElementById('stat-reports').textContent = reports.length;
+    document.getElementById('stat-requests').textContent = requests.length;
+    document.getElementById('stat-low').textContent = lowStock.length;
+
+    const taskBox = document.getElementById('dash-tasks');
+    if (!overdueTasks.length) {
+      taskBox.innerHTML = '<div class="empty-state">All caught up ✓</div>';
+    } else {
+      taskBox.innerHTML = overdueTasks.slice(0,5).map(t => `
+        <div class="data-row overdue">
+          <div class="row-main">
+            <div class="row-title">${esc(t.title)}</div>
+            ${t.area_id ? `<div class="row-sub">Area linked</div>` : ''}
+          </div>
+          <div class="row-actions"><span class="badge badge-urgent">Overdue</span></div>
+        </div>`).join('');
+    }
+
+    const log = await getLog(5);
+    const logBox = document.getElementById('dash-log');
+    if (!log.length) { logBox.innerHTML = '<div class="empty-state">No entries yet.</div>'; return; }
+    logBox.innerHTML = log.map(e => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(e.note)}</div>
+          <div class="row-sub">${esc(e.location_label || 'Farm')} · ${esc(e.logged_by || '')} · ${fmtDate(e.logged_at)}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { console.error('Dashboard load error:', e); }
+}
+
+// ─── Donations toggle ─────────────────────────────────────────
+async function loadDonationsSettings() {
+  try {
+    const cfg = await getConfig();
+    const enabled = cfg.donations_enabled === 'true';
+    const url = cfg.donations_url || '';
+    document.getElementById('donations-url-input').value = url;
+    updateDonationsUI(enabled);
+  } catch(e) {}
+}
+
+function updateDonationsUI(enabled) {
+  const status = document.getElementById('donations-status');
+  const btn = document.getElementById('donations-toggle-btn');
+  if (!status || !btn) return;
+  if (enabled) {
+    status.textContent = 'ON';
+    status.style.color = '#47654A';
+    btn.textContent = 'Turn Off';
+    btn.className = 'btn btn-danger btn-sm';
+  } else {
+    status.textContent = 'OFF';
+    status.style.color = 'var(--ink-soft)';
+    btn.textContent = 'Turn On';
+    btn.className = 'btn btn-success btn-sm';
+  }
+}
+
+window.toggleDonations = async function() {
+  try {
+    const cfg = await getConfig();
+    const current = cfg.donations_enabled === 'true';
+    const newVal = (!current).toString();
+    const url = document.getElementById('donations-url-input').value.trim();
+    // Save both enabled state and URL
+    const res1 = await fetch(`${SUPABASE_URL}/rest/v1/fgf_config?key=eq.donations_enabled`, {
+      method: 'PATCH', headers: {...DB_HEADERS, Prefer:'return=representation'},
+      body: JSON.stringify({ value: newVal })
+    });
+    const res2 = await fetch(`${SUPABASE_URL}/rest/v1/fgf_config?key=eq.donations_url`, {
+      method: 'PATCH', headers: {...DB_HEADERS, Prefer:'return=representation'},
+      body: JSON.stringify({ value: url })
+    });
+    _configCache = null; // bust cache
+    showToast('Donations ' + (newVal === 'true' ? 'enabled' : 'disabled'));
+    updateDonationsUI(newVal === 'true');
+  } catch(e) { showToast('Could not update settings'); }
+};
+window.toggleRecurringFields = function() {
+  const type = document.getElementById('t-recurrence').value;
+  const rf = document.getElementById('recurring-fields');
+  const showTypes = ['weekly','biweekly','interval','one_time','seasonal'];
+  rf.classList.toggle('visible', showTypes.includes(type));
+  ['weekly','biweekly','interval','onetime','seasonal'].forEach(t => {
+    const el = document.getElementById('rf-' + t);
+    if (el) el.style.display = 'none';
+  });
+  const map = { weekly:'rf-weekly', biweekly:'rf-biweekly', interval:'rf-interval', one_time:'rf-onetime', seasonal:'rf-seasonal' };
+  if (map[type]) document.getElementById(map[type]).style.display = '';
+};
+
+window.addTask = async function() {
+  const title = document.getElementById('t-title').value.trim();
+  if (!title) { showToast('Task title is required'); return; }
+  const type = document.getElementById('t-recurrence').value;
+
+  let recurrence_days = null;
+  let recurrence_interval = null;
+  let due_date = null;
+  let season_start = null;
+  let season_end = null;
+
+  if (type === 'weekly') {
+    recurrence_days = [document.getElementById('t-weekly-day').value];
+  } else if (type === 'biweekly') {
+    recurrence_days = [...document.querySelectorAll('#rf-biweekly input:checked')].map(cb => cb.value);
+    if (!recurrence_days.length) { showToast('Select at least one day'); return; }
+  } else if (type === 'interval') {
+    recurrence_interval = parseInt(document.getElementById('t-interval').value) || null;
+    if (!recurrence_interval) { showToast('Enter number of days'); return; }
+  } else if (type === 'one_time') {
+    due_date = document.getElementById('t-due-date').value || null;
+  } else if (type === 'seasonal') {
+    season_start = document.getElementById('t-season-start').value || null;
+    season_end = document.getElementById('t-season-end').value || null;
+    if (!season_start || !season_end) { showToast('Set season start and end dates'); return; }
+  }
+
+  showToast('Adding task…');
+  try {
+    await dbAddTask({
+      title,
+      instructions: document.getElementById('t-instructions').value.trim() || null,
+      area_id: document.getElementById('t-area').value || null,
+      recurrence_type: type,
+      recurrence_days,
+      recurrence_interval,
+      due_date,
+      season_start,
+      season_end,
+      is_core: document.getElementById('t-core').checked,
+      priority: parseInt(document.getElementById('t-priority').value) || 3,
+      sort_order: parseInt(document.getElementById('t-sort-order').value) || 99
+    });
+    showToast('Task added!');
+    document.getElementById('t-title').value = '';
+    document.getElementById('t-instructions').value = '';
+    document.getElementById('t-core').checked = false;
+    loadTasks();
+  } catch(e) { showToast('Could not add — try again'); console.error(e); }
+};
+
+async function loadTasks() {
+  const box = document.getElementById('tasks-list');
+  try {
+    const tasks = await getTasks();
+    if (!tasks.length) { box.innerHTML = '<div class="empty-state">No tasks yet — add one above.</div>'; return; }
+    const completions = await getTaskCompletions(today());
+    const completedIds = new Set(completions.map(c => c.task_id));
+
+    box.innerHTML = tasks.map((t,i) => {
+      const done = completedIds.has(t.id);
+      let recLabel = '';
+      switch(t.recurrence_type) {
+        case 'visit':    recLabel = 'Every visit'; break;
+        case 'weekly':   recLabel = 'Weekly · ' + (t.recurrence_days||[]).join(', '); break;
+        case 'biweekly': recLabel = (t.recurrence_days||[]).join(' & '); break;
+        case 'interval': recLabel = 'Every ' + t.recurrence_interval + ' days'; break;
+        case 'one_time': recLabel = t.due_date ? 'Due ' + fmtDate(t.due_date) : 'One-time'; break;
+        case 'seasonal': recLabel = fmtDate(t.season_start) + ' → ' + fmtDate(t.season_end); break;
+      }
+      return `<div class="data-row" id="task-row-${i}">
+        <div class="row-main">
+          <div class="row-title">${t.is_core ? '★ ' : ''}${esc(t.title)}</div>
+          <div class="row-sub">${esc(recLabel)}${t.instructions ? ' · Has instructions' : ''}</div>
+        </div>
+        <div class="row-actions">
+          ${done ? '<span class="badge badge-done">Done today</span>' : ''}
+          ${t.is_core ? '<span class="badge badge-core">Core</span>' : ''}
+          <button class="btn btn-success btn-sm" onclick="promptComplete('${t.id}','${esc(t.title)}',${i})">✓ Done</button>
+          <button class="btn btn-ghost btn-sm" onclick="editTask(${i})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="archiveTaskRow('${t.id}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Store tasks in cache for edit access
+    window._tasksCache = tasks;
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load tasks.</div>'; }
+}
+
+window.editTask = function(idx) {
+  const t = (window._tasksCache || [])[idx];
+  if (!t) return;
+  // Store edit id
+  window._editingTaskId = t.id;
+  // Fill form fields
+  document.getElementById('t-title').value = t.title || '';
+  document.getElementById('t-instructions').value = t.instructions || '';
+  document.getElementById('t-recurrence').value = t.recurrence_type || 'visit';
+  document.getElementById('t-priority').value = t.priority || 3;
+  document.getElementById('t-sort-order').value = t.sort_order || 99;
+  document.getElementById('t-core').checked = !!t.is_core;
+  toggleRecurringFields();
+  // Fill recurrence-specific fields
+  if (t.recurrence_type === 'weekly' && t.recurrence_days?.[0]) {
+    document.getElementById('t-weekly-day').value = t.recurrence_days[0];
+  }
+  if (t.recurrence_type === 'interval' && t.recurrence_interval) {
+    document.getElementById('t-interval').value = t.recurrence_interval;
+  }
+  if (t.recurrence_type === 'one_time' && t.due_date) {
+    document.getElementById('t-due-date').value = t.due_date;
+  }
+  if (t.recurrence_type === 'seasonal') {
+    if (t.season_start) document.getElementById('t-season-start').value = t.season_start;
+    if (t.season_end) document.getElementById('t-season-end').value = t.season_end;
+  }
+  // Switch add button to update mode
+  const btn = document.querySelector('#tab-tasks .btn-primary[onclick="addTask()"]');
+  if (btn) {
+    btn.textContent = 'Update Task';
+    btn.setAttribute('onclick', 'updateTask()');
+  }
+  // Show cancel button
+  document.getElementById('task-cancel-btn').style.display = '';
+  // Scroll to form
+  document.querySelector('#tab-tasks .card').scrollIntoView({ behavior:'smooth' });
+  showToast('Editing task — update fields and save');
+};
+
+window.updateTask = async function() {
+  const id = window._editingTaskId;
+  if (!id) { showToast('No task selected for editing'); return; }
+  const title = document.getElementById('t-title').value.trim();
+  if (!title) { showToast('Task title is required'); return; }
+  const type = document.getElementById('t-recurrence').value;
+  let recurrence_days = null, recurrence_interval = null, due_date = null, season_start = null, season_end = null;
+  if (type === 'weekly') recurrence_days = [document.getElementById('t-weekly-day').value];
+  else if (type === 'biweekly') recurrence_days = [...document.querySelectorAll('#rf-biweekly input:checked')].map(cb => cb.value);
+  else if (type === 'interval') recurrence_interval = parseInt(document.getElementById('t-interval').value) || null;
+  else if (type === 'one_time') due_date = document.getElementById('t-due-date').value || null;
+  else if (type === 'seasonal') { season_start = document.getElementById('t-season-start').value || null; season_end = document.getElementById('t-season-end').value || null; }
+  showToast('Saving…');
+  try {
+    await sbPatch('fgf_tasks', { id }, {
+      title,
+      instructions: document.getElementById('t-instructions').value.trim() || null,
+      recurrence_type: type, recurrence_days, recurrence_interval, due_date, season_start, season_end,
+      is_core: document.getElementById('t-core').checked,
+      priority: parseInt(document.getElementById('t-priority').value) || 3,
+      sort_order: parseInt(document.getElementById('t-sort-order').value) || 99
+    });
+    showToast('Task updated!');
+    cancelTaskEdit();
+    loadTasks();
+  } catch(e) { showToast('Could not update — try again'); console.error(e); }
+};
+
+window.cancelTaskEdit = function() {
+  window._editingTaskId = null;
+  document.getElementById('t-title').value = '';
+  document.getElementById('t-instructions').value = '';
+  document.getElementById('t-core').checked = false;
+  const btn = document.querySelector('#tab-tasks .btn-primary');
+  if (btn) { btn.textContent = 'Add Task'; btn.setAttribute('onclick', 'addTask()'); }
+  document.getElementById('task-cancel-btn').style.display = 'none';
+};
+
+window.promptComplete = function(taskId, taskTitle, idx) {
+  pendingComplete = { taskId, taskTitle, idx };
+  const p = document.getElementById('name-prompt');
+  p.classList.add('visible');
+  document.getElementById('completer-name').value = '';
+  document.getElementById('completer-note').value = '';
+  document.getElementById('completer-name').focus();
+  p.scrollIntoView({ behavior:'smooth', block:'nearest' });
+};
+
+window.cancelComplete = function() {
+  pendingComplete = null;
+  document.getElementById('name-prompt').classList.remove('visible');
+};
+
+window.confirmComplete = async function() {
+  if (!pendingComplete) return;
+  const name = document.getElementById('completer-name').value.trim();
+  if (!name) { showToast('Enter a name'); return; }
+  const note = document.getElementById('completer-note').value.trim();
+  const { taskId, idx } = pendingComplete;
+  const row = document.getElementById('task-row-' + idx);
+  if (row) row.style.opacity = '0.4';
+  document.getElementById('name-prompt').classList.remove('visible');
+  pendingComplete = null;
+  try {
+    await dbCompleteTask(taskId, taskTitle, name, note);
+    showToast('Logged — completed by ' + name);
+    setTimeout(loadTasks, 600);
+  } catch(e) { showToast('Could not log — try again'); }
+};
+
+window.archiveTaskRow = async function(id) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fgf_tasks?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: DB_HEADERS
+    });
+    if (!res.ok) throw new Error('DELETE failed: ' + res.status);
+    showToast('Task removed');
+    loadTasks();
+  } catch(e) {
+    showToast('Could not remove: ' + e.message);
+    console.error(e);
+  }
+};
+
+// ─── Areas ───────────────────────────────────────────────────
+window.saveArea = async function() {
+  const name = document.getElementById('area-name').value.trim();
+  if (!name) { showToast('Area name is required'); return; }
+  const editId = document.getElementById('area-edit-id').value;
+  const fields = {
+    name,
+    area_type: document.getElementById('area-type').value,
+    zone: document.getElementById('area-zone').value.trim() || null,
+    manager: document.getElementById('area-manager').value.trim() || null,
+    description: document.getElementById('area-desc').value.trim() || null,
+    blessing: document.getElementById('area-blessing').value.trim() || null,
+    blessing_ref: document.getElementById('area-blessing-ref').value.trim() || null
+  };
+  showToast('Saving…');
+  try {
+    if (editId) {
+      await updateArea(editId, fields);
+      showToast('Area updated!');
+    } else {
+      await createArea(fields);
+      showToast('Area created!');
+    }
+    clearAreaForm();
+    loadAreas();
+    populateAreaDropdowns();
+  } catch(e) { showToast('Could not save — try again'); console.error(e); }
+};
+
+window.cancelAreaEdit = function() { clearAreaForm(); };
+
+function clearAreaForm() {
+  ['area-edit-id','area-name','area-zone','area-manager','area-desc','area-blessing','area-blessing-ref'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('area-type').value = 'raised_bed';
+  document.getElementById('area-cancel-btn').style.display = 'none';
+}
+
+window.editArea = function(id, name, type, zone, manager, desc, blessing, ref) {
+  document.getElementById('area-edit-id').value = id;
+  document.getElementById('area-name').value = name || '';
+  document.getElementById('area-type').value = type || 'raised_bed';
+  document.getElementById('area-zone').value = zone || '';
+  document.getElementById('area-manager').value = manager || '';
+  document.getElementById('area-desc').value = desc || '';
+  document.getElementById('area-blessing').value = blessing || '';
+  document.getElementById('area-blessing-ref').value = ref || '';
+  document.getElementById('area-cancel-btn').style.display = '';
+  document.getElementById('area-name').focus();
+  document.querySelector('#tab-areas .card').scrollIntoView({ behavior:'smooth' });
+  showToast('Editing — update fields and save');
+};
+
+window.doArchiveArea = async function(id, name) {
+  if (!confirm(`Archive "${name}"? It will be hidden but data preserved.`)) return;
+  try {
+    await archiveArea(id);
+    showToast('Area archived');
+    loadAreas();
+    populateAreaDropdowns();
+  } catch(e) { showToast('Could not archive'); }
+};
+
+async function loadAreas() {
+  const box = document.getElementById('areas-list');
+  try {
+    const areas = await getAreas(true);
+    if (!areas.length) { box.innerHTML = '<div class="empty-state">No areas yet — add one above.</div>'; return; }
+    const byZone = {};
+    areas.forEach(a => {
+      const z = a.zone || 'Unzoned';
+      if (!byZone[z]) byZone[z] = [];
+      byZone[z].push(a);
+    });
+    let html = '';
+    Object.keys(byZone).sort().forEach(zone => {
+      html += `<div class="section-label" style="margin-top:8px;">${esc(zone)}</div>`;
+      byZone[zone].forEach(a => {
+        html += `<div class="data-row">
+          <div class="row-main">
+            <div class="row-title">${esc(a.name)} <span class="area-type-badge">${a.area_type.replace('_',' ')}</span></div>
+            <div class="row-sub">${a.manager ? esc(a.manager) + ' · ' : ''}${a.description ? esc(a.description.slice(0,60)) + '…' : 'No description'}</div>
+          </div>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editArea('${a.id}','${esc(a.name)}','${a.area_type}','${esc(a.zone||'')}','${esc(a.manager||'')}','${esc(a.description||'')}','${esc(a.blessing||'')}','${esc(a.blessing_ref||'')}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="doArchiveArea('${a.id}','${esc(a.name)}')">Archive</button>
+          </div>
+        </div>`;
+      });
+    });
+    box.innerHTML = html;
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load areas.</div>'; console.error(e); }
+}
+
+// ─── Inventory ───────────────────────────────────────────────
+window.saveInventoryItem = async function() {
+  const name = document.getElementById('inv-name').value.trim();
+  if (!name) { showToast('Item name required'); return; }
+  const editId = document.getElementById('inv-edit-id').value;
+  const fields = {
+    item_name: name,
+    category: document.getElementById('inv-cat').value,
+    quantity: parseFloat(document.getElementById('inv-qty').value) || 0,
+    unit: document.getElementById('inv-unit').value.trim() || null,
+    par_level: parseFloat(document.getElementById('inv-par').value) || 0,
+    notes: document.getElementById('inv-notes').value.trim() || null
+  };
+  showToast('Saving…');
+  try {
+    if (editId) { await updateInventoryItem(editId, fields); showToast('Item updated!'); }
+    else { await addInventoryItem(fields); showToast('Item added!'); }
+    clearInvForm();
+    loadInventory();
+  } catch(e) { showToast('Could not save'); console.error(e); }
+};
+
+window.cancelInvEdit = function() { clearInvForm(); };
+
+function clearInvForm() {
+  document.getElementById('inv-edit-id').value = '';
+  ['inv-name','inv-qty','inv-unit','inv-par','inv-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inv-cancel-btn').style.display = 'none';
+}
+
+window.editInvItem = function(id, name, cat, qty, unit, par, notes) {
+  document.getElementById('inv-edit-id').value = id;
+  document.getElementById('inv-name').value = name || '';
+  document.getElementById('inv-cat').value = cat || 'Other';
+  document.getElementById('inv-qty').value = qty || '';
+  document.getElementById('inv-unit').value = unit || '';
+  document.getElementById('inv-par').value = par || '';
+  document.getElementById('inv-notes').value = notes || '';
+  document.getElementById('inv-cancel-btn').style.display = '';
+  document.querySelector('#tab-inventory .card').scrollIntoView({ behavior:'smooth' });
+  showToast('Editing item — update and save');
+};
+
+window.deleteInvItem = async function(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  try { await deleteInventoryItem(id); showToast('Deleted'); loadInventory(); }
+  catch(e) { showToast('Could not delete'); }
+};
+
+async function loadInventory() {
+  const box = document.getElementById('inventory-list');
+  try {
+    const items = await getInventory();
+    if (!items.length) { box.innerHTML = '<div class="empty-state">No inventory yet.</div>'; return; }
+    const groups = {};
+    items.forEach(i => {
+      const c = i.category || 'Other';
+      if (!groups[c]) groups[c] = [];
+      groups[c].push(i);
+    });
+    let html = '';
+    Object.keys(groups).sort().forEach(cat => {
+      html += `<div class="section-label" style="margin-top:12px;">${esc(cat)}</div><div class="inventory-grid" style="margin-top:6px;">`;
+      groups[cat].forEach(item => {
+        const qty = Number(item.quantity || 0);
+        const par = Number(item.par_level || 0);
+        const low = par > 0 && qty <= par;
+        html += `<div class="inv-card ${low ? 'low' : ''}">
+          <div class="inv-name">${esc(item.item_name)}${low ? ' <span class="badge badge-urgent">Low</span>' : ''}</div>
+          <div class="inv-qty">${qty}</div>
+          <div class="inv-sub">${esc(item.unit||'')}${par ? ' · Par: '+par : ''}${item.notes ? ' · '+esc(item.notes) : ''}</div>
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="editInvItem('${item.id}','${esc(item.item_name)}','${esc(item.category||'')}',${qty},'${esc(item.unit||'')}',${par},'${esc(item.notes||'')}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteInvItem('${item.id}','${esc(item.item_name)}')">Delete</button>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    });
+    box.innerHTML = html;
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load inventory.</div>'; }
+}
+
+// ─── Reports ─────────────────────────────────────────────────
+window.submitReport = async function() {
+  const desc = document.getElementById('rpt-desc').value.trim();
+  if (!desc) { showToast('Description required'); return; }
+  showToast('Submitting…');
+  try {
+    await addReport(
+      document.getElementById('rpt-area').value || null,
+      document.getElementById('rpt-type').value,
+      desc,
+      document.getElementById('rpt-name').value.trim() || null
+    );
+    showToast('Report submitted');
+    document.getElementById('rpt-desc').value = '';
+    loadReports();
+  } catch(e) { showToast('Could not submit'); }
+};
+
+window.doResolveReport = async function(id) {
+  const note = prompt('Resolution note (optional):') || '';
+  try {
+    await resolveReport(id, note, adminPw ? 'Admin' : 'Staff');
+    showToast('Report resolved');
+    loadReports();
+    loadDashboard();
+  } catch(e) { showToast('Could not resolve'); }
+};
+
+let reviewAreas=[];
+function escAttr(s){ return esc(s).replace(/"/g,'&quot;'); }
+function reviewAreaOptions(sel){
+  let h='<option value="">General / whole farm</option>';
+  const g={}; (reviewAreas||[]).forEach(function(a){ const z=a.zone||'Other'; (g[z]=g[z]||[]).push(a); });
+  Object.keys(g).forEach(function(z){ h+='<optgroup label="'+esc(z)+'">'; g[z].forEach(function(a){ h+='<option value="'+esc(a.id)+'"'+(String(sel||'')===String(a.id)?' selected':'')+'>'+esc(a.name)+'</option>'; }); h+='</optgroup>'; });
+  return h;
+}
+function reviewTypeOptions(sel){
+  const T=[['','Type…'],['plant','Plant'],['creature','Creature'],['feature','Feature'],['selfie','Selfie']];
+  return T.map(function(t){ return '<option value="'+t[0]+'"'+(String(sel||'')===t[0]?' selected':'')+'>'+t[1]+'</option>'; }).join('');
+}
+function reviewPhotoCard(p){
+  return '<div class="rv-card" data-pid="'+escAttr(p.id)+'"><img class="rv-thumb" src="'+escAttr(p.thumbnail_url||p.cloudinary_url)+'"><div class="rv-main"><input class="rv-cap" value="'+escAttr(p.caption||'')+'" placeholder="Caption"><div class="rv-selects"><select class="rv-area">'+reviewAreaOptions(p.area_id)+'</select><select class="rv-type">'+reviewTypeOptions(p.subject_type)+'</select></div></div><div class="rv-actions"><button class="btn btn-primary btn-sm" data-kind="photo" data-act="approve" data-id="'+escAttr(p.id)+'">Approve</button><button class="btn btn-ghost btn-sm" data-kind="photo" data-act="save" data-id="'+escAttr(p.id)+'">Save</button><button class="btn btn-ghost btn-sm" data-kind="photo" data-act="delete" data-id="'+escAttr(p.id)+'">Delete</button></div></div>';
+}
+function reviewSimpleCard(kind,id,title,body){
+  return '<div class="rv-card"><div class="rv-main"><b>'+esc(title)+'</b><div>'+esc(body)+'</div></div><div class="rv-actions"><button class="btn btn-primary btn-sm" data-kind="'+kind+'" data-act="approve" data-id="'+escAttr(id)+'">Approve</button><button class="btn btn-ghost btn-sm" data-kind="'+kind+'" data-act="delete" data-id="'+escAttr(id)+'">Delete</button></div></div>';
+}
+async function loadReview(){
+  const el=document.getElementById('review-list'); if(!el) return;
+  if(!el._wired){ el._wired=1; el.addEventListener('click', reviewClick); }
+  let photos=[], notes=[], logs=[], areas=[];
+  try{
+    const r=await Promise.all([
+      sbGet('fgf_photos','approval_status=eq.pending&order=uploaded_at.desc'),
+      sbGet('fgf_comments','status=eq.new&order=submitted_at.desc'),
+      sbGet('fgf_log','approval_status=eq.pending&order=logged_at.desc'),
+      sbGet('fgf_growing_areas','select=id,name,zone&archived_at=is.null&order=zone')
+    ]);
+    photos=r[0]||[]; notes=r[1]||[]; logs=r[2]||[]; areas=r[3]||[];
+  }catch(e){ el.innerHTML='<div class="empty-state">Could not load review queue</div>'; return; }
+  reviewAreas=areas;
+  const total=photos.length+notes.length+logs.length;
+  const badge=document.getElementById('review-count'); if(badge){ badge.textContent=total||''; badge.style.display=total?'inline-flex':'none'; }
+  if(!total){ el.innerHTML='<div class="empty-state">✅ Nothing waiting — all caught up.</div>'; return; }
+  let html='';
+  if(photos.length){ html+='<div class="section-label">Photos ('+photos.length+')</div>'+photos.map(reviewPhotoCard).join(''); }
+  if(notes.length){ html+='<div class="section-label">Visitor notes ('+notes.length+')</div>'+notes.map(function(c){ return reviewSimpleCard('comment',c.id,c.commenter_name||'Visitor',c.message||''); }).join(''); }
+  if(logs.length){ html+='<div class="section-label">Field logs ('+logs.length+')</div>'+logs.map(function(x){ return reviewSimpleCard('log',x.id,x.location_label||'—',(x.note||'')+' · '+(x.submitted_by||'?')); }).join(''); }
+  el.innerHTML=html;
+}
+function _rvPhotoFields(id){
+  const card=document.querySelector('.rv-card[data-pid="'+id+'"]'); if(!card) return null;
+  return { caption:(card.querySelector('.rv-cap').value.trim()||null), area_id:(card.querySelector('.rv-area').value||null), subject_type:(card.querySelector('.rv-type').value||null) };
+}
+async function reviewClick(e){
+  const b=e.target.closest('button[data-act]'); if(!b) return;
+  const act=b.getAttribute('data-act'), kind=b.getAttribute('data-kind'), id=b.getAttribute('data-id');
+  try{
+    if(kind==='photo'){
+      if(act==='save'){ const f=_rvPhotoFields(id); if(!f) return; await sbPatch('fgf_photos',{id},f); showToast('Saved'); return; }
+      if(act==='approve'){ const f=_rvPhotoFields(id)||{}; f.approval_status='approved'; await sbPatch('fgf_photos',{id},f); showToast('Approved'); }
+      if(act==='delete'){ if(!confirm('Remove this photo from the site? (hidden, not permanently erased)')) return; await sbPatch('fgf_photos',{id},{approval_status:'rejected'}); showToast('Removed'); }
+    } else if(kind==='comment'){
+      if(act==='approve'){ await sbPatch('fgf_comments',{id},{status:'reviewed'}); showToast('Approved'); }
+      if(act==='delete'){ if(!confirm('Remove this note?')) return; await sbPatch('fgf_comments',{id},{status:'rejected'}); showToast('Removed'); }
+    } else if(kind==='log'){
+      if(act==='approve'){ await sbPatch('fgf_log',{id},{approval_status:'approved'}); showToast('Approved'); }
+      if(act==='delete'){ if(!confirm('Remove this log?')) return; await sbPatch('fgf_log',{id},{approval_status:'rejected'}); showToast('Removed'); }
+    }
+    loadReview();
+  }catch(x){ showToast('Action failed'); }
+}
+
+async function loadReports() {
+  const box = document.getElementById('reports-list');
+  try {
+    const reports = await getReports('open');
+    if (!reports.length) { box.innerHTML = '<div class="empty-state">No open reports — all clear ✓</div>'; return; }
+    box.innerHTML = reports.map(r => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(r.report_type || 'Report')}</div>
+          <div class="row-sub">${esc(r.description)} · ${esc(r.reporter_name || 'Anonymous')} · ${fmtDate(r.created_at)}</div>
+        </div>
+        <div class="row-actions">
+          <span class="badge badge-new">Open</span>
+          <button class="btn btn-success btn-sm" onclick="doResolveReport('${r.id}')">Resolve</button>
+        </div>
+      </div>`).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load reports.</div>'; }
+}
+
+// ─── Requests ────────────────────────────────────────────────
+window.doResolveRequest = async function(id) {
+  try {
+    await resolveRequest(id);
+    showToast('Request resolved');
+    loadRequests();
+    loadDashboard();
+  } catch(e) { showToast('Could not resolve'); }
+};
+
+async function loadRequests() {
+  const box = document.getElementById('requests-list');
+  try {
+    const reqs = await getRequests('open');
+    if (!reqs.length) { box.innerHTML = '<div class="empty-state">No open requests.</div>'; return; }
+    box.innerHTML = reqs.map(r => {
+      const urgent = String(r.priority||'').toLowerCase().includes('urgent');
+      return `<div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(r.request_type || 'Request')}</div>
+          <div class="row-sub">${esc(r.note)} · ${esc(r.requester_name)} · ${fmtDate(r.created_at)}</div>
+        </div>
+        <div class="row-actions">
+          ${urgent ? '<span class="badge badge-urgent">Urgent</span>' : '<span class="badge badge-routine">Normal</span>'}
+          <button class="btn btn-success btn-sm" onclick="doResolveRequest('${r.id}')">Resolve</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load requests.</div>'; }
+}
+
+// ─── Field Log ───────────────────────────────────────────────
+window.submitLog = async function() {
+  const note = document.getElementById('log-note').value.trim();
+  if (!note) { showToast('Write a note first'); return; }
+  const areaId = document.getElementById('log-area').value || null;
+  showToast('Saving…');
+  try {
+    await addLog(areaId, areaId ? null : 'General Farm', note, adminPw ? 'Admin' : 'Staff');
+    showToast('Logged!');
+    document.getElementById('log-note').value = '';
+    loadLog();
+  } catch(e) { showToast('Could not save'); }
+};
+
+async function loadLog() {
+  const box = document.getElementById('log-list');
+  try {
+    const log = await getLog(40);
+    if (!log.length) { box.innerHTML = '<div class="empty-state">No entries yet.</div>'; return; }
+    box.innerHTML = log.map(e => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(e.note)}</div>
+          <div class="row-sub">${esc(e.location_label || 'Farm')} · ${esc(e.logged_by || '')} · ${fmtDate(e.logged_at)}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load.</div>'; }
+}
+
+// ─── Comments ────────────────────────────────────────────────
+async function loadComments() {
+  const box = document.getElementById('comments-list');
+  try {
+    const comments = await getComments();
+    if (!comments.length) { box.innerHTML = '<div class="empty-state">No comments yet.</div>'; return; }
+    box.innerHTML = comments.map(c => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(c.commenter_name)}</div>
+          <div class="row-sub">${esc(c.message)} · ${fmtDate(c.submitted_at)}</div>
+        </div>
+        <div class="row-actions">
+          <span class="badge ${c.status === 'new' ? 'badge-new' : 'badge-done'}">${c.status}</span>
+          ${c.status === 'new' ? `<button class="btn btn-ghost btn-sm" onclick="markReviewed('${c.id}')">Mark read</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load.</div>'; }
+}
+
+window.markReviewed = async function(id) {
+  try { await markCommentReviewed(id); loadComments(); }
+  catch(e) { showToast('Could not update'); }
+};
+
+// ─── Completions Log ─────────────────────────────────────────
+function setDefaultDateRange() {
+  const to = today();
+  const from = new Date(); from.setDate(from.getDate() - 30);
+  document.getElementById('comp-to').value = to;
+  document.getElementById('comp-from').value = from.toISOString().slice(0,10);
+}
+
+window.loadCompletions = async function() {
+  const box = document.getElementById('completions-list');
+  const from = document.getElementById('comp-from').value || today();
+  box.innerHTML = '<div class="empty-state"><span class="spinner"></span> Loading…</div>';
+  try {
+    const comps = await getTaskCompletions(from);
+    const to = document.getElementById('comp-to').value;
+    const filtered = to ? comps.filter(c => c.visit_date <= to) : comps;
+    if (!filtered.length) { box.innerHTML = '<div class="empty-state">No completions in this range.</div>'; return; }
+    box.innerHTML = filtered.map(c => `
+      <div class="data-row">
+        <div class="row-main">
+          <div class="row-title">${esc(c.task_title || 'Task')}</div>
+          <div class="row-sub">${esc(c.completed_by)} · ${fmtDate(c.visit_date)}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { box.innerHTML = '<div class="empty-state">Could not load.</div>'; }
+};
+
+// ─── Init ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  updateModeIcon();
+  const saved = sessionStorage.getItem(ADMIN_PW_KEY);
+  if (saved) {
+    adminPw = saved;
+    window._lfgAdminPw = saved;
+    showMain();
+  }
+  document.getElementById('auth-pw').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doAuth();
+  });
+});
+</script>
+<a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
+</body>
+</html>

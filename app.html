@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fun Guy Fungi &amp; Gardens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F0EDE2; --ink-soft:#B0A99C; --paper:#2A2620; --card:#34302A;
+    --line:#45423A; --line-strong:#5A554A;
+    --green:#7E9A6E; --green-d:#2A2620; --leaf:#A8B89A;
+    --amber:#C9973F; --amber-bg:#4A3A22;
+    --red:#D15A48; --red-bg:#3E2723;
+    --shadow:0 1px 0 rgba(32,38,28,.04), 0 2px 8px rgba(32,38,28,.06);
+    --tap:60px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    font-family:'Source Sans 3',system-ui,sans-serif; color:var(--ink);
+    background:var(--paper); overscroll-behavior:none;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; margin:0;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* ---------- app frame ---------- */
+  #app{max-width:520px; margin:0 auto; min-height:100dvh; display:flex; flex-direction:column; position:relative; background:var(--paper);}
+
+  /* ---------- splash ---------- */
+  #splash{position:fixed; inset:0; background:var(--green-d); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; z-index:200; transition:opacity .6s ease; color:#f4f1e8;}
+  #splash.gone{opacity:0; pointer-events:none;}
+  #splash .mark{width:96px; height:96px; border-radius:24px; background:#f4f1e8; display:flex;
+    align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600;
+    font-size:52px; color:var(--green); box-shadow:0 8px 30px rgba(0,0,0,.3);
+    animation:pop .6s cubic-bezier(.2,.9,.3,1.4);}
+  #splash .wm{margin-top:20px; font-family:'Fraunces',serif; font-size:22px; letter-spacing:.5px; opacity:0; animation:fadein .6s ease .3s forwards;}
+  #splash .wm small{display:block; text-align:center; font-family:'Source Sans 3'; font-size:13px; letter-spacing:3px; text-transform:uppercase; opacity:.7; margin-top:4px;}
+  @keyframes pop{0%{transform:scale(.4); opacity:0;}100%{transform:scale(1); opacity:1;}}
+  @keyframes fadein{to{opacity:1;}}
+
+  /* ---------- hero (role fork) ---------- */
+  #hero{position:fixed; inset:0; background:var(--paper); z-index:150; display:none;
+    flex-direction:column; align-items:center; justify-content:center; padding:32px; text-align:center;}
+  #hero.show{display:flex;}
+  #hero .mark{width:72px; height:72px; border-radius:18px; background:var(--green-d); color:#f4f1e8;
+    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; font-size:38px; margin-bottom:8px;}
+  #hero h1{font-size:30px; margin:12px 0 2px;}
+  #hero p{color:var(--ink-soft); margin:0 0 36px; font-size:16px;}
+  .role-btn{width:100%; max-width:340px; min-height:76px; border-radius:18px; border:none;
+    display:flex; align-items:center; gap:16px; padding:0 22px; margin-bottom:16px; box-shadow:var(--shadow);
+    font-size:20px; font-weight:600; text-align:left; transition:transform .1s;}
+  .role-btn:active{transform:scale(.98);}
+  .role-btn .ic{font-size:30px;}
+  .role-btn small{display:block; font-weight:400; font-size:13px; opacity:.75; margin-top:2px;}
+  .role-staff{background:var(--green); color:#fff;}
+  .role-visitor{background:var(--card); color:var(--ink); border:1.5px solid var(--line-strong);}
+  #hero .langrow{margin-top:20px; display:flex; gap:8px;}
+  .lang-pill{border:1.5px solid var(--line-strong); background:var(--card); color:var(--ink-soft);
+    border-radius:999px; padding:8px 16px; font-size:14px; font-weight:600;}
+  .lang-pill.on{background:var(--green); color:#1B1B17; border-color:var(--green);}
+
+  /* ---------- top bar ---------- */
+  .topbar{height:56px; flex:0 0 56px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 12px; border-bottom:1px solid var(--line); background:var(--paper); position:sticky; top:0; z-index:40;}
+  .iconbtn{width:44px; height:44px; border:none; background:transparent; border-radius:12px; font-size:24px;
+    display:flex; align-items:center; justify-content:center; color:var(--ink);}
+  .iconbtn:active{background:rgba(0,0,0,.05);}
+  .topbar .title{font-family:'Fraunces',serif; font-weight:600; font-size:18px;}
+
+  /* ---------- hamburger panel ---------- */
+  #scrim{position:fixed; inset:0; background:rgba(20,24,16,.45); z-index:90; opacity:0; pointer-events:none; transition:opacity .25s;}
+  #scrim.show{opacity:1; pointer-events:auto;}
+  #panel{position:fixed; top:0; left:0; bottom:0; width:280px; max-width:82%; background:var(--card);
+    z-index:100; transform:translateX(-100%); transition:transform .28s cubic-bezier(.3,.7,.3,1);
+    box-shadow:2px 0 24px rgba(0,0,0,.18); display:flex; flex-direction:column; padding:18px 14px;}
+  #panel.show{transform:translateX(0);}
+  #panel .phead{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  #panel .phead h2{font-size:20px;}
+  .menu-item{display:flex; align-items:center; gap:13px; min-height:52px; padding:0 12px; border-radius:12px;
+    border:none; background:transparent; width:100%; font-size:16px; color:var(--ink); text-align:left;}
+  .menu-item:active{background:rgba(0,0,0,.05);}
+  .menu-item .ic{font-size:22px; width:24px; text-align:center;}
+  .menu-item.on{background:var(--paper);}
+  .menu-label{font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--ink-soft); margin:14px 12px 4px;}
+  .menu-item .badge{margin-left:auto; background:var(--red); color:#fff; font-size:12px; font-weight:700; min-width:22px; height:22px; border-radius:11px; display:flex; align-items:center; justify-content:center; padding:0 6px;}
+  .admin-only{display:none;}
+  body.is-admin .admin-only{display:flex;}
+
+  /* ---------- screens ---------- */
+  main{flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:96px;}
+  .screen{display:none; animation:screenin .2s ease;}
+  .screen.active{display:block;}
+  @keyframes screenin{from{opacity:0; transform:translateY(4px);}to{opacity:1; transform:none;}}
+  .pad{padding:16px;}
+  .screen-h{font-size:15px; color:var(--ink-soft); margin:0 0 14px;}
+
+  /* ---------- hub ---------- */
+  .hub-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .tile{border-radius:18px; padding:18px 16px; min-height:120px; border:none; display:flex;
+    flex-direction:column; justify-content:space-between; box-shadow:var(--shadow); text-align:left;}
+  .tile:active{transform:scale(.98);}
+  .tile .ic{font-size:32px;}
+  .tile .tname{font-family:'Fraunces',serif; font-weight:600; font-size:19px;}
+  .tile .tsub{font-size:12.5px; opacity:.8; margin-top:2px;}
+  .tile.primary{background:var(--green); color:#fff; grid-column:1 / -1; flex-direction:row; align-items:center; min-height:96px; gap:16px;}
+  .tile.primary .ic{font-size:40px;}
+  .tile.n{background:var(--card); color:var(--ink); border:1px solid var(--line);}
+
+  /* ---------- log ---------- */
+  .field{margin-bottom:20px;}
+  .field-label{display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.8px; color:var(--ink-soft); margin-bottom:9px;}
+  .field-label .ic{font-size:17px;}
+  .type-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+  .chip{min-height:var(--tap); border-radius:14px; border:1.5px solid var(--line-strong); background:var(--card);
+    color:var(--ink); font-size:15px; font-weight:600; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; padding:6px;}
+  .chip .ic{font-size:22px;}
+  .chip:active{transform:scale(.97);}
+  .chip.on{background:var(--green); color:#fff; border-color:var(--green);}
+  .chip.on.warn{background:var(--amber); border-color:var(--amber); color:#3a2c08;}
+  .chip.on.bad{background:var(--red); border-color:var(--red); color:#fff;}
+  .btn-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .zone-h{font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ink-soft); margin:12px 0 6px;}
+  .whenbar{display:flex; align-items:center; justify-content:space-between; background:var(--card);
+    border:1px solid var(--line); border-radius:14px; padding:12px 16px; font-size:15px;}
+  .whenbar .edit{color:var(--green); font-weight:600; font-size:14px; background:none; border:none;}
+  .notebox{width:100%; min-height:52px; border:1.5px dashed var(--line-strong); border-radius:14px;
+    padding:13px 14px; font-size:15px; font-family:inherit; background:transparent; color:var(--ink); resize:vertical;}
+  .notebox:focus{outline:none; border-color:var(--green); border-style:solid;}
+
+  /* ---------- tasks ---------- */
+  .task-row{display:flex; align-items:center; gap:13px; min-height:var(--tap); padding:11px 14px;
+    border-radius:14px; margin-bottom:9px; background:var(--card); border:1px solid var(--line);}
+  .task-row.warn{background:var(--amber-bg); border-left:5px solid var(--amber);}
+  .task-row.bad{background:var(--red-bg); border-left:5px solid var(--red);}
+  .task-check{width:30px; height:30px; border-radius:50%; border:2.5px solid var(--line-strong);
+    flex:0 0 auto; background:transparent;}
+  .task-row.warn .task-check{border-color:var(--amber);}
+  .task-row.bad .task-check{border-color:var(--red);}
+  .task-body{flex:1; min-width:0;}
+  .task-title{font-size:16px; font-weight:600; color:var(--ink);}
+  .task-sub{font-size:12.5px; color:var(--ink-soft); margin-top:1px;}
+  .task-row.bad .task-sub{color:var(--red);}
+
+  /* ---------- inventory ---------- */
+  .inv-row{display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px;
+    margin-bottom:9px; background:var(--card); border:1px solid var(--line);}
+  .inv-body{flex:1; min-width:0;}
+  .inv-name{font-size:16px; font-weight:600;}
+  .inv-cat{font-size:12px; color:var(--ink-soft);}
+  .stepper{display:flex; align-items:center; gap:2px;}
+  .step-btn{width:40px; height:40px; border-radius:11px; border:1.5px solid var(--line-strong);
+    background:var(--card); font-size:22px; color:var(--ink); display:flex; align-items:center; justify-content:center;}
+  .step-btn:active{background:var(--paper);}
+  .qty{min-width:46px; text-align:center; font-size:17px; font-weight:700;}
+  .qty small{font-weight:400; font-size:12px; color:var(--ink-soft); display:block;}
+
+  /* ---------- bottom action ---------- */
+  .actionbar{position:fixed; left:0; right:0; bottom:0; max-width:520px; margin:0 auto; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--paper) 70%, transparent); z-index:30;}
+  .btn-primary{width:100%; min-height:58px; border-radius:16px; border:none; background:var(--green);
+    color:#fff; font-size:18px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--shadow);}
+  .btn-primary:active{transform:scale(.99); background:var(--green-d);}
+  .btn-primary:disabled{background:var(--line-strong); color:#fff;}
+
+  /* ---------- misc ---------- */
+  .empty{text-align:center; color:var(--ink-soft); padding:48px 24px; font-size:15px;}
+  .approve-group{font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--ink-soft); margin:18px 2px 8px; font-weight:700;}
+  .approve-group:first-child{margin-top:2px;}
+  .empty .ic{font-size:44px; display:block; margin-bottom:10px; opacity:.5;}
+  #toast{position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:var(--ink); color:#fff; padding:12px 20px; border-radius:12px; font-size:15px; z-index:120;
+    transition:all .3s; pointer-events:none; max-width:88%; text-align:center;}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .add-line{width:100%; min-height:54px; border-radius:14px; border:1.5px dashed var(--line-strong);
+    background:transparent; color:var(--ink-soft); font-size:16px; font-weight:600; display:flex;
+    align-items:center; justify-content:center; gap:6px; margin-top:4px;}
+  .add-line:active{background:var(--card);}
+
+  /* ---------- task editor sheet ---------- */
+  #sheet-scrim{position:fixed; inset:0; background:rgba(20,24,16,.45); z-index:110; opacity:0; pointer-events:none; transition:opacity .25s;}
+  #sheet-scrim.show{opacity:1; pointer-events:auto;}
+  #task-sheet{position:fixed; left:0; right:0; bottom:0; max-width:520px; margin:0 auto; background:var(--paper);
+    z-index:120; border-radius:22px 22px 0 0; padding:12px 18px calc(20px + env(safe-area-inset-bottom));
+    transform:translateY(100%); transition:transform .3s cubic-bezier(.3,.7,.3,1); box-shadow:0 -4px 30px rgba(0,0,0,.2); max-height:88dvh; overflow-y:auto;}
+  #task-sheet.show{transform:translateY(0);}
+  .sheet-grip{width:44px; height:5px; border-radius:3px; background:var(--line-strong); margin:6px auto 14px;}
+  .text-in{width:100%; min-height:52px; border:1.5px solid var(--line-strong); border-radius:14px; padding:0 15px;
+    font-size:16px; font-family:inherit; background:var(--card); color:var(--ink);}
+  .text-in:focus{outline:none; border-color:var(--green);}
+  select.text-in{-webkit-appearance:none; appearance:none; padding-right:38px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5442' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center;}
+  .recur-chip{min-height:52px; font-size:14px;}
+  .btn-danger{width:100%; min-height:52px; border-radius:14px; border:1.5px solid var(--red); background:transparent;
+    color:var(--red); font-size:16px; font-weight:600; margin-top:10px;}
+  .btn-danger:active{background:var(--red-bg);}
+  .btn-ghost{width:100%; min-height:48px; border:none; background:transparent; color:var(--ink-soft); font-size:16px; margin-top:6px;}
+  #inv-scrim{position:fixed; inset:0; background:rgba(20,24,16,.45); z-index:110; opacity:0; pointer-events:none; transition:opacity .25s;}
+  #inv-scrim.show{opacity:1; pointer-events:auto;}
+  #inv-sheet{position:fixed; left:0; right:0; bottom:0; max-width:520px; margin:0 auto; background:var(--paper);
+    z-index:120; border-radius:22px 22px 0 0; padding:12px 18px calc(20px + env(safe-area-inset-bottom));
+    transform:translateY(100%); transition:transform .3s cubic-bezier(.3,.7,.3,1); box-shadow:0 -4px 30px rgba(0,0,0,.2); max-height:88dvh; overflow-y:auto;}
+  #inv-sheet.show{transform:translateY(0);}
+  .photo-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .photo-cell{aspect-ratio:1; border-radius:14px; overflow:hidden; background:var(--card); border:1px solid var(--line); position:relative;}
+  .photo-cell img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo-cell .cap{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(transparent,rgba(0,0,0,.6)); color:#fff; font-size:12px; padding:16px 8px 6px;}
+  .photo-cell.pending::after{content:'Pending'; position:absolute; top:6px; right:6px; background:var(--amber); color:#3a2c08; font-size:11px; font-weight:700; padding:2px 7px; border-radius:8px;}
+
+  .pr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+  .pr-sheet{background:var(--surface);width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;border-radius:18px 18px 0 0;border:1px solid var(--line);}
+  .pr-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);}
+  .pr-title{font-family:Fraunces,serif;font-weight:600;font-size:17px;}
+  .pr-x{background:none;border:0;color:var(--ink-soft);font-size:26px;line-height:1;cursor:pointer;}
+  .pr-bulk{display:flex;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-soft);flex-wrap:wrap;}
+  .pr-bulk>span{flex:0 0 auto;}
+  #pr-list{overflow-y:auto;padding:4px 16px;flex:1;}
+  .pr-card{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .pr-card img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;}
+  .pr-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .pr-fields select,.pr-fields input,.pr-bulk select{background:var(--paper);color:var(--ink);border:1.5px solid var(--line-strong);border-radius:8px;padding:8px;font-size:14px;font-family:inherit;width:100%;min-width:0;}
+  .pr-actions{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);}
+  .pr-btn{flex:1;border:none;border-radius:12px;padding:13px;font-weight:600;font-size:15px;cursor:pointer;font-family:inherit;}
+  .pr-btn.go{background:var(--green);color:var(--on-accent);}
+  .pr-btn.cancel{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong);}
+
+  .ph-filters{display:flex;gap:8px;margin:0 0 12px;}
+  .ph-filters select{flex:1;min-width:0;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:9px;font-size:14px;font-family:inherit;}
+  .photo-cell .cap b{color:var(--accent-2);font-weight:600;}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="splash">
+  <div class="mark">L</div>
+  <div class="wm">Fun Guy Fungi<small>&amp; Gardens</small></div>
+</div>
+
+<div id="hero">
+  <div class="mark">L</div>
+  <h1>Fun Guy Fungi</h1>
+  <p>&amp; Gardens</p>
+  <button class="role-btn role-staff" onclick="chooseRole('staff')">
+    <span class="ic">&#127793;</span>
+    <span>Staff<small>Log work, check tasks &amp; supplies</small></span>
+  </button>
+  <button class="role-btn role-visitor" onclick="chooseRole('visitor')">
+    <span class="ic">&#128065;</span>
+    <span>Visitor<small>Explore the farm</small></span>
+  </button>
+  <div class="langrow">
+    <button class="lang-pill on" onclick="setLang('en',this)">English</button>
+    <button class="lang-pill" onclick="setLang('es',this)">Espa&ntilde;ol</button>
+    <button class="lang-pill" onclick="setLang('pt',this)">Portugu&ecirc;s</button>
+  </div>
+</div>
+
+<div id="scrim" onclick="closeMenu()"></div>
+<nav id="panel">
+  <div class="phead"><h2>Menu</h2><button class="iconbtn" onclick="closeMenu()">&times;</button></div>
+  <button class="menu-item" onclick="goHero()"><span class="ic">&#127968;</span> Home</button>
+  <div class="menu-label">Screens</div>
+  <button class="menu-item" onclick="go('hub');closeMenu()"><span class="ic">&#9632;</span> Hub</button>
+  <button class="menu-item" onclick="go('log');closeMenu()"><span class="ic">&#9998;</span> Log activity</button>
+  <button class="menu-item" onclick="go('tasks');closeMenu()"><span class="ic">&#9745;</span> Tasks</button>
+  <button class="menu-item" onclick="go('inventory');closeMenu()"><span class="ic">&#128230;</span> Inventory</button>
+  <button class="menu-item" onclick="go('photos');closeMenu()"><span class="ic">&#128247;</span> Photos</button>
+  <div class="menu-label">Apps</div>
+  <button class="menu-item" onclick="location.href='/manual.html'"><span class="ic">&#128214;</span> Farm manual</button>
+  <button class="menu-item admin-only" onclick="go('approvals');closeMenu()"><span class="ic">&#9989;</span> Approval queue <span class="badge" id="approve-badge" style="display:none">0</span></button>
+  <div class="menu-label">Language</div>
+  <button class="menu-item" onclick="cycleLang()"><span class="ic">&#127760;</span> <span id="menu-lang">English</span></button>
+</nav>
+
+<div id="app">
+  <div class="topbar">
+    <button class="iconbtn" onclick="openMenu()">&#9776;</button>
+    <span class="title" id="bar-title">Fun Guy Fungi</span>
+    <span style="width:44px"></span>
+  </div>
+
+  <main>
+    <!-- HUB -->
+    <section class="screen active" id="screen-hub">
+      <div class="pad">
+        <p class="screen-h">What are you doing today?</p>
+        <div class="hub-grid">
+          <button class="tile primary" onclick="go('log')">
+            <span class="ic">&#9998;</span>
+            <span><span class="tname">Log</span><span class="tsub">Activity &middot; problem &middot; need</span></span>
+          </button>
+          <button class="tile n" onclick="go('tasks')">
+            <span class="ic">&#9745;</span>
+            <span class="tname">Tasks</span><span class="tsub" id="hub-task-sub">Loading&hellip;</span>
+          </button>
+          <button class="tile n" onclick="go('inventory')">
+            <span class="ic">&#128230;</span>
+            <span class="tname">Inventory</span><span class="tsub">Tools &amp; supplies</span>
+          </button>
+          <button class="tile n" onclick="go('photos')">
+            <span class="ic">&#128247;</span>
+            <span class="tname">Photos</span><span class="tsub">Farm album</span>
+          </button>
+          <button class="tile n" onclick="location.href='/manual.html'">
+            <span class="ic">&#128214;</span>
+            <span class="tname">Manual</span><span class="tsub">Guides &amp; reference</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section class="screen" id="screen-log">
+      <div class="pad">
+        <div class="field">
+          <div class="field-label"><span class="ic">&#9781;</span> What kind?</div>
+          <div class="type-row">
+            <button class="chip on" data-type="activity" onclick="pickType(this,'activity')"><span class="ic">&#9998;</span>Activity</button>
+            <button class="chip" data-type="problem" onclick="pickType(this,'problem')"><span class="ic">&#9888;</span>Problem</button>
+            <button class="chip" data-type="need" onclick="pickType(this,'need')"><span class="ic">&#128230;</span>Need</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="ic">&#128340;</span> When</div>
+          <div class="whenbar"><span id="when-label">Now</span><button class="edit" onclick="openWhenPicker()">Change</button></div>
+          <input type="datetime-local" id="when-input" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" onchange="setWhen(this.value)">
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="ic">&#128205;</span> Where</div>
+          <div id="where-groups"><div class="empty"><span class="ic">&#8987;</span>Loading areas&hellip;</div></div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="ic">&#128100;</span> Who</div>
+          <div class="btn-grid" id="who-grid"></div>
+        </div>
+
+        <div class="field" id="what-field">
+          <div class="field-label"><span class="ic">&#128296;</span> What</div>
+          <div class="btn-grid" id="what-grid"></div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="ic">&#9998;</span> Note <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">(optional)</span></div>
+          <textarea class="notebox" id="log-note" placeholder="Add detail if you want&hellip;"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="screen" id="screen-tasks">
+      <div class="pad">
+        <p class="screen-h">Tasks needing attention float to the top. Tap a task to edit; tap the circle to complete.</p>
+        <div id="task-list"><div class="empty"><span class="ic">&#8987;</span>Loading&hellip;</div></div>
+        <button class="add-line" onclick="openTaskEditor()">&#43; Add task</button>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="screen" id="screen-inventory">
+      <div class="pad">
+        <p class="screen-h">Tap &minus; or + to adjust. Changes save right away.</p>
+        <div id="inv-list"><div class="empty"><span class="ic">&#8987;</span>Loading&hellip;</div></div>
+        <button class="add-line" onclick="addInventoryItem()">&#43; Add item</button>
+      </div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section class="screen" id="screen-photos">
+      <div class="pad">
+        <p class="screen-h">Farm album. Add a photo &mdash; it posts after review.</p>
+        <input type="file" id="photo-file" accept="image/*" multiple style="display:none" onchange="reviewPhotos(this)">
+        <div id="photo-filters" class="ph-filters"></div>
+        <div id="photo-grid"><div class="empty"><span class="ic">&#8987;</span>Loading&hellip;</div></div>
+      </div>
+    </section>
+
+    <!-- APPROVALS (admin) -->
+    <section class="screen" id="screen-approvals">
+      <div class="pad">
+        <p class="screen-h">Pending staff edits. Approve to make them public.</p>
+        <div id="approve-list"><div class="empty"><span class="ic">&#8987;</span>Loading&hellip;</div></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TASK EDITOR SHEET -->
+  <div id="sheet-scrim" onclick="closeTaskEditor()"></div>
+  <div id="task-sheet">
+    <div class="sheet-grip"></div>
+    <h2 id="task-sheet-title" style="margin-bottom:16px">New task</h2>
+    <div class="field">
+      <div class="field-label">Task</div>
+      <input id="task-title-in" class="text-in" placeholder="e.g. Check drip line in Zone 2" autocomplete="off">
+    </div>
+    <div class="field">
+      <div class="field-label">How often?</div>
+      <div class="type-row" style="grid-template-columns:1fr 1fr 1fr 1fr">
+        <button class="chip recur-chip on" data-recur="one_time" onclick="pickRecur(this)">Once</button>
+        <button class="chip recur-chip" data-recur="daily" onclick="pickRecur(this)">Daily</button>
+        <button class="chip recur-chip" data-recur="weekly" onclick="pickRecur(this)">Weekly</button>
+        <button class="chip recur-chip" data-recur="monthly" onclick="pickRecur(this)">Monthly</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Where <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">(optional)</span></div>
+      <select id="task-area-in" class="text-in"><option value="">Anywhere / whole farm</option></select>
+    </div>
+    <button class="btn-primary" onclick="saveTask()" style="margin-top:8px">Save task</button>
+    <button id="task-delete-btn" class="btn-danger" onclick="deleteTask()" style="display:none">Remove task</button>
+    <button class="btn-ghost" onclick="closeTaskEditor()">Cancel</button>
+  </div>
+
+  <!-- INVENTORY EDITOR SHEET -->
+  <div id="inv-scrim" onclick="closeInvEditor()"></div>
+  <div id="inv-sheet">
+    <div class="sheet-grip"></div>
+    <h2 id="inv-sheet-title" style="margin-bottom:16px">New item</h2>
+    <div class="field">
+      <div class="field-label">Item</div>
+      <input id="inv-name-in" class="text-in" placeholder="e.g. Potting soil" autocomplete="off">
+    </div>
+    <div class="field" style="display:flex; gap:10px;">
+      <div style="flex:1"><div class="field-label">Quantity</div><input id="inv-qty-in" class="text-in" type="number" inputmode="decimal" value="0"></div>
+      <div style="flex:1"><div class="field-label">Unit</div><input id="inv-unit-in" class="text-in" placeholder="bag, ft, each" autocomplete="off"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Category <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">(optional)</span></div>
+      <input id="inv-cat-in" class="text-in" placeholder="Tools, seeds, amendments&hellip;" autocomplete="off">
+    </div>
+    <button class="btn-primary" onclick="saveInv()" style="margin-top:8px">Save item</button>
+    <button id="inv-delete-btn" class="btn-danger" onclick="deleteInv()" style="display:none">Remove item</button>
+    <button class="btn-ghost" onclick="closeInvEditor()">Cancel</button>
+  </div>
+
+  <div class="actionbar" id="actionbar" style="display:none">
+    <button class="btn-primary" id="primary-action">Log it</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://gblizuknnvguxyxfequh.supabase.co';
+const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+const CREW = ['Chad','Maria','Sam','Guest'];
+const ACTIONS = {
+  activity:['Watered','Weeded','Planted','Harvested','Pruned','Fertilized','Mulched','Observed'],
+  problem:['Pest damage','Irrigation issue','Broken structure','Disease','Weather damage','Other'],
+  need:['Supplies','Repair','Tools','Water','Assistance','Other']
+};
+
+let state = { type:'activity', areaId:null, areaLabel:null, who:null, what:null, areas:[], loggedAt:null };
+
+/* ---------- boot ---------- */
+window.addEventListener('load', ()=>{
+  const lang = localStorage.getItem('fgf_lang') || null;
+  const role = localStorage.getItem('fgf_role') || null;
+  if(localStorage.getItem('fgf_admin')==='1') document.body.classList.add('is-admin');
+  (function(){
+    var t=document.getElementById('bar-title'); if(!t) return;
+    var taps=0, timer=null;
+    t.addEventListener('click', function(){
+      taps++; clearTimeout(timer); timer=setTimeout(function(){ taps=0; }, 1500);
+      if(taps<5) return;
+      taps=0; clearTimeout(timer);
+      if(document.body.classList.contains('is-admin')){
+        if(confirm('Turn off admin mode on this device?')){ localStorage.removeItem('fgf_admin'); document.body.classList.remove('is-admin'); toast('Admin mode off'); }
+      } else {
+        var pin=prompt('Enter admin PIN'); if(pin===null) return;
+        if(pin==='242301'){ localStorage.setItem('fgf_admin','1'); document.body.classList.add('is-admin'); if(typeof refreshApproveBadge==='function') refreshApproveBadge(); toast('Admin mode on — open the menu for Approval queue'); }
+        else toast('Wrong PIN');
+      }
+    });
+  })();
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('gone');
+    if(role==='staff'){ enterStaff(); }
+    else if(role==='visitor'){ enterVisitor(); }
+    else { document.getElementById('hero').classList.add('show'); }
+  }, 1400);
+});
+
+function setLang(l, el){
+  localStorage.setItem('fgf_lang', l);
+  document.querySelectorAll('.lang-pill').forEach(p=>p.classList.remove('on'));
+  if(el) el.classList.add('on');
+}
+function cycleLang(){
+  const order=['en','es','pt']; const names={en:'English',es:'Espa\u00f1ol',pt:'Portugu\u00eas'};
+  let cur=localStorage.getItem('fgf_lang')||'en';
+  let next=order[(order.indexOf(cur)+1)%3];
+  localStorage.setItem('fgf_lang',next);
+  document.getElementById('menu-lang').textContent=names[next];
+  toast('Language: '+names[next]);
+}
+function chooseRole(r){
+  localStorage.setItem('fgf_role', r);
+  document.getElementById('hero').classList.remove('show');
+  if(r==='staff') enterStaff(); else enterVisitor();
+}
+function goHero(){
+  closeMenu();
+  document.getElementById('hero').classList.add('show');
+}
+function enterVisitor(){
+  // Visitor view is next build — for tonight, send them to hero with a note
+  toast('Visitor view coming next \u2014 showing staff hub for now');
+  enterStaff();
+}
+function enterStaff(){
+  go('hub');
+  loadAreas(); loadTasks(); loadInventory(); refreshApproveBadge();
+}
+
+/* ---------- navigation ---------- */
+const TITLES={hub:'Fun Guy Fungi',log:'Log activity',tasks:'Tasks',inventory:'Inventory',photos:'Photos',approvals:'Approvals'};
+function go(scr){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+scr); if(el) el.classList.add('active');
+  document.getElementById('bar-title').textContent=TITLES[scr]||'Fun Guy Fungi';
+  document.querySelector('main').scrollTop=0;
+  const ab=document.getElementById('actionbar');
+  if(scr==='log'){ ab.style.display='block'; document.getElementById('primary-action').textContent='Log it'; document.getElementById('primary-action').onclick=submitLog; }
+  else ab.style.display='none';
+}
+function openMenu(){ document.getElementById('panel').classList.add('show'); document.getElementById('scrim').classList.add('show'); }
+function closeMenu(){ document.getElementById('panel').classList.remove('show'); document.getElementById('scrim').classList.remove('show'); }
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400); }
+
+/* ---------- LOG: build pickers ---------- */
+async function loadAreas(){
+  const {data,error}= await sb.from('fgf_growing_areas').select('id,name,zone,area_type').is('archived_at',null).order('zone').order('name');
+  if(error){ document.getElementById('where-groups').innerHTML='<div class="empty">Could not load areas</div>'; return; }
+  state.areas=data;
+  const groups={};
+  data.forEach(a=>{ const z=a.zone||'Other'; (groups[z]=groups[z]||[]).push(a); });
+  let html='';
+  Object.keys(groups).forEach(z=>{
+    html+='<div class="zone-h">'+z+'</div><div class="btn-grid">';
+    groups[z].forEach(a=>{ html+='<button class="chip" style="min-height:52px" data-area="'+a.id+'" onclick="pickArea(this,\''+a.id+'\',\''+a.name.replace(/'/g,"")+'\')">'+a.name+'</button>'; });
+    html+='</div>';
+  });
+  document.getElementById('where-groups').innerHTML=html;
+  // who
+  document.getElementById('who-grid').innerHTML=CREW.map(n=>'<button class="chip" style="min-height:52px" onclick="pickWho(this,\''+n+'\')">'+n+'</button>').join('');
+  renderWhat();
+}
+function renderWhat(){
+  document.getElementById('what-grid').innerHTML=ACTIONS[state.type].map(a=>'<button class="chip" style="min-height:52px" onclick="pickWhat(this,\''+a+'\')">'+a+'</button>').join('');
+  state.what=null;
+}
+function pickType(el,t){ document.querySelectorAll('[data-type]').forEach(c=>{c.classList.remove('on','warn','bad');}); el.classList.add('on'); if(t==='problem')el.classList.add('bad'); if(t==='need')el.classList.add('warn'); state.type=t; renderWhat(); }
+function pickArea(el,id,label){ document.querySelectorAll('[data-area]').forEach(c=>c.classList.remove('on')); el.classList.add('on'); state.areaId=id; state.areaLabel=label; }
+function pickWho(el,n){ el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); state.who=n; }
+function pickWhat(el,a){ el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); state.what=a; }
+function openWhenPicker(){
+  const inp=document.getElementById('when-input');
+  const d=state.loggedAt?new Date(state.loggedAt):new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  inp.value=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+  if(inp.showPicker){ try{ inp.showPicker(); return; }catch(e){} }
+  inp.style.pointerEvents='auto'; inp.style.opacity='0.01'; inp.focus(); inp.click();
+}
+function setWhen(v){
+  if(!v){ return; }
+  state.loggedAt=new Date(v).toISOString();
+  const d=new Date(v);
+  const today=new Date(); const isToday=d.toDateString()===today.toDateString();
+  const t=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  document.getElementById('when-label').textContent = isToday? ('Today '+t) : (d.toLocaleDateString([],{month:'short',day:'numeric'})+' '+t);
+}
+
+async function submitLog(){
+  if(!state.what){ toast('Tap what was done'); return; }
+  const btn=document.getElementById('primary-action'); btn.disabled=true; btn.textContent='Saving\u2026';
+  const noteParts=[];
+  noteParts.push('['+state.type.toUpperCase()+'] '+state.what);
+  const extra=document.getElementById('log-note').value.trim();
+  if(extra) noteParts.push(extra);
+  const row={
+    area_id: state.areaId,
+    location_label: state.areaLabel,
+    note: noteParts.join(' \u2014 '),
+    logged_by: state.who || 'Staff',
+    approval_status: 'pending',
+    submitted_by: state.who || 'Staff'
+  };
+  if(state.loggedAt) row.logged_at = state.loggedAt;
+  const {error}= await sb.from('fgf_log').insert(row);
+  btn.disabled=false; btn.textContent='Log it';
+  if(error){ toast('Save failed \u2014 try again'); return; }
+  toast('Logged \u2014 pending review');
+  // reset lightly
+  document.getElementById('log-note').value='';
+  state.what=null; state.loggedAt=null;
+  document.getElementById('when-label').textContent='Now';
+  document.querySelectorAll('#what-grid .chip').forEach(c=>c.classList.remove('on'));
+  refreshApproveBadge();
+  go('hub');
+}
+
+/* ---------- TASKS with color aging ---------- */
+async function loadTasks(){
+  const {data:tasks,error}= await sb.from('fgf_tasks').select('*').is('archived_at',null);
+  if(error){ document.getElementById('task-list').innerHTML='<div class="empty">Could not load tasks</div>'; return; }
+  // completions -> which tasks done, and visit history
+  const {data:comps}= await sb.from('fgf_task_completions').select('task_id,visit_date');
+  const completedTaskIds=new Set((comps||[]).map(c=>c.task_id));
+  // distinct visit days across the farm (any activity) — use log + completions dates
+  const {data:logs}= await sb.from('fgf_log').select('logged_at');
+  const visitDays=new Set();
+  (logs||[]).forEach(l=>{ if(l.logged_at) visitDays.add(l.logged_at.slice(0,10)); });
+  (comps||[]).forEach(c=>{ if(c.visit_date) visitDays.add(c.visit_date); });
+  const sortedVisits=[...visitDays].sort();
+  const pending=tasks.filter(t=>!completedTaskIds.has(t.id));
+  // aging: count visit-days since created (excluding creation day)
+  pending.forEach(t=>{
+    const created=(t.created_at||'').slice(0,10);
+    const missed=sortedVisits.filter(d=>d>created).length;
+    t._missed=missed;
+    t._color = missed>=3?'flag':missed>=2?'bad':missed>=1?'warn':'ok';
+  });
+  const rank={flag:0,bad:1,warn:2,ok:3};
+  pending.sort((a,b)=> rank[a._color]-rank[b._color] || (a.sort_order||99)-(b.sort_order||99));
+  renderTasks(pending);
+  document.getElementById('hub-task-sub').textContent = pending.length? (pending.filter(t=>t._color!=='ok').length+' need attention') : 'All clear';
+}
+function renderTasks(list){
+  window._tasks = list;
+  const el=document.getElementById('task-list');
+  if(!list.length){ el.innerHTML='<div class="empty"><span class="ic">&#9745;</span>No pending tasks. Nice.</div>'; return; }
+  el.innerHTML=list.map(t=>{
+    const cls=t._color==='bad'||t._color==='flag'?'bad':t._color==='warn'?'warn':'';
+    let sub;
+    if(t._color==='flag') sub='Flagged \u2014 missed 3+ visits';
+    else if(t._color==='bad') sub='Overdue \u2014 2 visits missed';
+    else if(t._color==='warn') sub='Carried forward \u2014 1 missed';
+    else sub=recurLabel(t);
+    return '<div class="task-row '+cls+'"><button class="task-check" onclick="event.stopPropagation();completeTask(\''+t.id+'\',\''+(t.title||'').replace(/\x27/g,'')+'\')"></button><div class="task-body" onclick="openTaskEditor(\''+t.id+'\')"><div class="task-title">'+esc(t.title||'Untitled')+'</div><div class="task-sub">'+sub+'</div></div></div>';
+  }).join('');
+}
+function recurLabel(t){ const m={visit:'Every visit',daily:'Daily',weekly:'Weekly',biweekly:'Every 2 weeks',monthly:'Monthly',interval:'Recurring',one_time:'One time',seasonal:'Seasonal'}; return m[t.recurrence_type]||'Pending'; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+async function completeTask(id,title){
+  const {error}= await sb.from('fgf_task_completions').insert({task_id:id, completed_by:'staff', task_title:title});
+  if(error){ toast('Could not complete'); return; }
+  toast('Done \u2713'); loadTasks();
+}
+
+/* ---------- TASK EDITOR (add / edit / remove + recurrence) ---------- */
+let editingTaskId=null, editRecur='one_time';
+function fillTaskAreaSelect(){
+  const sel=document.getElementById('task-area-in');
+  if(sel.options.length>1) return; // already filled
+  (state.areas||[]).forEach(a=>{ const o=document.createElement('option'); o.value=a.id; o.textContent=a.name; sel.appendChild(o); });
+}
+function openTaskEditor(id){
+  fillTaskAreaSelect();
+  editingTaskId = (typeof id==='string') ? id : null;
+  const t = editingTaskId ? (window._tasks||[]).find(x=>x.id===editingTaskId) : null;
+  document.getElementById('task-sheet-title').textContent = t? 'Edit task' : 'New task';
+  document.getElementById('task-title-in').value = t? (t.title||'') : '';
+  document.getElementById('task-area-in').value = t? (t.area_id||'') : '';
+  editRecur = t? (t.recurrence_type||'one_time') : 'one_time';
+  document.querySelectorAll('.recur-chip').forEach(c=>c.classList.toggle('on', c.dataset.recur===editRecur));
+  document.getElementById('task-delete-btn').style.display = t? 'block':'none';
+  document.getElementById('task-sheet').classList.add('show');
+  document.getElementById('sheet-scrim').classList.add('show');
+}
+function closeTaskEditor(){
+  document.getElementById('task-sheet').classList.remove('show');
+  document.getElementById('sheet-scrim').classList.remove('show');
+  editingTaskId=null;
+}
+function pickRecur(el){ document.querySelectorAll('.recur-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); editRecur=el.dataset.recur; }
+async function saveTask(){
+  const title=document.getElementById('task-title-in').value.trim();
+  if(!title){ toast('Give the task a name'); return; }
+  const area=document.getElementById('task-area-in').value || null;
+  const row={ title, recurrence_type:editRecur, area_id:area, created_by:'staff' };
+  let error;
+  if(editingTaskId){ ({error}= await sb.from('fgf_tasks').update({title, recurrence_type:editRecur, area_id:area}).eq('id',editingTaskId)); }
+  else { ({error}= await sb.from('fgf_tasks').insert(row)); }
+  if(error){ toast('Could not save'); return; }
+  toast(editingTaskId?'Task updated':'Task added'); closeTaskEditor(); loadTasks();
+}
+async function deleteTask(){
+  if(!editingTaskId) return;
+  if(!confirm('Remove this task?')) return;
+  const {error}= await sb.from('fgf_tasks').update({archived_at:new Date().toISOString()}).eq('id',editingTaskId);
+  if(error){ toast('Could not remove'); return; }
+  toast('Task removed'); closeTaskEditor(); loadTasks();
+}
+
+/* ---------- INVENTORY (immediate) ---------- */
+let invData=[];
+async function loadInventory(){
+  const {data,error}= await sb.from('fgf_inventory').select('*').order('item_name');
+  if(error){ document.getElementById('inv-list').innerHTML='<div class="empty">Could not load</div>'; return; }
+  invData=data; renderInventory();
+}
+function renderInventory(){
+  const el=document.getElementById('inv-list');
+  if(!invData.length){ el.innerHTML='<div class="empty"><span class="ic">&#128230;</span>No items yet. Add your first below.</div>'; return; }
+  el.innerHTML=invData.map(i=>(
+    '<div class="inv-row"><div class="inv-body" onclick="openInvEditor(\''+i.id+'\')"><div class="inv-name">'+esc(i.item_name)+'</div>'+
+    (i.category?'<div class="inv-cat">'+esc(i.category)+'</div>':'')+'</div>'+
+    '<div class="stepper"><button class="step-btn" onclick="event.stopPropagation();stepQty(\''+i.id+'\',-1)">&minus;</button>'+
+    '<div class="qty" onclick="event.stopPropagation();typeQty(\''+i.id+'\')">'+ (i.quantity??0) +'<small>'+esc(i.unit||'')+'</small></div>'+
+    '<button class="step-btn" onclick="event.stopPropagation();stepQty(\''+i.id+'\',1)">&#43;</button></div></div>'
+  )).join('');
+}
+async function stepQty(id,delta){
+  const item=invData.find(x=>x.id===id); if(!item) return;
+  const newQ=Math.max(0,(Number(item.quantity)||0)+delta);
+  item.quantity=newQ; renderInventory();
+  const {error}= await sb.from('fgf_inventory').update({quantity:newQ, updated_at:new Date().toISOString()}).eq('id',id);
+  if(error){ toast('Save failed'); loadInventory(); }
+}
+async function typeQty(id){
+  const item=invData.find(x=>x.id===id); if(!item) return;
+  const v=prompt('Set quantity for '+item.item_name+':', item.quantity??0);
+  if(v===null) return;
+  const n=Math.max(0,Number(v)||0);
+  item.quantity=n; renderInventory();
+  const {error}= await sb.from('fgf_inventory').update({quantity:n, updated_at:new Date().toISOString()}).eq('id',id);
+  if(error){ toast('Save failed'); loadInventory(); }
+}
+let editingInvId=null;
+function openInvEditor(id){
+  editingInvId = (typeof id==='string') ? id : null;
+  const i = editingInvId ? invData.find(x=>x.id===editingInvId) : null;
+  document.getElementById('inv-sheet-title').textContent = i? 'Edit item':'New item';
+  document.getElementById('inv-name-in').value = i? (i.item_name||'') : '';
+  document.getElementById('inv-qty-in').value = i? (i.quantity??0) : 0;
+  document.getElementById('inv-unit-in').value = i? (i.unit||'') : '';
+  document.getElementById('inv-cat-in').value = i? (i.category||'') : '';
+  document.getElementById('inv-delete-btn').style.display = i? 'block':'none';
+  document.getElementById('inv-sheet').classList.add('show');
+  document.getElementById('inv-scrim').classList.add('show');
+}
+function closeInvEditor(){
+  document.getElementById('inv-sheet').classList.remove('show');
+  document.getElementById('inv-scrim').classList.remove('show');
+  editingInvId=null;
+}
+async function saveInv(){
+  const name=document.getElementById('inv-name-in').value.trim();
+  if(!name){ toast('Name the item'); return; }
+  const qty=Math.max(0,Number(document.getElementById('inv-qty-in').value)||0);
+  const unit=document.getElementById('inv-unit-in').value.trim()||null;
+  const cat=document.getElementById('inv-cat-in').value.trim()||null;
+  let error;
+  if(editingInvId){ ({error}= await sb.from('fgf_inventory').update({item_name:name, quantity:qty, unit:unit, category:cat, updated_at:new Date().toISOString()}).eq('id',editingInvId)); }
+  else { ({error}= await sb.from('fgf_inventory').insert({item_name:name, quantity:qty, unit:unit, category:cat})); }
+  if(error){ toast('Could not save'); return; }
+  toast(editingInvId?'Item updated':'Item added'); closeInvEditor(); loadInventory();
+}
+async function deleteInv(){
+  if(!editingInvId) return;
+  if(!confirm('Remove this item?')) return;
+  const {error}= await sb.from('fgf_inventory').delete().eq('id',editingInvId);
+  if(error){ toast('Could not remove'); return; }
+  toast('Item removed'); closeInvEditor(); loadInventory();
+}
+function addInventoryItem(){ openInvEditor(); }
+
+/* ---------- APPROVALS ---------- */
+async function refreshApproveBadge(){
+  const [logs,comments,photos]= await Promise.all([
+    sb.from('fgf_log').select('*',{count:'exact',head:true}).eq('approval_status','pending'),
+    sb.from('fgf_comments').select('*',{count:'exact',head:true}).eq('status','new'),
+    sb.from('fgf_photos').select('*',{count:'exact',head:true}).eq('approval_status','pending')
+  ]);
+  const total=(logs.count||0)+(comments.count||0)+(photos.count||0);
+  const b=document.getElementById('approve-badge');
+  if(total>0){ b.style.display='flex'; b.textContent=total; } else b.style.display='none';
+}
+function _escA(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+async function loadApprovals(){
+  const el=document.getElementById('approve-list');
+  const [logsR,commentsR,photosR]= await Promise.all([
+    sb.from('fgf_log').select('*').eq('approval_status','pending').order('logged_at',{ascending:false}),
+    sb.from('fgf_comments').select('*').eq('status','new').order('submitted_at',{ascending:false}),
+    sb.from('fgf_photos').select('*').eq('approval_status','pending').order('uploaded_at',{ascending:false})
+  ]);
+  if(logsR.error&&commentsR.error&&photosR.error){ el.innerHTML='<div class="empty">Could not load</div>'; return; }
+  const logs=logsR.data||[], comments=commentsR.data||[], photos=photosR.data||[];
+  if(!logs.length && !comments.length && !photos.length){
+    el.innerHTML='<div class="empty"><span class="ic">&#9989;</span>Nothing waiting. All caught up.</div>'; return;
+  }
+  let html='';
+  if(logs.length){
+    html+='<div class="approve-group">Field logs</div>';
+    html+=logs.map(r=>(
+      '<div class="inv-row"><div class="inv-body"><div class="inv-name">'+_escA(r.location_label||'\u2014')+'</div><div class="inv-cat">'+_escA(r.note)+' &middot; '+_escA(r.submitted_by||'?')+'</div></div>'+
+      '<button class="step-btn" style="width:auto;padding:0 14px;color:var(--green);border-color:var(--green)" onclick="approveItem(\'log\',\''+r.id+'\')">&#10003;</button></div>'
+    )).join('');
+  }
+  if(comments.length){
+    html+='<div class="approve-group">Visitor notes</div>';
+    html+=comments.map(c=>(
+      '<div class="inv-row"><div class="inv-body"><div class="inv-name">'+_escA(c.commenter_name||'Visitor')+'</div><div class="inv-cat">'+_escA(c.message)+'</div></div>'+
+      '<button class="step-btn" style="width:auto;padding:0 14px;color:var(--green);border-color:var(--green)" onclick="approveItem(\'comment\',\''+c.id+'\')">&#10003;</button></div>'
+    )).join('');
+  }
+  if(photos.length){
+    html+='<div class="approve-group">Photos</div>';
+    const _apSel='flex:1;min-width:0;font-size:13px;padding:6px;background:var(--paper);color:var(--ink);border:1px solid var(--line-strong);border-radius:6px';
+    html+=photos.map(p=>(
+      '<div class="inv-row" style="align-items:flex-start"><div class="inv-body">'+
+        '<div style="display:flex;align-items:center;gap:8px"><img src="'+_escA(p.thumbnail_url||p.cloudinary_url)+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover"><span class="inv-cat">'+_escA(p.caption||'(no caption)')+'</span></div>'+
+        '<div style="display:flex;gap:6px;margin-top:8px"><select class="ap-area" data-id="'+p.id+'" style="'+_apSel+'">'+areaOptionsHTML(p.area_id)+'</select>'+
+        '<select class="ap-type" data-id="'+p.id+'" style="'+_apSel+'">'+typeOptionsHTML(p.subject_type)+'</select></div>'+
+      '</div>'+
+      '<button class="step-btn" style="width:auto;padding:0 14px;color:var(--green);border-color:var(--green)" onclick="approveItem(\'photo\',\''+p.id+'\')">&#10003;</button></div>'
+    )).join('');
+  }
+  el.innerHTML=html;
+}
+async function approveItem(kind,id){
+  let error;
+  if(kind==='log'){ ({error}= await sb.from('fgf_log').update({approval_status:'approved'}).eq('id',id)); }
+  else if(kind==='comment'){ ({error}= await sb.from('fgf_comments').update({status:'reviewed'}).eq('id',id)); }
+  else if(kind==='photo'){
+    const _ar=document.querySelector('.ap-area[data-id="'+id+'"]'), _ty=document.querySelector('.ap-type[data-id="'+id+'"]');
+    const _upd={approval_status:'approved'}; if(_ar) _upd.area_id=_ar.value||null; if(_ty) _upd.subject_type=_ty.value||null;
+    ({error}= await sb.from('fgf_photos').update(_upd).eq('id',id));
+  }
+  if(error){ toast('Failed'); return; }
+  toast('Approved'); loadApprovals(); refreshApproveBadge();
+}
+// wire approvals screen load
+const _go=go; go=function(s){ _go(s); if(s==='approvals') loadApprovals(); if(s==='tasks') loadTasks(); if(s==='inventory') loadInventory(); if(s==='photos') loadPhotos(); };
+
+/* ---------- PHOTOS ---------- */
+const CLOUD_NAME='ddbsuxerb', UPLOAD_PRESET='lfg-photos';
+async function loadPhotos(){
+  const ab=document.getElementById('actionbar');
+  ab.style.display='block';
+  const btn=document.getElementById('primary-action'); btn.textContent='\uD83D\uDCF7  Add photo'; btn.onclick=()=>document.getElementById('photo-file').click();
+  const {data,error}= await sb.from('fgf_photos').select('*').order('uploaded_at',{ascending:false});
+  const el=document.getElementById('photo-grid');
+  if(error){ el.innerHTML='<div class="empty">Could not load photos</div>'; return; }
+  const isAdmin=document.body.classList.contains('is-admin');
+  albumPhotos=(data||[]).filter(p=>isAdmin || p.approval_status==='approved');
+  if(!state.areas||!state.areas.length){ try{ const r=await sb.from('fgf_growing_areas').select('id,name,zone').is('archived_at',null); state.areas=r.data||[]; }catch(e){} }
+  albumAreaMap={}; (state.areas||[]).forEach(function(a){ albumAreaMap[a.id]=a.name; });
+  buildAlbumFilters(); applyAlbumFilter();
+}
+let albumPhotos=[], albumAreaMap={};
+function _capW(x){ x=String(x||''); return x?x.charAt(0).toUpperCase()+x.slice(1):''; }
+function buildAlbumFilters(){
+  const fb=document.getElementById('photo-filters'); if(!fb) return;
+  let ao='<option value="">All areas</option><option value="__none__">General / whole farm</option>';
+  const g={}; (state.areas||[]).forEach(function(a){ const z=a.zone||'Other'; (g[z]=g[z]||[]).push(a); });
+  Object.keys(g).forEach(function(z){ ao+='<optgroup label="'+esc(z)+'">'; g[z].forEach(function(a){ ao+='<option value="'+a.id+'">'+esc(a.name)+'</option>'; }); ao+='</optgroup>'; });
+  fb.innerHTML='<select id="pf-area" onchange="applyAlbumFilter()">'+ao+'</select><select id="pf-type" onchange="applyAlbumFilter()"><option value="">All types</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select>';
+}
+function applyAlbumFilter(){
+  const fa=(document.getElementById('pf-area')||{}).value||'', ft=(document.getElementById('pf-type')||{}).value||'';
+  let list=albumPhotos;
+  if(fa==='__none__') list=list.filter(function(p){return !p.area_id;}); else if(fa) list=list.filter(function(p){return p.area_id===fa;});
+  if(ft) list=list.filter(function(p){return p.subject_type===ft;});
+  const el=document.getElementById('photo-grid'); el.className='photo-grid';
+  if(!list.length){ el.innerHTML='<div class="empty">No photos match.</div>'; return; }
+  el.innerHTML=list.map(function(p){
+    const area=p.area_id?(albumAreaMap[p.area_id]||''):'General';
+    const meta=[area, p.subject_type?_capW(p.subject_type):''].filter(Boolean).join(' · ');
+    const capLine=(meta||p.caption)?'<div class="cap">'+(meta?'<b>'+esc(meta)+'</b>':'')+(p.caption?(meta?'<br>':'')+esc(p.caption):'')+'</div>':'';
+    return '<div class="photo-cell'+(p.approval_status==='pending'?' pending':'')+'"><img src="'+esc(p.thumbnail_url||p.cloudinary_url)+'" loading="lazy">'+capLine+'</div>';
+  }).join('');
+}
+let reviewFiles=[], reviewURLs=[];
+function _selA(v,sel){ return (String(sel==null?'':sel)===String(v))?' selected':''; }
+function areaOptionsHTML(sel){
+  let h='<option value=""'+_selA('',sel)+'>General / whole farm</option>';
+  const groups={};
+  (state.areas||[]).forEach(function(a){ const z=a.zone||'Other'; (groups[z]=groups[z]||[]).push(a); });
+  Object.keys(groups).forEach(function(z){
+    h+='<optgroup label="'+esc(z)+'">';
+    groups[z].forEach(function(a){ h+='<option value="'+a.id+'"'+_selA(a.id,sel)+'>'+esc(a.name)+'</option>'; });
+    h+='</optgroup>';
+  });
+  return h;
+}
+function typeOptionsHTML(sel){
+  return '<option value=""'+_selA('',sel)+'>Type…</option>'+
+    '<option value="plant"'+_selA('plant',sel)+'>Plant</option>'+
+    '<option value="creature"'+_selA('creature',sel)+'>Creature</option>'+
+    '<option value="feature"'+_selA('feature',sel)+'>Feature (nonliving)</option>'+
+    '<option value="selfie"'+_selA('selfie',sel)+'>Selfie</option>';
+}
+async function reviewPhotos(input){
+  const files=input.files; if(!files||!files.length) return;
+  reviewFiles=Array.prototype.slice.call(files);
+  if(!state.areas || !state.areas.length){
+    try{ const r=await sb.from('fgf_growing_areas').select('id,name,zone').is('archived_at',null).order('zone').order('name'); state.areas=r.data||[]; }catch(e){ state.areas=state.areas||[]; }
+  }
+  const areaOpts=areaOptionsHTML(), typeOpts=typeOptionsHTML();
+  reviewURLs.forEach(function(u){ URL.revokeObjectURL(u); }); reviewURLs=[];
+  let html='';
+  reviewFiles.forEach(function(f,i){
+    const u=URL.createObjectURL(f); reviewURLs.push(u);
+    html+='<div class="pr-card"><img src="'+u+'"><div class="pr-fields">'+
+      '<select class="pr-area" data-i="'+i+'">'+areaOpts+'</select>'+
+      '<select class="pr-type" data-i="'+i+'">'+typeOpts+'</select>'+
+      '<input class="pr-cap" data-i="'+i+'" placeholder="Caption (optional)" autocomplete="off"></div></div>';
+  });
+  document.getElementById('pr-list').innerHTML=html;
+  document.getElementById('pr-all-area').innerHTML=areaOpts;
+  document.getElementById('pr-title').textContent='Categorize '+reviewFiles.length+' photo'+(reviewFiles.length===1?'':'s');
+  document.getElementById('photo-review').style.display='flex';
+}
+function applyAllArea(v){ document.querySelectorAll('#pr-list .pr-area').forEach(function(sel){ sel.value=v; }); }
+function applyAllType(v){ if(!v) return; document.querySelectorAll('#pr-list .pr-type').forEach(function(sel){ sel.value=v; }); }
+function closeReview(){
+  document.getElementById('photo-review').style.display='none';
+  reviewURLs.forEach(function(u){ URL.revokeObjectURL(u); }); reviewURLs=[]; reviewFiles=[];
+  const inp=document.getElementById('photo-file'); if(inp) inp.value='';
+}
+async function uploadReviewed(){
+  if(!reviewFiles.length) return;
+  const areas=document.querySelectorAll('#pr-list .pr-area');
+  const types=document.querySelectorAll('#pr-list .pr-type');
+  const caps=document.querySelectorAll('#pr-list .pr-cap');
+  const btn=document.getElementById('pr-upload'); btn.disabled=true;
+  const rows=[]; let ok=0, fail=0;
+  for(let i=0;i<reviewFiles.length;i++){
+    toast('Uploading '+(i+1)+' of '+reviewFiles.length+'\u2026');
+    const fd=new FormData(); fd.append('file',reviewFiles[i]); fd.append('upload_preset',UPLOAD_PRESET);
+    try{
+      const res=await fetch('https://api.cloudinary.com/v1_1/'+CLOUD_NAME+'/image/upload',{method:'POST',body:fd});
+      const j=await res.json();
+      if(!j.secure_url) throw new Error('no url');
+      const url=j.secure_url, thumb=url.replace('/upload/','/upload/w_400,h_400,c_fill/');
+      rows.push({cloudinary_url:url, thumbnail_url:thumb,
+        caption:(caps[i].value.trim()||null),
+        area_id:(areas[i].value||null),
+        subject_type:(types[i].value||null),
+        uploaded_by:'staff', approval_status:'pending', submitted_by:'staff'});
+      ok++;
+    }catch(e){ fail++; }
+  }
+  btn.disabled=false;
+  if(!rows.length){ toast('Upload failed'); return; }
+  const {error}= await sb.from('fgf_photos').insert(rows);
+  closeReview();
+  if(error){ toast('Saved to cloud but not linked'); return; }
+  let msg=ok+' photo'+(ok===1?'':'s')+' added \u2014 pending review'; if(fail) msg+=' ('+fail+' failed)';
+  toast(msg); loadPhotos();
+}
+</script>
+<div id="photo-review" class="pr-overlay" style="display:none"><div class="pr-sheet"><div class="pr-head"><span class="pr-title" id="pr-title">Categorize photos</span><button class="pr-x" onclick="closeReview()">&times;</button></div><div class="pr-bulk"><span>Apply to all:</span><select id="pr-all-area" onchange="applyAllArea(this.value)"></select><select id="pr-all-type" onchange="applyAllType(this.value)"><option value="">Type\u2026</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select></div><div id="pr-list"></div><div class="pr-actions"><button class="pr-btn cancel" onclick="closeReview()">Cancel</button><button class="pr-btn go" id="pr-upload" onclick="uploadReviewed()">Upload all</button></div></div></div>
+<a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
+</body>
+</html>
