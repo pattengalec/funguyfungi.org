@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FGF Data — Fun Guy Fungi</title>
-<meta name="theme-color" content="#2A3A2E">
-<link rel="icon" type="image/png" href="lfg-logo.png">
+<meta name="theme-color" content="#223640">
+<link rel="icon" type="image/svg+xml" href="fgf-logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <script>
 (function(){try{
@@ -17,20 +17,20 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #2A2620;
-  --surface:    #34302A;
-  --card:       #34302A;
-  --card-border:#45423A;
+  --bg:         #1f252a;
+  --surface:    #29313a;
+  --card:       #29313a;
+  --card-border:#384049;
   --ink:        #F0EDE2;
-  --ink-soft:   #B0A99C;
-  --accent:     #7E9A6E;
-  --accent-2:   #A8B89A;
-  --on-accent:  #1B1B17;
+  --ink-soft:   #97a3ac;
+  --accent:     #5e8ca8;
+  --accent-2:   #89aec4;
+  --on-accent:  #0f161c;
   --alert:      #C97A4A;
-  --mist:       #3A362E;
-  --forest:     #A8B89A;
-  --lime:       #7E9A6E;
-  --lime-pale:  #A8B89A;
+  --mist:       #333c44;
+  --forest:     #89aec4;
+  --lime:       #5e8ca8;
+  --lime-pale:  #89aec4;
   --border-w:   1.5px;
   --shadow:     0 2px 16px rgba(61,74,62,0.08);
   --radius:     10px;
@@ -40,13 +40,13 @@
 }
 
 [data-mode="dark"] {
-  --bg:         #24231E;
+  --bg:         #171b1f;
   --surface:    #262626;
   --card:       #383838;
-  --card-border:#45423A;
+  --card-border:#384049;
   --ink:        #F0EDE6;
   --ink-soft:   #A8A39A;
-  --accent:     #7E9A6E;
+  --accent:     #5e8ca8;
   --mist:       #33312A;
 }
 
@@ -245,7 +245,7 @@ html, body {
 .data-row .row-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
 .data-row .row-sub { font-size: 0.72rem; color: var(--ink-soft); opacity: 0.8; margin-top: 3px; font-family: var(--font-mono); }
 .data-row .row-badge { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
-.badge-green  { background: #2E3A2C; color: #AEC69E; }
+.badge-green  { background: #24313a; color: #9fc0d2; }
 .badge-amber  { background: #43371E; color: #E3B778; }
 .badge-red    { background: #45261E; color: #E8A488; }
 .badge-gray   { background: var(--mist); color: var(--ink-soft); }
@@ -321,7 +321,7 @@ html, body {
 @keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }
 
 /* ── Almanac ── */
-.alm-hero { background:linear-gradient(180deg,#2A3A2E,#2d5a3d); color:#fff; border-radius:var(--radius); padding:20px; text-align:center; }
+.alm-hero { background:linear-gradient(180deg,#223640,#2d5a3d); color:#fff; border-radius:var(--radius); padding:20px; text-align:center; }
 .alm-temp { font-family:var(--font-head); font-size:3rem; }
 .alm-cond { font-size:0.85rem; opacity:0.85; margin-top:4px; }
 .info-row { background:var(--card); border-radius:8px; padding:12px 16px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center; }
@@ -356,7 +356,7 @@ html, body {
 <!-- ── Header ── -->
 <div class="data-header">
   <div class="data-header-left">
-    <img src="lfg-logo.png" alt="FGF">
+    <img src="fgf-logo.svg" alt="Fun Guy Fungi">
     <div>
       <div class="data-header-title">Fun Guy Fungi</div>
       <div class="data-header-sub">Live Farm Data · Read Only</div>
@@ -417,7 +417,7 @@ html, body {
   <div class="tab-panel" id="tab-beds">
     <div class="card">
       <h3>Container Zones</h3>
-      <div class="floorplan-wrap" style="margin:2px 0 18px;"><svg viewBox="0 0 1000 300" width="100%" style="max-width:760px;display:block;margin:0 auto;font-family:inherit;"><line x1="60" y1="40" x2="912" y2="40" stroke="#7E9A6E" stroke-width="2"/><polygon points="912,34 934,40 912,46" fill="#7E9A6E"/><text x="60" y="28" fill="#A8B89A" font-size="13" font-weight="600">Clean substrate IN</text><text x="936" y="28" fill="#A8B89A" font-size="13" font-weight="600" text-anchor="end">spent blocks OUT</text><rect x="20" y="60" width="960" height="200" rx="10" fill="none" stroke="#A6ADB4" stroke-width="3"/><rect x="12" y="120" width="12" height="80" rx="3" fill="#A6ADB4"/><rect x="976" y="120" width="12" height="80" rx="3" fill="#A6ADB4"/><rect x="23" y="63" width="131" height="194" rx="6" fill="#3a4a2e"/><text x="89" y="80" fill="#8a887f" font-size="11" text-anchor="middle">1</text><text x="89" y="150" font-size="24" text-anchor="middle">🪵</text><text x="89" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="89" dy="0">Substrate</tspan><tspan x="89" dy="15">& Mix</tspan></text><rect x="160" y="63" width="131" height="194" rx="6" fill="#4a3a22"/><text x="226" y="80" fill="#8a887f" font-size="11" text-anchor="middle">2</text><text x="226" y="150" font-size="24" text-anchor="middle">♨️</text><text x="226" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="226" dy="0">Steam</tspan><tspan x="226" dy="15">Sterilize</tspan></text><rect x="297" y="63" width="131" height="194" rx="6" fill="#26374a"/><text x="363" y="80" fill="#8a887f" font-size="11" text-anchor="middle">3</text><text x="363" y="150" font-size="24" text-anchor="middle">🧫</text><text x="363" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="363" dy="0">Lab</tspan><tspan x="363" dy="15">Inoculate</tspan></text><rect x="434" y="63" width="131" height="194" rx="6" fill="#241f1a"/><text x="500" y="80" fill="#8a887f" font-size="11" text-anchor="middle">4</text><text x="500" y="150" font-size="24" text-anchor="middle">🌑</text><text x="500" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="500" dy="0">Incubate</tspan><tspan x="500" dy="15">Colonize</tspan></text><rect x="572" y="63" width="131" height="194" rx="6" fill="#3e5c42"/><text x="637" y="80" fill="#8a887f" font-size="11" text-anchor="middle">5</text><text x="637" y="150" font-size="24" text-anchor="middle">🍄</text><text x="637" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="637" dy="0">Fruiting</tspan><tspan x="637" dy="15">Room</tspan></text><rect x="709" y="63" width="131" height="194" rx="6" fill="#2b3a44"/><text x="774" y="80" fill="#8a887f" font-size="11" text-anchor="middle">6</text><text x="774" y="150" font-size="24" text-anchor="middle">❄️</text><text x="774" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="774" dy="0">Cold</tspan><tspan x="774" dy="15">Storage</tspan></text><rect x="846" y="63" width="131" height="194" rx="6" fill="#3a352c"/><text x="911" y="80" fill="#8a887f" font-size="11" text-anchor="middle">7</text><text x="911" y="150" font-size="24" text-anchor="middle">📦</text><text x="911" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="911" dy="0">Pack</tspan><tspan x="911" dy="15">& Label</tspan></text></svg><div style="text-align:center;font-size:12px;color:var(--ink-soft,#B0A99C);margin-top:8px;">40ft high-cube container &middot; single-operator &middot; ~300+ lbs/week at capacity</div></div>
+      <div class="floorplan-wrap" style="margin:2px 0 18px;"><svg viewBox="0 0 1000 300" width="100%" style="max-width:760px;display:block;margin:0 auto;font-family:inherit;"><line x1="60" y1="40" x2="912" y2="40" stroke="#5e8ca8" stroke-width="2"/><polygon points="912,34 934,40 912,46" fill="#5e8ca8"/><text x="60" y="28" fill="#89aec4" font-size="13" font-weight="600">Clean substrate IN</text><text x="936" y="28" fill="#89aec4" font-size="13" font-weight="600" text-anchor="end">spent blocks OUT</text><rect x="20" y="60" width="960" height="200" rx="10" fill="none" stroke="#A6ADB4" stroke-width="3"/><rect x="12" y="120" width="12" height="80" rx="3" fill="#A6ADB4"/><rect x="976" y="120" width="12" height="80" rx="3" fill="#A6ADB4"/><rect x="23" y="63" width="131" height="194" rx="6" fill="#3a4a2e"/><text x="89" y="80" fill="#838d94" font-size="11" text-anchor="middle">1</text><text x="89" y="150" font-size="24" text-anchor="middle">🪵</text><text x="89" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="89" dy="0">Substrate</tspan><tspan x="89" dy="15">& Mix</tspan></text><rect x="160" y="63" width="131" height="194" rx="6" fill="#4a3a22"/><text x="226" y="80" fill="#838d94" font-size="11" text-anchor="middle">2</text><text x="226" y="150" font-size="24" text-anchor="middle">♨️</text><text x="226" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="226" dy="0">Steam</tspan><tspan x="226" dy="15">Sterilize</tspan></text><rect x="297" y="63" width="131" height="194" rx="6" fill="#26374a"/><text x="363" y="80" fill="#838d94" font-size="11" text-anchor="middle">3</text><text x="363" y="150" font-size="24" text-anchor="middle">🧫</text><text x="363" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="363" dy="0">Lab</tspan><tspan x="363" dy="15">Inoculate</tspan></text><rect x="434" y="63" width="131" height="194" rx="6" fill="#241f1a"/><text x="500" y="80" fill="#838d94" font-size="11" text-anchor="middle">4</text><text x="500" y="150" font-size="24" text-anchor="middle">🌑</text><text x="500" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="500" dy="0">Incubate</tspan><tspan x="500" dy="15">Colonize</tspan></text><rect x="572" y="63" width="131" height="194" rx="6" fill="#3e5c42"/><text x="637" y="80" fill="#838d94" font-size="11" text-anchor="middle">5</text><text x="637" y="150" font-size="24" text-anchor="middle">🍄</text><text x="637" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="637" dy="0">Fruiting</tspan><tspan x="637" dy="15">Room</tspan></text><rect x="709" y="63" width="131" height="194" rx="6" fill="#2b3a44"/><text x="774" y="80" fill="#838d94" font-size="11" text-anchor="middle">6</text><text x="774" y="150" font-size="24" text-anchor="middle">❄️</text><text x="774" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="774" dy="0">Cold</tspan><tspan x="774" dy="15">Storage</tspan></text><rect x="846" y="63" width="131" height="194" rx="6" fill="#3a352c"/><text x="911" y="80" fill="#838d94" font-size="11" text-anchor="middle">7</text><text x="911" y="150" font-size="24" text-anchor="middle">📦</text><text x="911" y="182" fill="#F0EDE2" font-size="12" font-weight="600" text-anchor="middle"><tspan x="911" dy="0">Pack</tspan><tspan x="911" dy="15">& Label</tspan></text></svg><div style="text-align:center;font-size:12px;color:var(--ink-soft,#97a3ac);margin-top:8px;">40ft high-cube container &middot; single-operator &middot; ~300+ lbs/week at capacity</div></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="bed-zone-filter"></div>
       <div class="bed-grid" id="beds-grid">
         <div class="skeleton" style="height:80px;"></div>

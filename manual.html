@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>FGF Farm Manual</title>
-<meta name="theme-color" content="#35503A">
-<link rel="icon" type="image/png" href="lfg-logo.png">
+<meta name="theme-color" content="#2e4a56">
+<link rel="icon" type="image/svg+xml" href="fgf-logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <script>
 (function(){try{
@@ -18,19 +18,19 @@
 
 /* ── Manual palette — light (default) ── */
 :root, [data-mode="light"] {
-  --bg:           #2A2620;
-  --bg-dark:      #24211B;
-  --bg-deeper:    #1E1B16;
+  --bg:           #1f252a;
+  --bg-dark:      #1a1e22;
+  --bg-deeper:    #14181c;
   --cream:        #F0EDE2;
-  --cream-dim:    #B0A99C;
-  --forest:       #A8B89A;
-  --forest-mid:   #7E9A6E;
-  --lime:         #7E9A6E;
-  --lime-pale:    #A8B89A;
+  --cream-dim:    #97a3ac;
+  --forest:       #89aec4;
+  --forest-mid:   #5e8ca8;
+  --lime:         #5e8ca8;
+  --lime-pale:    #89aec4;
   --orange:       #C9973F;
   --orange-dim:   #B5651D;
-  --border:       #45423A;
-  --card-bg:      #34302A;
+  --border:       #384049;
+  --card-bg:      #29313a;
   --card-shadow:  rgba(0,0,0,0.18);
   --font-head:    'IM Fell English', Georgia, serif;
   --font-body:    'Source Sans 3', 'Helvetica Neue', sans-serif;
@@ -39,19 +39,19 @@
 
 /* ── Manual palette — dark mode ── */
 [data-mode="dark"] {
-  --bg:           #24231E;
-  --bg-dark:      #1B1B17;
-  --bg-deeper:    #141310;
+  --bg:           #171b1f;
+  --bg-dark:      #0f161c;
+  --bg-deeper:    #0c0f12;
   --cream:        #F0EDE2;
-  --cream-dim:    #A8A296;
-  --forest:       #7E9A6E;
-  --forest-mid:   #5a8818;
-  --lime:         #A8B89A;
-  --lime-pale:    #C9D8A0;
+  --cream-dim:    #97a3ac;
+  --forest:       #5e8ca8;
+  --forest-mid:   #3e6e88;
+  --lime:         #89aec4;
+  --lime-pale:    #bcd6e2;
   --orange:       #C9973F;
   --orange-dim:   #B5651D;
-  --border:       #45423A;
-  --card-bg:      #2E2C26;
+  --border:       #384049;
+  --card-bg:      #262c32;
   --card-shadow:  rgba(0,0,0,0.4);
   --font-head:    'IM Fell English', Georgia, serif;
   --font-body:    'Source Sans 3', 'Helvetica Neue', sans-serif;
@@ -75,7 +75,7 @@ html, body {
 #screen-home { background: var(--bg); }
 
 .home-header {
-  background: #3E5C42;
+  background: #2f4d5e;
   padding: 1.25rem 1rem 1rem;
   text-align: center;
   border-bottom: 3px solid var(--lime);
@@ -203,7 +203,7 @@ html, body {
   font-size: 0.55rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: #3E5C42;
+  background: #2f4d5e;
   color: var(--lime-pale);
   padding: 0.15rem 0.4rem;
   border-radius: 3px;
@@ -215,7 +215,7 @@ html, body {
 .topic-screen { background: var(--bg); }
 
 .topic-header {
-  background: #3E5C42;
+  background: #2f4d5e;
   padding: 0 0 0;
   position: sticky;
   top: 0;
@@ -252,7 +252,7 @@ html, body {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  background: #3E5C42;
+  background: #2f4d5e;
   border-top: 1px solid var(--forest-mid);
 }
 .subtab-strip::-webkit-scrollbar { display: none; }
@@ -301,7 +301,7 @@ html, body {
 .info-card-body strong { color: var(--forest); }
 
 .tip-card {
-  background: #2E3A2C;
+  background: #24313a;
   border-left: 3px solid var(--lime);
   border-radius: 0 6px 6px 0;
   padding: 0.7rem 0.9rem;
@@ -330,7 +330,7 @@ html, body {
   margin-bottom: 1rem;
 }
 .calc-card-head {
-  background: #3E5C42;
+  background: #2f4d5e;
   padding: 0.65rem 1rem;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
@@ -364,7 +364,7 @@ html, body {
 /* Result boxes */
 .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.75rem 0; }
 .result-box {
-  background: #3E5C42;
+  background: #2f4d5e;
   border-radius: 6px;
   padding: 0.65rem 0.5rem;
   text-align: center;
@@ -388,7 +388,7 @@ html, body {
   letter-spacing: 0.06em; text-transform: uppercase;
   padding: 0.12rem 0.4rem; border-radius: 3px; margin-right: 0.25rem;
 }
-.badge-bio   { background: #2E3A2C; color: var(--forest); }
+.badge-bio   { background: #24313a; color: var(--forest); }
 .badge-npk   { background: #43371E; color: #E3B778; }
 .badge-ph    { background: #382A46; color: #CBAEE2; }
 .badge-pest  { background: #45261E; color: #E8A488; }
@@ -398,7 +398,7 @@ html, body {
 .step { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start; }
 .step-num {
   flex-shrink: 0; width: 1.5rem; height: 1.5rem;
-  background: #3E5C42; color: var(--lime-pale);
+  background: #2f4d5e; color: var(--lime-pale);
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
   font-size: 0.7rem; font-weight: 700; font-family: 'Courier Prime', monospace;
   margin-top: 0.1rem;
@@ -478,7 +478,7 @@ html, body {
 /* Bottom home button */
 .home-fab {
   position: fixed; bottom: 1.25rem; right: 1.25rem;
-  background: #3E5C42;
+  background: #2f4d5e;
   color: var(--lime-pale);
   border: 2px solid var(--lime);
   border-radius: 50px;
@@ -1001,7 +1001,7 @@ const TOPICS = {
             <div class="field"><label>Note</label>
               <textarea id="r-note" rows="3" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--forest);font-family:Inter,sans-serif;font-size:0.9rem;padding:0.6rem;outline:none;resize:vertical;" placeholder="What did you observe?"></textarea>
             </div>
-            <button onclick="saveObs()" style="width:100%;background:#3E5C42;color:var(--cream);border:none;border-radius:6px;padding:0.75rem;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:0.25rem;">Save to Local Log</button>
+            <button onclick="saveObs()" style="width:100%;background:#2f4d5e;color:var(--cream);border:none;border-radius:6px;padding:0.75rem;font-family:Inter,sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;margin-top:0.25rem;">Save to Local Log</button>
             <div id="r-saved" style="margin-top:0.5rem;font-size:0.75rem;color:var(--forest);"></div>
           </div>
         </div>
@@ -1748,7 +1748,7 @@ async function injectDynamicZones(topic) {
       <button class="add-entry-btn" onclick="showAddEntryModal('${topic}','${tab}')"
         style="display:${isAdmin?'flex':'none'};align-items:center;gap:0.5rem;
           width:100%;margin-top:1rem;padding:0.75rem 1rem;
-          background:#3E5C42;color:var(--lime-pale);
+          background:#2f4d5e;color:var(--lime-pale);
           border:1px dashed var(--lime);border-radius:8px;
           font-family:Inter,sans-serif;font-size:0.82rem;font-weight:600;
           cursor:pointer;justify-content:center;
@@ -1781,7 +1781,7 @@ function showToast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'toast';
-    t.style.cssText = `position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:#3E5C42;color:var(--lime-pale);padding:0.6rem 1.2rem;border-radius:20px;font-size:0.8rem;font-weight:600;z-index:2000;transition:opacity 0.3s;`;
+    t.style.cssText = `position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:#2f4d5e;color:var(--lime-pale);padding:0.6rem 1.2rem;border-radius:20px;font-size:0.8rem;font-weight:600;z-index:2000;transition:opacity 0.3s;`;
     document.body.appendChild(t);
   }
   t.textContent = msg; t.style.opacity = '1';

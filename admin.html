@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FGF Admin — Fun Guy Fungi</title>
-<link rel="icon" type="image/png" href="lfg-logo.png">
+<link rel="icon" type="image/svg+xml" href="fgf-logo.svg">
 <link rel="stylesheet" href="lfg-theme.css">
 <script>
 (function(){try{
@@ -75,7 +75,7 @@ body { display:flex; flex-direction:column; align-items:center; background:var(-
 .btn-danger { background:linear-gradient(180deg, color-mix(in srgb,var(--alert) 100%,white 8%), var(--alert)); color:var(--on-alert); border-color:color-mix(in srgb,var(--alert) 100%,black 14%); font-size:0.78rem; padding:7px 13px; }
 .btn-danger:hover { transform:translateY(-1px); }
 
-.btn-success { background:linear-gradient(180deg,#5B7A50,#47654A); color:#fff; border-color:#35503A; font-size:0.78rem; padding:7px 13px; }
+.btn-success { background:linear-gradient(180deg,#5B7A50,#3e5e70); color:#fff; border-color:#35503A; font-size:0.78rem; padding:7px 13px; }
 .btn-success:hover { transform:translateY(-1px); }
 
 .btn-ghost { background:transparent; color:var(--ink); border:1px solid color-mix(in srgb,var(--ink) 22%,transparent); font-size:0.78rem; padding:7px 13px; }
@@ -879,7 +879,7 @@ function updateDonationsUI(enabled) {
   if (!status || !btn) return;
   if (enabled) {
     status.textContent = 'ON';
-    status.style.color = '#47654A';
+    status.style.color = '#3e5e70';
     btn.textContent = 'Turn Off';
     btn.className = 'btn btn-danger btn-sm';
   } else {
