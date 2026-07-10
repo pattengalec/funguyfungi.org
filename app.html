@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fun Guy Fungi &amp; Gardens</title>
+<title>Fun Guy Fungi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -239,13 +239,13 @@
 
 <div id="splash">
   <div class="mark">L</div>
-  <div class="wm">Fun Guy Fungi<small>&amp; Gardens</small></div>
+  <div class="wm">Fun Guy Fungi<small>Container Mushroom Farm</small></div>
 </div>
 
 <div id="hero">
   <div class="mark">L</div>
   <h1>Fun Guy Fungi</h1>
-  <p>&amp; Gardens</p>
+  <p>Container Mushroom Farm</p>
   <button class="role-btn role-staff" onclick="chooseRole('staff')">
     <span class="ic">&#127793;</span>
     <span>Staff<small>Log work, check tasks &amp; supplies</small></span>
@@ -305,7 +305,7 @@
           </button>
           <button class="tile n" onclick="go('photos')">
             <span class="ic">&#128247;</span>
-            <span class="tname">Photos</span><span class="tsub">Farm album</span>
+            <span class="tname">Photos</span><span class="tsub">Grow album</span>
           </button>
           <button class="tile n" onclick="location.href='/manual.html'">
             <span class="ic">&#128214;</span>
@@ -376,7 +376,7 @@
     <!-- PHOTOS -->
     <section class="screen" id="screen-photos">
       <div class="pad">
-        <p class="screen-h">Farm album. Add a photo &mdash; it posts after review.</p>
+        <p class="screen-h">Grow album. Add a photo &mdash; it posts after review.</p>
         <input type="file" id="photo-file" accept="image/*" multiple style="display:none" onchange="reviewPhotos(this)">
         <div id="photo-filters" class="ph-filters"></div>
         <div id="photo-grid"><div class="empty"><span class="ic">&#8987;</span>Loading&hellip;</div></div>
@@ -870,7 +870,7 @@ function buildAlbumFilters(){
   let ao='<option value="">All areas</option><option value="__none__">General / whole farm</option>';
   const g={}; (state.areas||[]).forEach(function(a){ const z=a.zone||'Other'; (g[z]=g[z]||[]).push(a); });
   Object.keys(g).forEach(function(z){ ao+='<optgroup label="'+esc(z)+'">'; g[z].forEach(function(a){ ao+='<option value="'+a.id+'">'+esc(a.name)+'</option>'; }); ao+='</optgroup>'; });
-  fb.innerHTML='<select id="pf-area" onchange="applyAlbumFilter()">'+ao+'</select><select id="pf-type" onchange="applyAlbumFilter()"><option value="">All types</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select>';
+  fb.innerHTML='<select id="pf-area" onchange="applyAlbumFilter()">'+ao+'</select><select id="pf-type" onchange="applyAlbumFilter()"><option value="">All types</option><option value="plant">Species</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select>';
 }
 function applyAlbumFilter(){
   const fa=(document.getElementById('pf-area')||{}).value||'', ft=(document.getElementById('pf-type')||{}).value||'';
@@ -901,7 +901,7 @@ function areaOptionsHTML(sel){
 }
 function typeOptionsHTML(sel){
   return '<option value=""'+_selA('',sel)+'>Type…</option>'+
-    '<option value="plant"'+_selA('plant',sel)+'>Plant</option>'+
+    '<option value="plant"'+_selA('plant',sel)+'>Species</option>'+
     '<option value="creature"'+_selA('creature',sel)+'>Creature</option>'+
     '<option value="feature"'+_selA('feature',sel)+'>Feature (nonliving)</option>'+
     '<option value="selfie"'+_selA('selfie',sel)+'>Selfie</option>';
@@ -966,7 +966,7 @@ async function uploadReviewed(){
   toast(msg); loadPhotos();
 }
 </script>
-<div id="photo-review" class="pr-overlay" style="display:none"><div class="pr-sheet"><div class="pr-head"><span class="pr-title" id="pr-title">Categorize photos</span><button class="pr-x" onclick="closeReview()">&times;</button></div><div class="pr-bulk"><span>Apply to all:</span><select id="pr-all-area" onchange="applyAllArea(this.value)"></select><select id="pr-all-type" onchange="applyAllType(this.value)"><option value="">Type\u2026</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select></div><div id="pr-list"></div><div class="pr-actions"><button class="pr-btn cancel" onclick="closeReview()">Cancel</button><button class="pr-btn go" id="pr-upload" onclick="uploadReviewed()">Upload all</button></div></div></div>
+<div id="photo-review" class="pr-overlay" style="display:none"><div class="pr-sheet"><div class="pr-head"><span class="pr-title" id="pr-title">Categorize photos</span><button class="pr-x" onclick="closeReview()">&times;</button></div><div class="pr-bulk"><span>Apply to all:</span><select id="pr-all-area" onchange="applyAllArea(this.value)"></select><select id="pr-all-type" onchange="applyAllType(this.value)"><option value="">Type\u2026</option><option value="plant">Species</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option></select></div><div id="pr-list"></div><div class="pr-actions"><button class="pr-btn cancel" onclick="closeReview()">Cancel</button><button class="pr-btn go" id="pr-upload" onclick="uploadReviewed()">Upload all</button></div></div></div>
 <a id="grush-mark" href="https://getgrush.com" title="managed by grush" style="position:fixed;bottom:12px;right:14px;z-index:50;font-family:'Yellowtail',cursive;font-size:22px;line-height:1;color:#C34044;text-decoration:none;opacity:.92">grush</a>
 </body>
 </html>

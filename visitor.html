@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fun Guy Fungi &amp; Gardens</title>
+<title>Fun Guy Fungi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -260,7 +260,7 @@
     <section class="screen" id="screen-see">
       <button class="back" onclick="show('hub')">&#8592; <span data-i18n="back">Back</span></button>
       <h2 style="margin-bottom:4px" data-i18n="tile.see">See</h2>
-      <p class="intro" data-i18n="see.intro">Photos from around the farm.</p>
+      <p class="intro" data-i18n="see.intro">Photos from around the grow.</p>
       <button class="see-add" onclick="document.getElementById('vphoto-file').click()">📷 Add a photo</button>
       <input type="file" id="vphoto-file" accept="image/*" multiple style="display:none" onchange="vsubPick(this)">
       <div id="see-filters" class="ph-filters"></div>
@@ -340,7 +340,7 @@ var seePhotos=[], seeAreaMap={};
 function _capW(x){ x=String(x||''); return x?x.charAt(0).toUpperCase()+x.slice(1):''; }
 var VCLOUD='ddbsuxerb', VPRESET='lfg-photos';
 var vsubFiles=[], vsubURLs=[];
-function vTypeOptions(){ return '<option value="">What is it?</option><option value="plant">Plant</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option>'; }
+function vTypeOptions(){ return '<option value="">What is it?</option><option value="plant">Species</option><option value="creature">Creature</option><option value="feature">Feature</option><option value="selfie">Selfie</option>'; }
 function vsubPick(input){
   var files=input.files; if(!files||!files.length) return;
   vsubFiles=Array.prototype.slice.call(files);
