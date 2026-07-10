@@ -1,5 +1,5 @@
 /* Fun Guy Fungi — public-facing translations (en-US, es-MX, fr-CA, pt-BR).
-   Brand terms (Fun Guy Fungi, grush, California Baptist University) are left untranslated. */
+   Brand terms (Fun Guy Fungi, grush) are left untranslated. */
 window.I18N = {
   langs: ['en','es','fr','pt'],
   dict: {
@@ -13,7 +13,7 @@ window.I18N = {
       'tile.do':'Do','tile.do_sub':'Plan your grow',
       'tile.share':'Share','tile.share_sub':'Leave a note',
       'about.title':'About Fun Guy Fungi',
-      'about.body':'Fun Guy Fungi is a working teaching garden located on the campus of California Baptist University in Riverside, California. This website and the tools within it are independently created and maintained — they are not an official product of, affiliated with, or endorsed by California Baptist University.',
+      'about.body':'Fun Guy Fungi is a container mushroom farm in Riverside, California — a single 40-foot shipping container designed to grow gourmet and functional mushrooms year-round, from substrate and inoculation through fruiting and harvest, run by one operator. Heat-loving species in summer, cool-fruiting species in winter.',
       'menu.title':'Menu','back':'Back','back.allplants':'All plants',
       'see.intro':'Photos from around the farm.',
       'learn.intro':'Every plant growing on the farm — what it is, and how it grows.',
@@ -22,7 +22,7 @@ window.I18N = {
       'share.recent':'Recent notes',
       'ph.search':'Search plants…','ph.name':'Your name (optional)','ph.msg':'Your message…',
       'loading.photos':'Loading photos…','loading.plants':'Loading plants…',
-      'ag.kicker':'a management platform for growing spaces','ag.lead':'grush turns the daily work of running a growing space — a garden, a farm, a controlled-environment grow — into something simple enough to use with dirt on your hands.','ag.body':'Tasks, plantings, harvests, inventory, and records become a tap-not-type system anyone on the ground can run. Over time, that daily work turns into real data: what was planted, when, where, and how it did.','ag.deployments':'Deployments','ag.deploy_desc':'Every place that runs grush is a deployment — branded as its own, running on the same engine underneath.','ag.deploy_card':'Fun Guy Fungi is a live deployment of grush — a working teaching garden in Riverside, California.','ag.back':'Back to Fun Guy Fungi'
+      'ag.kicker':'a management platform for growing spaces','ag.lead':'grush turns the daily work of running a growing space — a garden, a farm, a controlled-environment grow — into something simple enough to use with dirt on your hands.','ag.body':'Tasks, plantings, harvests, inventory, and records become a tap-not-type system anyone on the ground can run. Over time, that daily work turns into real data: what was planted, when, where, and how it did.','ag.deployments':'Deployments','ag.deploy_desc':'Every place that runs grush is a deployment — branded as its own, running on the same engine underneath.','ag.deploy_card':'Fun Guy Fungi is a deployment of grush — a container mushroom farm in Riverside, California.','ag.back':'Back to Fun Guy Fungi'
     },
     es: {
       'role.staff':'Personal','role.staff_sub':'Registra trabajo, tareas e insumos',
@@ -34,7 +34,7 @@ window.I18N = {
       'tile.do':'Hacer','tile.do_sub':'Planea tu cultivo',
       'tile.share':'Compartir','tile.share_sub':'Deja una nota',
       'about.title':'Acerca de Fun Guy Fungi',
-      'about.body':'Fun Guy Fungi es un jardín-huerto educativo ubicado en el campus de California Baptist University en Riverside, California. Este sitio web y sus herramientas se crean y se mantienen de forma independiente; no son un producto oficial de California Baptist University, ni están afiliados a ella ni cuentan con su respaldo.',
+      'about.body':'Fun Guy Fungi es una granja de hongos en contenedor en Riverside, California: un único contenedor marítimo de 40 pies diseñado para cultivar hongos gourmet y funcionales todo el año, desde el sustrato y la inoculación hasta la fructificación y la cosecha, operado por una sola persona. Especies que aman el calor en verano y especies de fructificación en frío en invierno.',
       'menu.title':'Menú','back':'Volver','back.allplants':'Todas las plantas',
       'see.intro':'Fotos de distintos rincones de la granja.',
       'learn.intro':'Cada planta que crece en la granja: qué es y cómo se cultiva.',
@@ -55,7 +55,7 @@ window.I18N = {
       'tile.do':'Faire','tile.do_sub':'Planifiez votre culture',
       'tile.share':'Partager','tile.share_sub':'Laissez un mot',
       'about.title':'À propos de Fun Guy Fungi',
-      'about.body':'Fun Guy Fungi est un jardin pédagogique en activité situé sur le campus de California Baptist University à Riverside, en Californie. Ce site Web et ses outils sont créés et maintenus de façon indépendante; ils ne constituent pas un produit officiel de California Baptist University, n\u2019y sont pas affiliés et ne sont pas approuvés par celle-ci.',
+      'about.body':'Fun Guy Fungi est une ferme de champignons en conteneur à Riverside, en Californie : un seul conteneur maritime de 40 pieds conçu pour cultiver des champignons gastronomiques et fonctionnels toute l’année, du substrat et de l’inoculation jusqu’à la fructification et la récolte, exploité par une seule personne. Espèces aimant la chaleur en été, espèces à fructification au frais en hiver.',
       'menu.title':'Menu','back':'Retour','back.allplants':'Toutes les plantes',
       'see.intro':'Photos des quatre coins de la ferme.',
       'learn.intro':'Chaque plante qui pousse à la ferme : ce que c\u2019est et comment elle pousse.',
@@ -76,7 +76,7 @@ window.I18N = {
       'tile.do':'Fazer','tile.do_sub':'Planeje seu cultivo',
       'tile.share':'Compartilhar','tile.share_sub':'Deixe um recado',
       'about.title':'Sobre a Fun Guy Fungi',
-      'about.body':'A Fun Guy Fungi é uma horta-escola em funcionamento localizada no campus da California Baptist University em Riverside, Califórnia. Este site e as ferramentas nele contidas são criados e mantidos de forma independente — não são um produto oficial da California Baptist University, nem têm afiliação ou endosso da universidade.',
+      'about.body':'A Fun Guy Fungi é uma fazenda de cogumelos em contêiner em Riverside, Califórnia — um único contêiner marítimo de 40 pés projetado para cultivar cogumelos gourmet e funcionais o ano todo, do substrato e da inoculação até a frutificação e a colheita, operado por uma única pessoa. Espécies que gostam de calor no verão e espécies de frutificação no frio no inverno.',
       'menu.title':'Menu','back':'Voltar','back.allplants':'Todas as plantas',
       'see.intro':'Fotos de vários cantos da fazenda.',
       'learn.intro':'Cada planta que cresce na fazenda — o que é e como se cultiva.',
