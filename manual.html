@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>FGF Farm Manual</title>
+<title>Fun Guy Fungi — Manual</title>
 <meta name="theme-color" content="#2e4a56">
 <link rel="icon" type="image/svg+xml" href="fgf-logo.svg">
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -516,57 +516,57 @@ html, body {
   <a href="/app.html" class="hdr-btn" style="text-decoration:none;">← App</a>
     </div>
     <div class="logo-text">Fun Guy Fungi</div>
-    <div class="logo-sub">&amp; Gardens</div>
+    <div class="logo-sub">Container Mushroom Farm</div>
     <div class="logo-rule"></div>
-    <div class="manual-label">Farm Manual</div>
+    <div class="manual-label">Cultivation Manual</div>
     <div class="nav-links">
     <a href="/app.html">Staff App</a>
 <a href="/admin.html">Admin</a>
 <a href="/data.html">Data</a>
     </div>
   </div>
-  <div class="home-intro">Select a topic to open its reference guide, calculators, and field notes.</div>
+  <div class="home-intro">Select a topic for cultivation guides, calculators, and field notes.</div>
   <div class="topic-grid">
-    <div class="topic-card" onclick="openTopic('soil')">
-      <span class="card-icon">🌱</span>
-      <div class="card-title">Soil &amp; Amendments</div>
-      <div class="card-desc">Mix guides, amendment doses, pH management</div>
+    <div class="topic-card" onclick="openTopic('substrate')">
+      <span class="card-icon">🌾</span>
+      <div class="card-title">Substrate &amp; Sourcing</div>
+      <div class="card-desc">Recipes, moisture, waste-stream sourcing</div>
       <span class="card-badge">Calculator</span>
     </div>
-    <div class="topic-card" onclick="openTopic('concrete')">
-      <span class="card-icon">🪨</span>
-      <div class="card-title">Concrete &amp; Hardscape</div>
-      <div class="card-desc">Pavers, posts, troughs, mix ratios</div>
-      <span class="card-badge">Calculator</span>
-    </div>
-    <div class="topic-card" onclick="openTopic('irrigation')">
-      <span class="card-icon">💧</span>
-      <div class="card-title">Irrigation &amp; Water</div>
-      <div class="card-desc">Scheduling, zones, drip rates, run times</div>
-      <span class="card-badge">Calculator</span>
-    </div>
-    <div class="topic-card" onclick="openTopic('pest')">
-      <span class="card-icon">🛡️</span>
-      <div class="card-title">Pest &amp; Disease</div>
-      <div class="card-desc">ID guide, treatments, spray schedules</div>
+    <div class="topic-card" onclick="openTopic('sterilize')">
+      <span class="card-icon">♨️</span>
+      <div class="card-title">Sterilize &amp; Pasteurize</div>
+      <div class="card-desc">Which method, temperatures, times</div>
       <span class="card-badge">Reference</span>
     </div>
-    <div class="topic-card" onclick="openTopic('planting')">
-      <span class="card-icon">🗓️</span>
-      <div class="card-title">Planting &amp; Crops</div>
-      <div class="card-desc">Zone 9b calendar, spacing, companion planting</div>
+    <div class="topic-card" onclick="openTopic('inoculate')">
+      <span class="card-icon">🧫</span>
+      <div class="card-title">Spawn &amp; Inoculation</div>
+      <div class="card-desc">Spawn rate, sterile technique, colonization</div>
       <span class="card-badge">Reference</span>
     </div>
-    <div class="topic-card" onclick="openTopic('tools')">
-      <span class="card-icon">🔧</span>
-      <div class="card-title">Tools &amp; Equipment</div>
-      <div class="card-desc">Maintenance, cleaning, storage checklists</div>
-      <span class="card-badge">Checklists</span>
+    <div class="topic-card" onclick="openTopic('environment')">
+      <span class="card-icon">🌡️</span>
+      <div class="card-title">Fruiting Environment</div>
+      <div class="card-desc">Temp, humidity, air, light, pinning</div>
+      <span class="card-badge">Reference</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('contamination')">
+      <span class="card-icon">🦠</span>
+      <div class="card-title">Contamination</div>
+      <div class="card-desc">Identify, prevent, rescue</div>
+      <span class="card-badge">Reference</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('harvest')">
+      <span class="card-icon">🧺</span>
+      <div class="card-title">Harvest &amp; Storage</div>
+      <div class="card-desc">When to pick, storage, yield (BE)</div>
+      <span class="card-badge">Calculator</span>
     </div>
     <div class="topic-card" onclick="openTopic('records')" style="grid-column: span 2;">
       <span class="card-icon">📋</span>
-      <div class="card-title">Farm Records</div>
-      <div class="card-desc">Observation log, harvest notes, experiment tracking</div>
+      <div class="card-title">Batch Log</div>
+      <div class="card-desc">Session batch notes + BE tracking</div>
       <span class="card-badge">Log</span>
     </div>
   </div>
@@ -595,407 +595,320 @@ html, body {
 // ══════════════════════════════════════════════════════════════
 const TOPICS = {
 
-  // ── SOIL & AMENDMENTS ─────────────────────────────────────
-  soil: {
-    title: 'Soil & Amendments',
-    icon: '🌱',
-    tabs: ['Overview', 'Calculator', 'Amendments', 'Grow Plans'],
+  // ── SUBSTRATE & SOURCING ──────────────────────────────────
+  substrate: {
+    title: 'Substrate & Sourcing',
+    icon: '🌾',
+    tabs: ['Overview', 'Recipes', 'Sourcing', 'Calculator'],
     render: {
       'Overview': () => `
-        <div class="section-eyebrow">What this section covers</div>
+        <div class="section-eyebrow">What substrate is</div>
         <div class="info-card">
-          <div class="info-card-title">Soil is the foundation of everything</div>
-          <div class="info-card-body">Healthy soil grows healthy plants. Before adding any amendment, understand what your soil already has. Riverside's native soil is clay-heavy with pH typically 7.2–8.0 — most vegetables prefer 6.0–6.8.</div>
+          <div class="info-card-title">Food and structure for the mycelium</div>
+          <div class="info-card-body">Substrate is what the mushroom digests and grows through. The right choice is set by <strong>nutrient density</strong>. Two families: low-nutrient (straw, wood chips) for oysters, and supplemented wood (hardwood sawdust + bran, or Masters Mix) for wood-lovers like lion's mane and reishi.</div>
         </div>
-        <div class="section-eyebrow">Your On-Hand Amendments</div>
-        ${['Worm Tea Concentrate','Liquid Iron','Organic Soil Acidifier','E.B. Stone Blood Meal (12-0-0)','Neem Oil (RTU)','Corrmaxx 245 Micronutrients','E.B. Stone Compost Maker'].map(a=>`<div class="info-card" style="padding:0.6rem 0.9rem;"><div class="info-card-title" style="font-size:0.82rem;">✓ ${a}</div></div>`).join('')}
-        <div class="tip-card">💡 Always do a soil test before amending. pH and nutrient levels tell you what's actually needed — guessing wastes product and can harm plants.</div>
-        <div class="section-eyebrow">Quick Soil pH Guide</div>
-        ${[['4.5–5.5','Blueberries, azaleas, rhododendrons'],['5.5–6.0','Potatoes, sweet potatoes'],['6.0–6.8','Most vegetables, herbs, strawberries'],['6.5–7.0','Corn, beans, brassicas'],['7.0+','Native Riverside soil — needs acidifying for most crops']].map(r=>`<div class="plan-row"><span class="plan-key">pH ${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+        <div class="tip-card">💡 The single most important number is moisture — target <strong>60–70%</strong> (field capacity). Squeeze test: a firm handful releases only a few drops, not a stream. (Out-Grow; Redwood Mushroom Supply)</div>
+        <div class="section-eyebrow">Match substrate to species</div>
+        ${[['Blue / Pink Oyster','Straw, or hardwood-pellet Masters Mix'],['Lion\'s Mane','Hardwood sawdust + 20% bran, or Masters Mix'],['Reishi','Hardwood sawdust + bran (oak/maple — no conifer)']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+        <div class="warn-card">⚠️ For wood-lovers, never use softwood/conifer. Avoid citrus and eucalyptus (essential oils inhibit mycelium) and black walnut (juglone).</div>
       `,
-
-      'Calculator': () => `
-        <div class="calc-card">
-          <div class="calc-card-head">📐 Plot Volume Calculator</div>
-          <div class="calc-card-body">
-            <div class="field">
-              <label>Plot Type</label>
-              <select id="s-plot" onchange="soilCalc()">
-                <option value="raised">Raised Bed</option>
-                <option value="tree-hole">Tree Planting Hole</option>
-                <option value="tree-top">Tree Dripline Top-Dress</option>
-                <option value="container">Container / Pot (gallons)</option>
-              </select>
-            </div>
-            <div id="s-dim-fields"></div>
-            <div class="field">
-              <label>Crop Type</label>
-              <select id="s-crop" onchange="soilCalc()">
-                <option value="veggie">Vegetables / Herbs</option>
-                <option value="fruit">Fruiting (tomato, pepper, squash)</option>
-                <option value="leafy">Leafy Greens</option>
-                <option value="root">Root Crops</option>
-                <option value="acid">Acid-Loving (blueberry)</option>
-                <option value="tree">Fruit Tree</option>
-              </select>
-            </div>
-            <div id="s-results"></div>
-          </div>
-        </div>
-      `,
-
-      'Amendments': () => `
-        ${renderAmendmentRef()}
-      `,
-
-      'Grow Plans': () => `
-        ${renderGrowPlans()}
-      `
-    }
-  },
-
-  // ── CONCRETE & HARDSCAPE ───────────────────────────────────
-  concrete: {
-    title: 'Concrete & Hardscape',
-    icon: '🪨',
-    tabs: ['Overview', 'Calculator', 'Mix Guide', 'Tips'],
-    render: {
-      'Overview': () => `
-        <div class="section-eyebrow">What this section covers</div>
+      'Recipes': () => `
+        <div class="section-eyebrow">Masters Mix — the commercial baseline</div>
         <div class="info-card">
-          <div class="info-card-title">On-farm concrete applications</div>
-          <div class="info-card-body">From garden pavers between raised beds to fence post footings and animal troughs. Your on-hand product is <strong>Quikrete High Strength #1101 (60 lb bags, 4,000 PSI)</strong>.</div>
+          <div class="info-card-title">50/50 hardwood fuel pellets + soybean hulls</div>
+          <div class="info-card-body">By dry weight, hydrated to ~60% moisture. Because it is supplemented, it <strong>must be sterilized</strong>, not pasteurized. Oysters hit 80–110% biological efficiency on it. (SARE FS13-268; Salish Mushrooms)</div>
         </div>
-        <div class="section-eyebrow">Your Product</div>
+        <div class="section-eyebrow">Straw — oyster baseline</div>
         <div class="info-card">
-          <div class="info-card-title">Quikrete High Strength Concrete Mix</div>
-          <div class="info-card-body"><strong>No. 1101 · 60 lb bag · 4,000 PSI</strong><br>Water: ~2.5 qts per 60 lb bag<br>Yield: ~0.45 cu ft per 60 lb bag<br>Walk-on time: 24 hrs · Full strength: 28 days</div>
+          <div class="info-card-title">Chopped wheat straw, pasteurized</div>
+          <div class="info-card-body">Pasteurize 140–170°F for 1–2 hr, drain to field capacity. Cheap and reliable for oysters. Adding wheat bran can raise yield by up to ~50% over straw alone — but supplemented straw then needs sterilizing. (Out-Grow; zombiemyco)</div>
         </div>
-        <div class="tip-card">💡 Mix consistency should be thick peanut butter — holds shape when squeezed, doesn't drip. Too much water is the #1 mistake and reduces strength by up to 40%.</div>
-        <div class="warn-card">⚠️ Always wear gloves, eye protection, and N95 dust mask when mixing. Concrete is alkaline and causes skin burns with prolonged contact.</div>
-        <div class="section-eyebrow">Common Applications</div>
-        ${[['Garden Pavers','Paths between raised beds','1 bag ≈ 1 paver at 12×24×2"'],['Fence Post Footing','Gates, trellises, shade structures','1 bag per post (8" hole × 24" deep)'],['Raised Bed Cap','Coping on bed walls','Use Sand/Topping Mix #1103 for thin pours'],['Animal Trough','Watering stations','Use Crack-Resistant Mix #1006'],['Garden Pot','Hypertufa or cast planters','Substitute perlite for gravel']].map(r=>`<div class="info-card" style="padding:0.7rem 0.9rem;"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}<br><strong>${r[2]}</strong></div></div>`).join('')}
-      `,
-
-      'Calculator': () => `
-        <div class="calc-card">
-          <div class="calc-card-head">📐 Concrete Mix Calculator</div>
-          <div class="calc-card-body">
-            <div class="field">
-              <label>Project Type</label>
-              <select id="c-type" onchange="concreteCalc()">
-                <option value="paver">Garden Paver</option>
-                <option value="post">Fence Post Footing</option>
-                <option value="cap">Raised Bed Cap</option>
-                <option value="trough">Animal Trough</option>
-                <option value="slab">Poured Slab / Path</option>
-              </select>
-            </div>
-            <div id="c-dim-fields"></div>
-            <div id="c-results"></div>
-          </div>
+        <div class="section-eyebrow">Supplemented sawdust — wood-lovers</div>
+        <div class="info-card">
+          <div class="info-card-title">~80% hardwood sawdust + ~20% bran (+1% gypsum)</div>
+          <div class="info-card-body">For lion's mane, reishi, shiitake. <strong>Sterilize</strong> (250°F / 121°C). Gypsum buffers pH and reduces clumping.</div>
         </div>
+        <div class="tip-card">💡 More supplementation = more yield <em>and</em> more contamination risk. The richer the recipe, the more sterilization matters.</div>
       `,
-
-      'Mix Guide': () => `
-        <div class="section-eyebrow">Quikrete Product Selection</div>
+      'Sourcing': () => `
+        <div class="section-eyebrow">The rule: cost per pound of MUSHROOM</div>
+        <div class="info-card">
+          <div class="info-card-title">Not cost per pound of substrate</div>
+          <div class="info-card-body">Compare substrates on cost per lb of mushroom <em>sold</em> — count processing, sterilization labor, and contamination losses. A 2-year SARE study found the commercial mix averaged 2.15 lb/bag at 107% BE while the best waste substrate managed 1.32 lb/bag. "Free" material that yields a third less and fails more can cost more per pound.</div>
+        </div>
+        <div class="section-eyebrow">Riverside-area waste streams — honest verdicts</div>
         ${[
-          ['High Strength #1101','4,000 PSI','Pavers, general use. Your on-hand product.','2.5 qts / 60 lb'],
-          ['Sand/Topping #1103','4,500 PSI','Thin pours under 2". Bed caps, smooth finish.','3 qts / 60 lb'],
-          ['Crack-Resistant #1006','4,000 PSI','Fiber-reinforced. Troughs, large slabs.','2.5 qts / 60 lb'],
-          ['Fast-Setting #1004','4,000 PSI','Dry-pour for fence posts. Sets in 20–40 min.','1 gal / 50 lb'],
-          ['Hypertufa (DIY)','~1,800 PSI','1 part Portland + 1.5 peat + 1.5 perlite. Pots only.','To dough consistency'],
+          ['Spent coffee grounds','Supplement / marketing','Free from cafés. 70/30 coffee mix runs 40–70% BE; use fresh or it contaminates. Not a primary at volume.'],
+          ['Arborist oak sawdust','Viable if processed','Free from tree services / grove removals. Must grind, dry, and verify species. Good for lion\'s mane & reishi.'],
+          ['Wheat straw','Cost-competitive baseline','Cheap from feed/ag stores. Standard oyster substrate.'],
+          ['Brewery spent grain','Supplement only','Free from breweries but spoils in hours–days; high contamination. Hard to scale.'],
+          ['Grape pomace','Experimental / seasonal','Temecula wineries. Harvest-window only.'],
+          ['Cardboard','Spawn / low-yield','Free everywhere. Low-nutrient; fine for spawn expansion.'],
+          ['Citrus prunings','Caution — test first','Local, but essential oils (limonene) can inhibit mycelium.'],
         ].map(r=>`
           <div class="ref-card">
             <div class="ref-card-head"><div><div class="ref-card-name">${r[0]}</div><div class="ref-card-npk">${r[1]}</div></div></div>
-            <div class="ref-card-body">
-              <div class="ref-row"><div class="ref-row-label">Best For</div><div class="ref-row-text">${r[2]}</div></div>
-              <div class="ref-row"><div class="ref-row-label">Water per Bag</div><div class="ref-row-text"><strong>${r[3]}</strong></div></div>
-            </div>
+            <div class="ref-card-body"><div class="ref-row"><div class="ref-row-text">${r[2]}</div></div></div>
           </div>`).join('')}
-      `,
-
-      'Tips': () => `
-        <div class="section-eyebrow">Mold Ideas (Free / On-Hand)</div>
-        ${[
-          ['Wood scrap form','2×4s screwed into rectangle. Oil inside. Best for large pavers.'],
-          ['Plastic storage lid','Rubbermaid/Sterilite lids. Smooth finish, easy release.'],
-          ['Aluminum roasting pan','Disposable. Tear away after cure. Slightly rounded edges.'],
-          ['Nursery flat trays','Multiple pavers at once. Check depth — aim for 2".'],
-          ['Cardboard + garbage bag','Line box with bag. Disposable. Any size you cut it to.'],
-        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
-        <div class="section-eyebrow">Curing Checklist</div>
-        ${['Cover with plastic sheeting immediately after pour','Keep moist — do not let surface dry out','Wait 24 hrs before demolding','Keep moist for 7 days total after demolding','Avoid foot traffic for 24–48 hrs','Full 4,000 PSI strength reached at 28 days','In Riverside summer: cure in shade, mist twice daily'].map((t,i)=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
-        <div class="section-eyebrow">Troubleshooting</div>
-        ${[['Surface cracking','Mix too wet, or cured too fast in sun. Keep covered and moist next time.'],['Paver stuck in mold','Insufficient oil. Flex mold sides gently. Re-coat heavily next time.'],['Pitted surface','Air pockets. Tap mold sides more aggressively after each pour layer.'],['Weak / crumbly','Too much water. Mix should never flow freely.'],['White powder on surface','Efflorescence — normal mineral migration. Cosmetic only. Diluted vinegar removes it.']].map(r=>`<div class="info-card"><div class="info-card-title">⚠️ ${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
-      `
-    }
-  },
-
-  // ── IRRIGATION ────────────────────────────────────────────
-  irrigation: {
-    title: 'Irrigation & Water',
-    icon: '💧',
-    tabs: ['Overview', 'Calculator', 'Scheduling', 'Reference'],
-    render: {
-      'Overview': () => `
-        <div class="section-eyebrow">Zone 9b Water Context</div>
-        <div class="info-card">
-          <div class="info-card-title">Riverside Climate Basics</div>
-          <div class="info-card-body"><strong>~228 sunny days/year</strong> · Avg high summer 95–105°F<br>Annual rainfall ~10–12" · Rainy season Nov–Mar<br>Clay soil: holds water but drains poorly — overwatering is as common as underwatering.</div>
-        </div>
-        <div class="tip-card">💡 The finger test: push finger 2" into soil. If dry, water. If moist, wait. Clay soil feels cool when moist even when the surface looks dry.</div>
-        <div class="section-eyebrow">General Watering Guidelines</div>
-        ${[['Raised beds (summer)','Daily or every other day — beds dry faster than ground'],['Raised beds (winter)','Every 3–5 days depending on rainfall'],['Established fruit trees','Deep water every 7–14 days (not frequent shallow)'],['New tree plantings','Every 2–3 days for first 4–6 weeks'],['Seedling trays','Daily — small volume dries fast; bottom-water preferred'],['Container pots','When top 1" is dry — varies by pot size and sun exposure']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.7rem;max-width:55%;text-align:right;">${r[1]}</span></div>`).join('')}
+        <div class="tip-card">💡 Closed loop: café grounds intercepted from landfill → mushrooms → spent substrate → MycoSoil restoration pellets. Great story — run coffee as a <strong>supplement</strong> stream, not the yield backbone, so the economics stay real.</div>
       `,
       'Calculator': () => `
         <div class="calc-card">
-          <div class="calc-card-head">💧 Irrigation Run Time Calculator</div>
+          <div class="calc-card-head">📐 Substrate Batch Calculator</div>
           <div class="calc-card-body">
-            <div class="field"><label>Emitter Flow Rate</label>
-              <select id="i-flow">
-                <option value="0.5">0.5 GPH — low-flow drip</option>
-                <option value="1" selected>1 GPH — standard drip</option>
-                <option value="2">2 GPH — high-flow drip</option>
-                <option value="0.25">0.25 GPH — micro emitter</option>
-              </select>
+            <div class="calc-in-row" style="display:flex;gap:9px;">
+              <div class="field" style="flex:1;"><label>Blocks / bags</label><input id="sub-blocks" type="number" inputmode="numeric" value="10" min="0" oninput="substrateCalc()"></div>
+              <div class="field" style="flex:1;"><label>Dry lb / block</label><input id="sub-per" type="number" inputmode="decimal" value="5" min="0" oninput="substrateCalc()"></div>
+              <div class="field" style="flex:1;"><label>Target moisture %</label><input id="sub-mc" type="number" inputmode="numeric" value="60" min="0" max="90" oninput="substrateCalc()"></div>
             </div>
-            <div class="field-row">
-              <div class="field"><label>Bed Length (ft)</label><input type="number" id="i-len" value="4" oninput="irrigCalc()"></div>
-              <div class="field"><label>Bed Width (ft)</label><input type="number" id="i-wid" value="2" oninput="irrigCalc()"></div>
-            </div>
-            <div class="field"><label>Target water depth per session</label>
-              <select id="i-depth" onchange="irrigCalc()">
-                <option value="0.5">0.5" — light water / seedlings</option>
-                <option value="1" selected>1" — standard vegetables</option>
-                <option value="1.5">1.5" — fruiting crops in summer</option>
-                <option value="2">2" — deep water / trees</option>
-              </select>
-            </div>
-            <div class="field"><label>Emitters per bed</label><input type="number" id="i-emitters" value="4" oninput="irrigCalc()"></div>
-            <div id="i-results"></div>
+            <div id="sub-results"></div>
+            <div class="tip-card" style="margin-top:10px;">💡 Water to add assumes dry starting material. Always confirm by the squeeze test — a few drops, not a stream.</div>
           </div>
         </div>
-      `,
-      'Scheduling': () => `
-        <div class="section-eyebrow">Zone 9b Seasonal Schedule</div>
-        ${[['Dec–Feb (Cool/Rainy)','Reduce irrigation. Check soil before each run. Skip after any rainfall > 0.5".'],['Mar–Apr (Warming)','Gradually increase frequency as temps rise and plants put on new growth.'],['May–Jun (Heating up)','Daily or every-other-day for beds. Watch for wilting in afternoon heat.'],['Jul–Aug (Peak heat)','Water early morning only. Evening watering promotes fungal disease. Consider shade cloth.'],['Sep–Oct (Cooling)','Reduce frequency as temps drop. One of the best planting windows.'],['Nov (Cooling/Rainy)','Shut off auto irrigation if rain is forecast. Watch clay drainage.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
-        <div class="warn-card">⚠️ Your Rain Dial controller: located at x=7.18, y=-0.93 from house GPS. Always check zone settings after any power outage.</div>
-      `,
-      'Reference': () => `
-        <div class="section-eyebrow">Drip System Quick Reference</div>
-        ${[['1 GPH emitter, 1 hr','= 1 gallon delivered'],['1" of water on 1 sq ft','= 0.623 gallons'],['1 sq ft bed, 1" water','= 1 emitter at 1 GPH for ~37 min'],['Pressure range','20–30 PSI for standard drip; use pressure regulator'],['Emitter spacing','12–18" for vegetables; 24" for trees'],['Filter','Always use inline filter; clay particles clog emitters']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.72rem;">${r[1]}</span></div>`).join('')}
       `
     }
   },
 
-  // ── PEST & DISEASE ────────────────────────────────────────
-  pest: {
-    title: 'Pest & Disease',
-    icon: '🛡️',
-    tabs: ['Overview', 'ID Guide', 'Treatments', 'Schedule'],
+  // ── STERILIZE & PASTEURIZE ────────────────────────────────
+  sterilize: {
+    title: 'Sterilize & Pasteurize',
+    icon: '♨️',
+    tabs: ['Overview', 'Which Method', 'Steps', 'Cool-Down'],
     render: {
       'Overview': () => `
-        <div class="section-eyebrow">Your On-Hand Treatment</div>
+        <div class="section-eyebrow">Two ways to clear the field</div>
         <div class="info-card">
-          <div class="info-card-title">Neem Oil (RTU)</div>
-          <div class="info-card-body">Ready-to-use spray. Controls aphids, spider mites, whitefly, mealybug, and fungal issues including powdery mildew. Apply to wet foliage top and bottom. <strong>Apply morning or evening only — never in direct sun.</strong></div>
+          <div class="info-card-title">Give the mycelium a head start</div>
+          <div class="info-card-body"><strong>Sterilization</strong> kills everything — for nutrient-rich substrates. <strong>Pasteurization</strong> knocks back the worst competitors while leaving beneficial microbes — for low-nutrient substrates. The substrate's nutrient density decides which you use. (Salish Mushrooms; Priorclave)</div>
         </div>
-        <div class="warn-card">⚠️ Neem kills beneficial insects on contact. Never spray when pollinators are active. Target application only.</div>
-        <div class="section-eyebrow">Integrated Pest Management (IPM)</div>
-        <div class="info-card">
-          <div class="info-card-title">The IPM Ladder</div>
-          <div class="info-card-body">
-            <strong>1. Prevention</strong> — healthy soil, proper spacing, airflow<br>
-            <strong>2. Monitoring</strong> — scout weekly, catch early<br>
-            <strong>3. Cultural</strong> — remove affected leaves, hand-pick pests<br>
-            <strong>4. Biological</strong> — encourage beneficials (ladybugs, lacewings)<br>
-            <strong>5. Organic sprays</strong> — neem oil, insecticidal soap<br>
-            <strong>6. Chemical</strong> — last resort only
-          </div>
-        </div>
+        <div class="tip-card">💡 Rule of thumb: supplemented / nutrient-rich (Masters Mix, grain, soy hulls, bran-added sawdust) → <strong>STERILIZE</strong>. Low-nutrient (plain straw, wood chips, coir, cardboard) → <strong>PASTEURIZE</strong>.</div>
+        <div class="warn-card">⚠️ Pasteurization isn't validatable and can be unreliable — some bacterial spores actually germinate more if held at 150°F. On a supplemented substrate, when in doubt, sterilize. (Priorclave)</div>
       `,
-      'ID Guide': () => `
-        <div class="section-eyebrow">Common Pest Identification</div>
+      'Which Method': () => `
+        <div class="section-eyebrow">Substrate → method → target</div>
         ${[
-          ['Aphids','Tiny soft-bodied insects, green/black/white. Cluster on new growth and undersides of leaves. Sticky residue (honeydew) below colonies.','Blast off with water. Neem oil. Encourage ladybugs.'],
-          ['Spider Mites','Tiny dots on leaf surface, fine webbing underneath. Thrive in hot dry conditions — common in Riverside summers.','Increase humidity, water foliage. Neem oil. Miticide if severe.'],
-          ['Whitefly','Small white flying insects that scatter when plant is disturbed. Undersides of leaves.','Yellow sticky traps. Neem oil. Remove heavily infested leaves.'],
-          ['Mealybug','White cottony masses in leaf joints and on stems. Slow-moving.','Isopropyl alcohol on cotton swab for small infestations. Neem oil spray.'],
-          ['Caterpillars','Chewed leaf edges and holes. Look for frass (droppings). Often hide on undersides or in soil.','Hand-pick. Bt (Bacillus thuringiensis) spray for heavy infestations.'],
-          ['Fungus Gnats','Small flies around soil surface. Larvae damage roots. Common in containers and indoor growing.','Let soil dry between waterings. Yellow sticky traps. Beneficial nematodes.'],
+          ['Plain straw','Pasteurize','140–170°F (60–77°C) · 1–2 hr'],
+          ['Wood chips / coir / cardboard','Pasteurize','Hot water or steam, 140–170°F'],
+          ['Masters Mix / supplemented sawdust','Sterilize','250°F (121°C, 15 psi) · 2–3 hr'],
+          ['Grain spawn','Sterilize','250°F · 90–120 min (soak grain 24h first)'],
         ].map(r=>`
           <div class="ref-card">
-            <div class="ref-card-head"><div class="ref-card-name">${r[0]}</div></div>
-            <div class="ref-card-body">
-              <div class="ref-row"><div class="ref-row-label">What to look for</div><div class="ref-row-text">${r[1]}</div></div>
-              <div class="ref-row"><div class="ref-row-label">Treatment</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div>
-            </div>
+            <div class="ref-card-head"><div><div class="ref-card-name">${r[0]}</div><div class="ref-card-npk">${r[1]}</div></div></div>
+            <div class="ref-card-body"><div class="ref-row"><div class="ref-row-label">Target</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div></div>
           </div>`).join('')}
-        <div class="section-eyebrow">Common Disease ID</div>
+      `,
+      'Steps': () => `
+        <div class="section-eyebrow">Pasteurize straw</div>
+        ${['Chop straw to ~2–4 inch lengths','Submerge in 140–170°F water — timing starts when internal temp hits 140°F','Hold 1–2 hours','Drain to field capacity (few drops when squeezed)','Cool before spawning'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+        <div class="section-eyebrow">Sterilize supplemented substrate</div>
+        ${['Fill filter-patch bags, don\'t overpack','15 psi / 250°F (121°C) for 2–3 hr in a pressure vessel or autoclave','Let pressure fall to zero naturally','Do NOT open while hot','Move to clean area to cool'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+        <div class="warn-card">⚠️ Time scales with volume and density — larger, denser bags need longer, and not linearly. Validate your own times. (Priorclave)</div>
+      `,
+      'Cool-Down': () => `
+        <div class="info-card">
+          <div class="info-card-title">Cool below ~90°F before inoculating</div>
+          <div class="info-card-body">Residual heat kills spawn. Cool sterilized bags inside the clean area or still air so you don't pull contaminated air through the filter patch as they contract.</div>
+        </div>
+        <div class="tip-card">💡 Soaking grain 24 hours before sterilizing wakes up heat-resistant bacterial endospores so they're killed in the cook. Skipping the soak is a top cause of "wet spot" bacteria. (Martian Mushrooms; Fungi Myco)</div>
+      `
+    }
+  },
+
+  // ── SPAWN & INOCULATION ───────────────────────────────────
+  inoculate: {
+    title: 'Spawn & Inoculation',
+    icon: '🧫',
+    tabs: ['Overview', 'Spawn Rate', 'Sterile Technique', 'Colonization'],
+    render: {
+      'Overview': () => `
+        <div class="info-card">
+          <div class="info-card-title">Spawn = mycelium on sterilized grain</div>
+          <div class="info-card-body">Each colonized grain kernel is an inoculation point that spreads mycelium through the substrate evenly and fast. Mix spawn into cooled substrate, seal, and incubate. (GroCycle; Mother Mycelium)</div>
+        </div>
+        <div class="tip-card">💡 Strong, clean, vigorous spawn is the single biggest factor in success. Poor spawn = slow growth and contamination.</div>
+      `,
+      'Spawn Rate': () => `
+        <div class="info-card">
+          <div class="info-card-title">5–10% into sterilized substrate</div>
+          <div class="info-card-body">A good baseline is 5–10% spawn by weight (10 lb substrate → ~1 lb spawn). Into pasteurized or non-sterile substrate, go higher to outrun contamination. Higher spawn rate = faster colonization and less contamination, but generally <strong>not</strong> higher yield. (Mother Mycelium; GroCycle; Redwood)</div>
+        </div>
+        ${[['Sterilized substrate','5–10% (as low as 1–3% fully aseptic)'],['Pasteurized / non-sterile','20–35% to outrun competitors']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `,
+      'Sterile Technique': () => `
+        <div class="section-eyebrow">Work clean</div>
+        ${['Work in a still-air box, or in front of a laminar flow hood','Wipe surfaces and gloved hands with 70% alcohol','Gloves + mask; tie back anything loose','Open a sterilized bag for the shortest time possible','Work calm, no drafts, away from foot traffic'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+        <div class="warn-card">⚠️ Nutrient-rich substrates (Masters Mix, grain) demand sterile inoculation. At production scale, a laminar flow hood pays for itself. (GroCycle)</div>
+      `,
+      'Colonization': () => `
+        <div class="info-card">
+          <div class="info-card-title">Dark, sealed, species temperature</div>
+          <div class="info-card-body">Incubate in the dark at the species' colonization temp; keep bags sealed — mycelium likes the CO2 it makes during colonization. Wait for <strong>full</strong> colonization (solid white) before moving to fruiting.</div>
+        </div>
+        ${[['Blue / Pink Oyster','~70–80°F'],['Lion\'s Mane','~70–75°F'],['Reishi','~77–86°F']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+        <div class="tip-card">💡 Healthy mycelium is bright white, rope-like or dense, and smells fresh and earthy. Any green, gray-wispy, or sour smell → see the Contamination topic.</div>
+      `
+    }
+  },
+
+  // ── FRUITING ENVIRONMENT ──────────────────────────────────
+  environment: {
+    title: 'Fruiting Environment',
+    icon: '🌡️',
+    tabs: ['Overview', 'Parameters', 'Controls', 'Pinning'],
+    render: {
+      'Overview': () => `
+        <div class="info-card">
+          <div class="info-card-title">Four levers</div>
+          <div class="info-card-body">Fruiting is controlled by <strong>Temperature</strong>, <strong>Humidity (RH)</strong>, <strong>Fresh-Air Exchange (FAE / CO2)</strong>, and <strong>Light</strong>. Colonization wants warm, dark, high-CO2, sealed; fruiting flips several of those.</div>
+        </div>
+      `,
+      'Parameters': () => `
+        <div class="section-eyebrow">Colonization vs Fruiting</div>
         ${[
-          ['Powdery Mildew','White powdery coating on leaf surfaces. Worse in warm days + cool nights with poor airflow.','Improve airflow. Neem oil. Baking soda spray (1 tsp/qt water).'],
-          ['Damping Off','Seedlings collapse at soil line. Caused by fungal pathogens in wet soil.','Prevention only: sterile seed-starting mix, bottom-water, good airflow. No cure once started.'],
-          ['Root Rot','Yellowing, wilting despite adequate water. Roots brown and mushy.','Reduce watering. Improve drainage. Remove and discard affected plants. Do not compost.'],
-          ['Leaf Spot','Brown or yellow spots with defined edges. Various fungal causes.','Remove affected leaves. Avoid overhead watering. Copper fungicide if severe.'],
+          ['Colonization','Dark · sealed · species temp · high CO2 (mycelium likes it)'],
+          ['Fruiting','85–95% RH · high FAE · indirect light · species temp'],
+        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+        <div class="section-eyebrow">Fruiting temperature by species</div>
+        ${[['Blue Oyster','45–65°F (cold-fruiting — winter crop)'],['Pink Oyster','70–86°F (warm — summer crop)'],['Lion\'s Mane','60–65°F'],['Reishi','70–82°F']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `,
+      'Controls': () => `
+        <div class="info-card">
+          <div class="info-card-title">How to hold each lever</div>
+          <div class="info-card-body"><strong>RH:</strong> humidifier + light misting (don't soak). <strong>FAE:</strong> fans / venting to clear CO2 — lion's mane needs 3–5 air changes/hr or it grows stringy antlers. <strong>Light:</strong> 12/12 indirect (fungi use light to trigger and orient, not to photosynthesize). <strong>Reishi form:</strong> sealed/high CO2 → antlers; high FAE → flat conks.</div>
+        </div>
+        <div class="tip-card">💡 A cheap hygrometer + a clip fan go a long way. Read the mushrooms: long stems + tiny caps = too much CO2 (add FAE); cracked, crusty caps = too dry (add RH).</div>
+      `,
+      'Pinning': () => `
+        <div class="info-card">
+          <div class="info-card-title">What triggers pins</div>
+          <div class="info-card-body">Pinning (primordia forming) is triggered by the shift from colonization to fruiting conditions — a temperature drop, fresh air, light, and high humidity together.</div>
+        </div>
+        ${[['Blue Oyster','Cold shock (temperature drop)'],['Pink Oyster','Self-pins once fully colonized — often ~day 9'],['Lion\'s Mane','5–10°F drop + slit the block + FAE'],['Reishi','Temperature drop; CO2 level sets antler vs conk']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      `
+    }
+  },
+
+  // ── CONTAMINATION ─────────────────────────────────────────
+  contamination: {
+    title: 'Contamination',
+    icon: '🦠',
+    tabs: ['Overview', 'Identify', 'Prevent', 'Rescue'],
+    render: {
+      'Overview': () => `
+        <div class="info-card">
+          <div class="info-card-title">Something found an opening</div>
+          <div class="info-card-body">Contamination is any organism competing with your mycelium — mold, bacteria, yeast. It doesn't mean you can't grow; it means something got in. Track your <strong>contamination rate</strong> as a KPI, batch over batch. (Midwest Grow Kits)</div>
+        </div>
+        <div class="tip-card">💡 Healthy baseline: bright white, rope-like or dense, clings tight, fresh earthy smell. Contamination = color where it shouldn't be (green / gray / black / pink), slime, or a sour / musty smell. When in doubt, trust your nose. (Fungi Academy)</div>
+      `,
+      'Identify': () => `
+        <div class="section-eyebrow">Know your enemy — look, smell, act</div>
+        ${[
+          ['Trichoderma (green mold)','Starts white & fluffy (rises off the surface vs tight mycelium), turns bright green in 24–48h. Musty/sharp funk (coconut smell at scale).','Once green it\'s sporulating — remove the container far from your grow space now. Nearly impossible to stop.'],
+          ['Cobweb / pin mold','Thin gray wispy tufts hovering above the substrate, spreads overnight. Mildew smell. Loves high humidity + stagnant air.','Increase FAE, lower humidity; 3% hydrogen peroxide if caught early.'],
+          ['Bacterial wet-spot / sour rot','Dull gray slime, wet/oily grains, sour fermented smell. From excess moisture or under-sterilizing.','Scoop small isolated patches with a flame-sterilized tool; toss if widespread.'],
+          ['Black mold (Aspergillus)','Black/dark powdery patches. Can be harmful to inhale.','Usually an air-filtration issue — dispose carefully, improve filtration.'],
+          ['Bacterial blotch (Pseudomonas)','Brown, deformed, slimy caps. High humidity + poor airflow + a dirty humidifier.','Clean the humidifier, improve airflow.'],
         ].map(r=>`
           <div class="ref-card">
-            <div class="ref-card-head"><div class="ref-card-name">${r[0]}</div></div>
+            <div class="ref-card-head"><div><div class="ref-card-name">${r[0]}</div></div></div>
             <div class="ref-card-body">
-              <div class="ref-row"><div class="ref-row-label">What to look for</div><div class="ref-row-text">${r[1]}</div></div>
-              <div class="ref-row"><div class="ref-row-label">Treatment</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div>
+              <div class="ref-row"><div class="ref-row-label">Signs</div><div class="ref-row-text">${r[1]}</div></div>
+              <div class="ref-row"><div class="ref-row-label">Action</div><div class="ref-row-text"><strong>${r[2]}</strong></div></div>
             </div>
           </div>`).join('')}
+        <div class="tip-card">💡 Q-tip test: wipe the spot — contamination transfers to the swab, harmless bruising doesn't. (North Spore)</div>
       `,
-      'Treatments': () => `
-        <div class="section-eyebrow">Neem Oil Application Guide</div>
-        <div class="calc-card">
-          <div class="calc-card-head">🌿 Neem Spray Checklist</div>
-          <div class="calc-card-body">
-            ${['Check weather — no rain for 24 hrs after application','Apply in early morning or evening only','Shake bottle well before use','Spray tops AND bottoms of all leaves','Spray soil surface around plant base','Repeat every 7 days for active infestation','Repeat every 14 days as preventive'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
-          </div>
-        </div>
-        <div class="section-eyebrow">What Neem Controls</div>
-        ${[['✅ Aphids','Excellent control'],['✅ Spider Mites','Good control — ensure leaf undersides are coated'],['✅ Whitefly','Good control'],['✅ Mealybug','Good with repeated applications'],['✅ Powdery Mildew','Good preventive and early-stage treatment'],['⚠️ Caterpillars','Limited — physical removal more effective'],['❌ Scale (hard)','Neem ineffective on hard scale — use horticultural oil']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+      'Prevent': () => `
+        <div class="section-eyebrow">Stack the odds</div>
+        ${['Sterilize or pasteurize correctly for the substrate','Soak grain 24h before sterilizing (kills heat-resistant endospores)','Keep substrate at/below field capacity (~60–68%) — no standing water','Start with strong, clean spawn','Inoculate in a still-air box / flow hood, 70% alcohol','Filter incoming air; keep the room clean','Clean the humidifier regularly — it breeds blotch bacteria','Don\'t over-handle colonizing bags'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
       `,
-      'Schedule': () => `
-        <div class="section-eyebrow">Zone 9b Pest Pressure Calendar</div>
-        ${[['Jan–Feb','Low pressure. Scout for overwintering scale on fruit trees. No spraying needed unless active pests found.'],['Mar–Apr','Aphid season begins. Scout weekly on new growth. First neem application if found.'],['May–Jun','Spider mite pressure rises with heat. Check undersides. Whitefly appears.'],['Jul–Aug','Peak pressure. Heat stresses plants making them more vulnerable. Scout every 3–4 days.'],['Sep–Oct','Pressure drops. Good time to clean up and remove any harboring debris.'],['Nov–Dec','Low pressure. Remove dead plant material. Treat scale on dormant fruit trees with dormant oil.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
-      `
-    }
-  },
-
-  // ── PLANTING & CROPS ─────────────────────────────────────
-  planting: {
-    title: 'Planting & Crops',
-    icon: '🗓️',
-    tabs: ['Overview', 'Calendar', 'Spacing', 'Companions'],
-    render: {
-      'Overview': () => `
-        <div class="section-eyebrow">Zone 9b Growing Conditions</div>
+      'Rescue': () => `
         <div class="info-card">
-          <div class="info-card-title">Riverside, CA — USDA Zone 9b</div>
-          <div class="info-card-body"><strong>Last frost:</strong> ~Jan 15 · <strong>First frost:</strong> ~Dec 15<br><strong>Growing season:</strong> Nearly year-round<br><strong>Summer challenge:</strong> Extreme heat (95–110°F) limits cool-season crops Jun–Sep<br><strong>Sweet spots:</strong> Feb–May and Sep–Nov are the best planting windows</div>
+          <div class="info-card-title">Triage — isolate first</div>
+          <div class="info-card-body">Don't panic-move spores around. If it's spreading fast or sporulating (dusty green), discard. If more than ~20% of the block is contaminated, or bacterial slime is present, start fresh. (Midwest Grow Kits; Denver Spore)</div>
         </div>
-        <div class="tip-card">💡 Zone 9b has two main planting seasons — cool season (Sep–Feb) and warm season (Mar–Jun). The dead of summer is the hardest time to grow most vegetables.</div>
-        <div class="section-eyebrow">FGF Bed Quick Reference</div>
-        ${[['Zone 1 (Z1)','8 beds · 1.55×0.86m · 18" deep · Beds 1A–1H'],['Zone 2 (Z2)','6 beds · 3.08×1.53m · 24" deep · Beds 2A–2F'],['Zone 3 (Z3)','7 beds · 3.18×1.29m · 24" deep · Beds 3A–3G'],['Naval Orange Grove','SW of house — established grove'],['Palm Grove','West of house']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.7rem;max-width:60%;text-align:right;">${r[1]}</span></div>`).join('')}
-      `,
-      'Calendar': () => `
-        <div class="section-eyebrow">Zone 9b Planting Calendar</div>
-        ${[
-          ['🥬 Leafy Greens','Sep–Feb (cool season). Bolt in heat. Plant in fall for best results.'],
-          ['🍅 Tomatoes','Start indoors Feb, transplant Mar–Apr. Harvest Jul–Sep.'],
-          ['🫑 Peppers','Same as tomatoes. Need heat to fruit — thrive in Riverside summer.'],
-          ['🥒 Cucumber / Squash','Direct sow Apr–Jun. Fast producers. Struggles above 105°F.'],
-          ['🥕 Carrots / Beets','Sep–Feb. Prefer cool soil. Direct sow only.'],
-          ['🧄 Garlic','Plant Oct–Nov. Harvest Jun–Jul.'],
-          ['🌽 Corn','Apr–Jun. Needs space and heat. Plant in blocks, not rows.'],
-          ['🫘 Beans','Mar–May and Aug–Sep. Bush beans fastest (50–60 days).'],
-          ['🌿 Herbs (most)','Year-round. Basil struggles in winter. Rosemary/thyme thrive.'],
-          ['🍓 Strawberries','Plant Oct–Nov. Harvest Mar–May.'],
-          ['🍊 Citrus (feeding)','Fertilize Mar, Jun, Sep. Do not fertilize Nov–Feb.'],
-        ].map(r=>`<div class="info-card" style="padding:0.65rem 0.9rem;"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
-      `,
-      'Spacing': () => `
-        <div class="section-eyebrow">Square Foot Spacing Guide</div>
-        ${[['Tomato','1 per sq ft (18–24" apart)'],['Pepper','1 per sq ft'],['Squash / Zucchini','1 per 4 sq ft'],['Cucumber','2 per sq ft (trellised)'],['Lettuce','4 per sq ft'],['Spinach / Arugula','9 per sq ft'],['Carrot','16 per sq ft'],['Radish','16 per sq ft'],['Beet','9 per sq ft'],['Garlic','9 per sq ft'],['Onion','9 per sq ft'],['Kale / Chard','1 per sq ft'],['Basil','1 per sq ft'],['Parsley','1–2 per sq ft'],['Bush Bean','9 per sq ft'],['Corn','4 per sq ft (plant in 4×4 block minimum)']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
-      `,
-      'Companions': () => `
-        <div class="section-eyebrow">Companion Planting Guide</div>
-        <div class="tip-card">💡 Companion planting uses plant relationships to deter pests, attract beneficials, and improve yields — no extra products needed.</div>
-        ${[
-          ['Tomato','Basil (repels aphids, improves flavor), marigold (repels nematodes), carrot (loosens soil around roots)'],
-          ['Pepper','Basil, carrots, tomatoes'],
-          ['Squash','Corn + beans (Three Sisters), nasturtium (trap crop for aphids), marigold'],
-          ['Carrot','Tomatoes (shade), onion/leek (deters carrot fly), rosemary'],
-          ['Lettuce / Greens','Tall crops for afternoon shade in summer, strawberries, carrots'],
-          ['Garlic','Plant near roses, fruit trees, and most vegetables. Natural pest deterrent.'],
-          ['Avoid','Fennel near most vegetables — inhibits growth of many crops'],
-        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+        <div class="warn-card">⚠️ Green mold that has turned color = discard the whole container, away from the clean room. Most contamination is a discard, not a rescue — that's normal, not failure.</div>
+        <div class="info-card">
+          <div class="info-card-title">Sometimes salvageable</div>
+          <div class="info-card-body">Small early cobweb or bacterial patches: 3% hydrogen peroxide + better airflow, or scoop an isolated bacterial patch with a flame/alcohol-sterilized tool. Disinfect everything after — 70% isopropyl or 1:10 bleach. (Denver Spore; North Spore)</div>
+        </div>
       `
     }
   },
 
-  // ── TOOLS & EQUIPMENT ─────────────────────────────────────
-  tools: {
-    title: 'Tools & Equipment',
-    icon: '🔧',
-    tabs: ['Overview', 'Checklists', 'Maintenance', 'Storage'],
+  // ── HARVEST & STORAGE ─────────────────────────────────────
+  harvest: {
+    title: 'Harvest & Storage',
+    icon: '🧺',
+    tabs: ['Overview', 'When to Pick', 'Post-Harvest', 'Yield (BE)'],
     render: {
       'Overview': () => `
-        <div class="section-eyebrow">Tool Categories</div>
-        ${[['Soil & Bed Tools','Shovels, hoes, trowels, broadfork, hand cultivator'],['Watering','Hose, watering can, drip repair kit (Rain Bird on shelf)'],['Pest & Chemical','Neem RTU, Corrmaxx 245, Liquid Iron, Worm Tea, Soil Acidifier'],['Measuring','pH meter, moisture meter, measuring tape'],['Cutting','Pruners, loppers, garden scissors, grafting knife'],['Safety','Gloves, eye protection, N95 dust mask, knee pads']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+        <div class="info-card">
+          <div class="info-card-title">Pick right, then rest for a second flush</div>
+          <div class="info-card-body">Harvest at the right moment for each species, then rest the block and re-introduce fruiting conditions. The first flush is usually the biggest — roughly 60–70% of an oyster block's yield.</div>
+        </div>
       `,
-      'Checklists': () => `
-        <div class="section-eyebrow">Daily Walk-Through</div>
+      'When to Pick': () => `
+        ${[
+          ['Blue / Pink Oyster','Harvest the whole cluster just before caps fully flatten and start dropping spores. Pink oyster especially — pick before heavy spore drop; short shelf life.'],
+          ['Lion\'s Mane','When spines are ~1/4–1/2 inch and still bright white. Handle gently — it bruises and yellows.'],
+          ['Reishi','When the conk or antler has hardened and stopped putting on white growth. Dried for tea/tincture — not eaten fresh.'],
+        ].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
+      `,
+      'Post-Harvest': () => `
+        <div class="info-card">
+          <div class="info-card-title">Cool fast, store dry-ish, don't wash</div>
+          <div class="info-card-body">Cool quickly and store at 34–38°F in breathable packaging. Don't wash before storage — surface moisture speeds rot. Oyster shelf life is a few days; pink oyster the shortest; lion's mane ~1 week; dried reishi is shelf-stable.</div>
+        </div>
+        <div class="tip-card">💡 Riverside edge: rotate warm species (pink oyster, reishi) in summer and cool species (blue oyster, lion's mane) in winter to cut HVAC cost.</div>
+      `,
+      'Yield (BE)': () => `
+        <div class="info-card">
+          <div class="info-card-title">Biological efficiency = your core number</div>
+          <div class="info-card-body">BE = fresh mushroom weight ÷ dry substrate weight × 100. Track it per batch — it tells you whether a substrate or species is worth it. Oyster 75–110%, lion's mane ~50%, reishi lower (grown for compounds, not weight). (MycoMansion; Colorado Cultures)</div>
+        </div>
         <div class="calc-card">
-          <div class="calc-card-head">☀️ Morning Check</div>
+          <div class="calc-card-head">📐 Yield Estimator</div>
           <div class="calc-card-body">
-            ${['Check soil moisture in each zone (finger test)','Scout for pests on undersides of leaves','Note any wilting or discoloration','Check drip emitters — look for dry spots or flooding','Remove any debris, fallen fruit, dead leaves','Log anything unusual in Farm Records'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
+            <div class="calc-in-row" style="display:flex;gap:9px;">
+              <div class="field" style="flex:1;"><label>Dry substrate (lb)</label><input id="be-dry" type="number" inputmode="decimal" value="50" min="0" oninput="beCalc()"></div>
+              <div class="field" style="flex:1;"><label>Expected BE %</label><input id="be-pct" type="number" inputmode="numeric" value="75" min="0" oninput="beCalc()"></div>
+            </div>
+            <div id="be-results"></div>
+            <div class="tip-card" style="margin-top:10px;">💡 BE is an estimate — tune it to your own recorded results over time.</div>
           </div>
         </div>
-        <div class="calc-card" style="margin-top:0.75rem;">
-          <div class="calc-card-head">🌙 End of Day</div>
-          <div class="calc-card-body">
-            ${['All tools cleaned and returned to storage','Hoses drained and coiled (prevent algae)','Any chemicals closed tightly and stored properly','Gates and enclosures secured','Irrigation timer checked for next run'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
-          </div>
-        </div>
-        <div class="calc-card" style="margin-top:0.75rem;">
-          <div class="calc-card-head">📅 Weekly</div>
-          <div class="calc-card-body">
-            ${['Clean and oil cutting tools','Check irrigation lines for leaks or clogs','Weed all beds','Turn compost pile if active','Review and update farm records','Check amendment inventory'].map(t=>`<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><span>${t}</span></div>`).join('')}
-          </div>
-        </div>
-      `,
-      'Maintenance': () => `
-        <div class="section-eyebrow">Tool Cleaning Guide</div>
-        ${[['Metal cutting tools (pruners, loppers)','Wipe blades with isopropyl alcohol after each use. Oil with mineral oil weekly. Sharpen monthly with whetstone.'],['Shovels / Hoes','Knock off soil after each use. Wipe metal with oily rag. Sand handle if splinters develop.'],['Drip system / emitters','Flush lines monthly. Soak clogged emitters in white vinegar 30 min. Replace if clog persists.'],['Spray bottles / applicators','Rinse 3× with clean water after each chemical use. Label clearly — never mix chemicals.'],['pH / moisture meters','Rinse probes with distilled water after use. Do not submerge electronics.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
-      `,
-      'Storage': () => `
-        <div class="section-eyebrow">Chemical Storage Rules</div>
-        <div class="warn-card">⚠️ Store all chemicals in original labeled containers. Never mix or transfer to unlabeled containers.</div>
-        ${[['Temperature','Keep between 40–90°F. Avoid freezing (ruins emulsions) and extreme heat.'],['Neem Oil','Shelf stable 1–2 years sealed. Solidifies below 65°F — warm in hand before use.'],['Liquid Iron','Keep sealed. Stains everything permanently — store on a tray or in secondary container.'],['Blood Meal','Keep dry and sealed. Attracts rodents if left open. Shelf life ~1 year.'],['Worm Tea Concentrate','Refrigerate after opening. Use within 6 months of opening.'],['Soil Acidifier','Keep dry. Clumps with moisture but still effective if broken up.']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
       `
     }
   },
 
-  // ── FARM RECORDS ──────────────────────────────────────────
+  // ── BATCH LOG ─────────────────────────────────────────────
   records: {
-    title: 'Farm Records',
+    title: 'Batch Log',
     icon: '📋',
-    tabs: ['Overview', 'Observation Log', 'Bed Status', 'Experiments'],
+    tabs: ['Overview', 'Batch Log'],
     render: {
       'Overview': () => `
-        <div class="section-eyebrow">About Farm Records</div>
         <div class="info-card">
-          <div class="info-card-title">Why keep records?</div>
-          <div class="info-card-body">Records turn observations into data. Over time they reveal patterns — which beds drain poorly, which crops thrive in which zones, how amendments affected yield. For science coursework, records are essential for documenting experimental conditions and outcomes.</div>
+          <div class="info-card-title">A container farm lives on batch discipline</div>
+          <div class="info-card-body">Log every batch so you can compute biological efficiency and contamination rate over time — the two numbers that tell you if the operation is working.</div>
         </div>
-        <div class="tip-card">💡 The FGF web app (funguyfungi.org) is the primary record-keeping system. Use this manual for quick field notes when you don't have the app open.</div>
-        <div class="section-eyebrow">Record Categories</div>
-        ${[['Observation Log','Date, bed, what you saw — pests, growth, weather, anomalies'],['Amendment Log','What was applied, to which bed, at what rate, on what date'],['Harvest Log','Crop, bed, quantity, quality notes'],['Experiment Log','Control vs. treatment, variables, conditions, outcomes'],['Maintenance Log','Irrigation adjustments, repairs, tool maintenance']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body" style="font-size:0.75rem;">${r[1]}</div></div>`).join('')}
+        <div class="section-eyebrow">Track for every batch</div>
+        ${[['Species','Which mushroom'],['Substrate','Recipe + source'],['Inoculation date','Day 0'],['Spawn rate','% by weight'],['Contamination','Y/N + type'],['Fresh yield','lb harvested'],['BE','yield ÷ dry substrate × 100']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
+        <div class="tip-card">💡 For live, shared records, use the FGF staff app at funguyfungi.org. The log below is a quick offline scratchpad for this session.</div>
       `,
-      'Observation Log': () => `
-        <div class="section-eyebrow">Quick Field Note</div>
+      'Batch Log': () => `
         <div class="calc-card">
-          <div class="calc-card-head">📝 Today's Observation</div>
+          <div class="calc-card-head">📋 Quick Batch Note</div>
           <div class="calc-card-body">
-            <div class="field"><label>Bed / Location</label>
-              <select id="r-bed">
-                <option>Z1 — 1A</option><option>Z1 — 1B</option><option>Z1 — 1C</option><option>Z1 — 1D</option>
-                <option>Z1 — 1E</option><option>Z1 — 1F</option><option>Z1 — 1G</option><option>Z1 — 1H</option>
-                <option>Z2 — 2A</option><option>Z2 — 2B</option><option>Z2 — 2C</option>
-                <option>Z2 — 2D</option><option>Z2 — 2E</option><option>Z2 — 2F</option>
-                <option>Z3 — 3A</option><option>Z3 — 3B</option><option>Z3 — 3C</option><option>Z3 — 3D</option>
-                <option>Z3 — 3E</option><option>Z3 — 3F</option><option>Z3 — 3G</option>
-                <option>Orange Grove</option><option>Palm Grove</option><option>General / Site</option>
-              </select>
+            <div class="field"><label>Species / batch</label>
+              <input id="r-bed" type="text" placeholder="e.g. Blue Oyster — B-014" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--forest);font-family:Inter,sans-serif;font-size:0.9rem;padding:0.6rem;outline:none;">
             </div>
-            <div class="field"><label>Category</label>
+            <div class="field"><label>Stage</label>
               <select id="r-cat">
-                <option>Pest / Disease</option><option>Plant Health</option><option>Irrigation</option>
-                <option>Amendment Applied</option><option>Harvest</option><option>Maintenance</option><option>Other</option>
+                <option>Substrate prep</option><option>Sterilize / Pasteurize</option><option>Inoculation</option>
+                <option>Colonization</option><option>Pinning</option><option>Fruiting</option><option>Harvest</option><option>Contamination</option><option>Other</option>
               </select>
             </div>
             <div class="field"><label>Note</label>
@@ -1007,23 +920,6 @@ const TOPICS = {
         </div>
         <div class="section-eyebrow">Saved Notes (This Session)</div>
         <div id="obs-log" style="font-size:0.78rem;color:var(--cream);">No notes saved yet this session.</div>
-      `,
-      'Bed Status': () => `
-        <div class="section-eyebrow">FGF Bed Reference</div>
-        <div class="tip-card">💡 For live bed data, open the FGF app at funguyfungi.org. This is a quick offline reference for bed specs.</div>
-        ${[['Zone 1 (Z1)','8 beds · 1A–1H · 1.55×0.86m · 18" deep · Near house NW face'],['Zone 2 (Z2)','6 beds · 2A–2F · 3.08×1.53m · 24" deep · SW porch path'],['Zone 3 (Z3)','7 beds · 3A–3G · 3.18×1.29m · 24" deep · NW wall row']].map(r=>`<div class="info-card"><div class="info-card-title">${r[0]}</div><div class="info-card-body">${r[1]}</div></div>`).join('')}
-        <div class="section-eyebrow">Bed Volume Quick Reference</div>
-        ${[['Z1 bed (1.55×0.86×0.46m)','~18" deep · ~0.61 cu m · ~21.5 cu ft'],['Z2 bed (3.08×1.53×0.61m)','~24" deep · ~2.88 cu m · ~101 cu ft'],['Z3 bed (3.18×1.29×0.61m)','~24" deep · ~2.50 cu m · ~88 cu ft']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.68rem;max-width:40%;text-align:right;">${r[1]}</span></div>`).join('')}
-      `,
-      'Experiments': () => `
-        <div class="section-eyebrow">Experiment Design Basics</div>
-        <div class="info-card">
-          <div class="info-card-title">For Science-Grade Tracking</div>
-          <div class="info-card-body">Every experiment needs: <strong>a control</strong> (no treatment), <strong>one variable</strong> changed at a time, <strong>replication</strong> (same treatment in multiple beds), and <strong>consistent measurement</strong> of the same outcome at the same intervals.</div>
-        </div>
-        <div class="section-eyebrow">Amendment Experiment Template</div>
-        ${[['Hypothesis','Which amendment will most improve [outcome] in [crop]?'],['Control Bed','No amendment — identical soil, water, sun exposure'],['Treatment Beds','One amendment per bed at labeled rate'],['Measure','Plant height, leaf color, yield weight, pest incidence'],['Interval','Measure weekly from transplant to harvest'],['Document','Photo same time each week. Log in FGF app under bed comments.']].map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val" style="font-size:0.68rem;max-width:55%;text-align:right;">${r[1]}</span></div>`).join('')}
-        <div class="tip-card">💡 Blood Meal, Worm Tea, and Corrmaxx 245 on your shelf are ideal experiment variables — each targets a different mechanism and they can be compared across identical beds.</div>
       `
     }
   }
@@ -1061,9 +957,8 @@ function openTopic(key) {
   document.getElementById('home-fab').classList.add('visible');
 
   // Init calculators if present
-  if (key === 'soil') { initSoilCalc(); }
-  if (key === 'concrete') { initConcreteCalc(); }
-  if (key === 'irrigation') { irrigCalc(); }
+  if (key === 'substrate') { substrateCalc(); }
+  if (key === 'harvest') { beCalc(); }
 
   window.scrollTo(0,0);
 }
@@ -1112,203 +1007,33 @@ function saveObs() {
 // ══════════════════════════════════════════════════════════════
 // SOIL CALCULATOR
 // ══════════════════════════════════════════════════════════════
-function initSoilCalc() {
-  renderSoilDims();
-  soilCalc();
+function mval(id){ var e=document.getElementById(id); var n=e?parseFloat(e.value):NaN; return isNaN(n)?0:n; }
+
+function substrateCalc(){
+  var blocks=mval('sub-blocks'), per=mval('sub-per'), mc=mval('sub-mc');
+  var dry=blocks*per;
+  var waterLb=(mc>0 && mc<100)?dry*(mc/(100-mc)):0;
+  var waterGal=waterLb/8.34;
+  var pellet=dry*0.5, soy=dry*0.5;
+  var el=document.getElementById('sub-results'); if(!el) return;
+  el.innerHTML=(blocks>0 && per>0)
+    ? '<div style="background:#2E342A;border-radius:12px;padding:12px 14px;font-size:0.9rem;line-height:1.6;color:var(--cream);">'
+      +'<div><strong>'+dry.toFixed(0)+' lb</strong> dry substrate total</div>'
+      +'<div>Add <strong>'+waterLb.toFixed(0)+' lb</strong> water (~'+waterGal.toFixed(1)+' gal) to reach '+mc+'% moisture</div>'
+      +'<div style="margin-top:6px;font-size:0.82rem;">Masters Mix split: '+pellet.toFixed(0)+' lb hardwood pellets + '+soy.toFixed(0)+' lb soy hulls</div>'
+      +'</div>'
+    : '<div style="font-size:0.85rem;color:var(--cream);">Enter blocks and dry weight per block.</div>';
 }
 
-function renderSoilDims() {
-  const type = document.getElementById('s-plot')?.value;
-  const fields = {
-    raised:     [['s-len','Length (in)',48],['s-wid','Width (in)',24],['s-dep','Depth (in)',12],['s-qty','# Beds',1]],
-    'tree-hole':[['s-diam','Hole Diam (in)',36],['s-dep','Hole Depth (in)',24],['s-qty','# Trees',1]],
-    'tree-top': [['s-diam','Canopy Diam (in)',96],['s-dep','Top-dress Depth (in)',2],['s-qty','# Trees',1]],
-    container:  [['s-gal','Size (gallons)',5],['s-qty','# Pots',1]],
-  };
-  const f = fields[type] || fields.raised;
-  const el = document.getElementById('s-dim-fields');
-  if (!el) return;
-  el.innerHTML = `<div class="field-row">${f.map(([id,lbl,def])=>`<div class="field"><label>${lbl}</label><input type="number" id="${id}" value="${def}" oninput="soilCalc()"></div>`).join('')}</div>`;
-  soilCalc();
+function beCalc(){
+  var dry=mval('be-dry'), be=mval('be-pct');
+  var fresh=dry*(be/100);
+  var el=document.getElementById('be-results'); if(!el) return;
+  el.innerHTML=(dry>0)
+    ? '<div style="background:#2E342A;border-radius:12px;padding:12px 14px;font-size:0.95rem;color:var(--cream);">Est. <strong>'+fresh.toFixed(1)+' lb</strong> fresh mushrooms at '+be+'% biological efficiency</div>'
+    : '<div style="font-size:0.85rem;color:var(--cream);">Enter substrate weight.</div>';
 }
 
-function soilCalc() {
-  const type = document.getElementById('s-plot')?.value;
-  if (!type) return;
-  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
-  let vol = 0;
-  if (type === 'raised')     vol = g('s-len') * g('s-wid') * g('s-dep') / 1728;
-  if (type === 'tree-hole')  vol = Math.PI * Math.pow(g('s-diam')/24, 2) * (g('s-dep')/12) * 0.7;
-  if (type === 'tree-top')   vol = Math.PI * Math.pow(g('s-diam')/24, 2) * (g('s-dep')/12);
-  if (type === 'container')  vol = g('s-gal') * 0.1337;
-  const qty  = g('s-qty') || 1;
-  const total = vol * qty;
-  const bags  = Math.ceil(total / 1.5);
-  const res = document.getElementById('s-results');
-  if (!res) return;
-  res.innerHTML = `
-    <div class="result-grid">
-      <div class="result-box"><div class="result-val">${total.toFixed(2)}</div><div class="result-label">Cu Ft Total</div></div>
-      <div class="result-box"><div class="result-val">${bags}</div><div class="result-label">1.5 cu ft Bags</div></div>
-    </div>
-    <div class="tip-card" style="margin-top:0.5rem;">💡 Recommended soil blend for this plot type shown in the Grow Plans tab.</div>
-  `;
-}
-
-// ══════════════════════════════════════════════════════════════
-// CONCRETE CALCULATOR
-// ══════════════════════════════════════════════════════════════
-function initConcreteCalc() {
-  renderConcreteDims();
-}
-
-const C_FIELDS = {
-  paver:  [['c-len','Length (in)',12],['c-wid','Width (in)',24],['c-thk','Thickness (in)',2],['c-qty','# Pavers',1]],
-  post:   [['c-diam','Hole Diam (in)',8],['c-dep','Hole Depth (in)',24],['c-qty','# Posts',1]],
-  cap:    [['c-len','Bed Length (in)',48],['c-cwid','Cap Width (in)',6],['c-cthk','Cap Thick (in)',1.5],['c-qty','# Beds',1]],
-  trough: [['c-len','Int Length (in)',24],['c-wid','Int Width (in)',12],['c-ht','Int Height (in)',10],['c-wall','Wall Thick (in)',2],['c-qty','# Troughs',1]],
-  slab:   [['c-len','Length (in)',30],['c-wid','Width (in)',60],['c-thk','Thickness (in)',2],['c-qty','# Slabs',1]],
-};
-
-function renderConcreteDims() {
-  const type = document.getElementById('c-type')?.value;
-  const f = C_FIELDS[type] || C_FIELDS.paver;
-  const el = document.getElementById('c-dim-fields');
-  if (!el) return;
-  el.innerHTML = `<div class="field-row">${f.map(([id,lbl,def])=>`<div class="field"><label>${lbl}</label><input type="number" id="${id}" value="${def}" oninput="concreteCalc()"></div>`).join('')}</div>`;
-  concreteCalc();
-}
-
-function concreteCalc() {
-  const type = document.getElementById('c-type')?.value;
-  if (!type) return;
-  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
-  let vol = 0;
-  if (type === 'paver')  vol = g('c-len') * g('c-wid') * g('c-thk') / 1728;
-  if (type === 'post')   vol = Math.PI * Math.pow(g('c-diam')/24,2) * (g('c-dep')/12) * 0.75;
-  if (type === 'cap')    vol = (g('c-len') * g('c-cwid') * g('c-cthk')) / 1728;
-  if (type === 'trough') {
-    const oL=(g('c-len')+2*g('c-wall'))/12,oW=(g('c-wid')+2*g('c-wall'))/12,oH=(g('c-ht')+g('c-wall'))/12;
-    vol = oL*oW*oH - (g('c-len')/12)*(g('c-wid')/12)*(g('c-ht')/12);
-  }
-  if (type === 'slab')   vol = g('c-len') * g('c-wid') * g('c-thk') / 1728;
-  const qty   = g('c-qty') || 1;
-  const total = vol * qty;
-  const bags  = Math.ceil(total / 0.45);
-  const water = (bags * 2.5).toFixed(1);
-  const res = document.getElementById('c-results');
-  if (!res) return;
-  res.innerHTML = `
-    <div class="result-grid">
-      <div class="result-box"><div class="result-val">${total.toFixed(2)}</div><div class="result-label">Cu Ft Total</div></div>
-      <div class="result-box"><div class="result-val">${bags}</div><div class="result-label">60 lb Bags</div></div>
-      <div class="result-box"><div class="result-val">${water}</div><div class="result-label">Qts Water</div></div>
-      <div class="result-box"><div class="result-val">4,000</div><div class="result-label">PSI (28-day)</div></div>
-    </div>
-  `;
-}
-
-// ══════════════════════════════════════════════════════════════
-// IRRIGATION CALCULATOR
-// ══════════════════════════════════════════════════════════════
-function irrigCalc() {
-  const flow     = parseFloat(document.getElementById('i-flow')?.value) || 1;
-  const len      = parseFloat(document.getElementById('i-len')?.value)  || 4;
-  const wid      = parseFloat(document.getElementById('i-wid')?.value)  || 2;
-  const depth    = parseFloat(document.getElementById('i-depth')?.value)|| 1;
-  const emitters = parseFloat(document.getElementById('i-emitters')?.value)||4;
-  const area     = len * wid;
-  const gallons  = area * depth * 0.623;
-  const gphTotal = flow * emitters;
-  const minutes  = Math.ceil((gallons / gphTotal) * 60);
-  const res = document.getElementById('i-results');
-  if (!res) return;
-  res.innerHTML = `
-    <div class="result-grid">
-      <div class="result-box"><div class="result-val">${gallons.toFixed(1)}</div><div class="result-label">Gallons Needed</div></div>
-      <div class="result-box"><div class="result-val">${minutes}</div><div class="result-label">Run Time (min)</div></div>
-      <div class="result-box"><div class="result-val">${gphTotal.toFixed(1)}</div><div class="result-label">GPH Delivery</div></div>
-      <div class="result-box"><div class="result-val">${area.toFixed(0)}</div><div class="result-label">Sq Ft Area</div></div>
-    </div>
-    <div class="tip-card">Set your Rain Dial to <strong>${minutes} minutes</strong> for this zone to deliver ${depth}" of water to your ${len}×${wid} ft bed.</div>
-  `;
-}
-
-// ══════════════════════════════════════════════════════════════
-// AMENDMENT REFERENCE (shared)
-// ══════════════════════════════════════════════════════════════
-function renderAmendmentRef() {
-  const items = [
-    { cat:'🦠 Biologicals', badge:'badge-bio', name:'Worm Tea Concentrate', npk:'~1-1-1', what:'Liquid worm casting extract — microbes, humic acids, soluble nutrients.', why:'Inoculates soil with beneficial bacteria and fungi. Improves nutrient uptake and soil structure.', when:'Every 2–4 weeks during active growth. Soil moist, temp above 55°F.', dose:'1 tbsp/gal water → 1 qt per sq ft', caution:null },
-    { cat:'🦠 Biologicals', badge:'badge-build', name:'E.B. Stone Compost Maker', npk:'~3-1-1', what:'Microbial inoculant + nitrogen that accelerates composting.', why:'Speeds decomposition by 30–50%. Useful worked into beds with raw organic matter.', when:'When building compost or incorporating raw organics into beds.', dose:'1 oz per 1 cu ft of organic material', caution:'Not a standalone fertilizer — needs organic material to activate.' },
-    { cat:'🌿 Nutrients', badge:'badge-npk', name:'Blood Meal (12-0-0)', npk:'12-0-0', what:'Dried animal blood. Highest-nitrogen organic amendment available.', why:'Corrects nitrogen deficiency (yellowing older leaves). Fast-releasing — available within days.', when:'Early season bed prep or when N deficiency symptoms appear.', dose:'1 tsp per cu ft mixed in, or 2 lbs per 100 sq ft broadcast', caution:'⚠️ Easy to over-apply. Burns seedlings. Attracts animals — work into soil. Zero P or K.' },
-    { cat:'🌿 Nutrients', badge:'badge-npk', name:'Liquid Iron (Chelated)', npk:'0-0-0 + Fe', what:'Chelated iron stays soluble in alkaline soils where standard iron locks up.', why:'Corrects iron chlorosis: young leaves yellow, veins stay green. Common in Riverside clay.', when:'At first sign of interveinal yellowing on new growth. Foliar works fastest (3–5 days).', dose:'2 tsp/gal water → 1 qt per sq ft drench', caution:'⚠️ Stains concrete and clothing permanently.' },
-    { cat:'⚗️ pH Management', badge:'badge-ph', name:'Organic Soil Acidifier', npk:'0-0-0 + S', what:'Elemental sulfur that lowers soil pH as bacteria convert it to sulfuric acid.', why:'Riverside soil pH 7.2–8.0. Most vegetables prefer 6.0–6.8. High pH locks out iron, Mn, Zn.', when:'Fall application ideal. Results take 6–12 weeks. Test pH before and after.', dose:'1–2 oz per 10 sq ft to drop ~0.5 pH units', caution:'⚠️ Slow acting — do not over-apply. Always test pH first.' },
-    { cat:'🛡️ Pest & Disease', badge:'badge-pest', name:'Neem Oil (RTU)', npk:'N/A', what:'Cold-pressed neem oil spray. Controls soft-bodied insects and fungal disease.', why:'Disrupts insect hormonal development. Controls aphids, mites, whitefly, powdery mildew.', when:'Morning or evening only. Every 7 days active; every 14 days preventive.', dose:'RTU — spray to wet all leaf surfaces top and bottom', caution:'⚠️ Kills beneficials on contact. Never spray in direct sun or when bees are active.' },
-    { cat:'🔬 Micronutrients', badge:'badge-npk', name:'Corrmaxx 245', npk:'Multi-micronutrient', what:'Blended micronutrient corrective — multiple trace elements for deficiency correction.', why:'Corrects multiple deficiencies common in alkaline, irrigated, or depleted soils.', when:'When multiple deficiency symptoms appear. Effective as foliar drench for fast uptake.', dose:'1–2 oz per gal foliar spray — check label for crop restrictions', caution:'⚠️ Do not exceed label rate. Verify label for edible crops before use.' },
-  ];
-
-  let html = '';
-  let lastCat = '';
-  items.forEach(item => {
-    if (item.cat !== lastCat) {
-      html += `<div class="section-eyebrow">${item.cat}</div>`;
-      lastCat = item.cat;
-    }
-    html += `
-      <div class="ref-card">
-        <div class="ref-card-head">
-          <div><div class="ref-card-name">${item.name}</div><div class="ref-card-npk">NPK: ${item.npk}</div></div>
-          <span class="badge ${item.badge}">${item.badge.replace('badge-','')}</span>
-        </div>
-        <div class="ref-card-body">
-          <div class="ref-row"><div class="ref-row-label">What it is</div><div class="ref-row-text">${item.what}</div></div>
-          <div class="ref-row"><div class="ref-row-label">Why use it</div><div class="ref-row-text">${item.why}</div></div>
-          <div class="ref-row"><div class="ref-row-label">When to apply</div><div class="ref-row-text">${item.when}</div></div>
-          <div class="ref-row"><div class="ref-row-label">Dose</div><div class="ref-row-text"><strong>${item.dose}</strong></div></div>
-          ${item.caution ? `<div class="ref-row"><div class="ref-row-label" style="color:var(--orange-dim);">Caution</div><div class="caution-text">${item.caution}</div></div>` : ''}
-        </div>
-      </div>`;
-  });
-  return html;
-}
-
-// ══════════════════════════════════════════════════════════════
-// GROW PLANS (shared)
-// ══════════════════════════════════════════════════════════════
-function renderGrowPlans() {
-  const plans = [
-    { icon:'🥗', title:'Leafy Greens Bed', sub:'Lettuce, spinach, chard, herbs',
-      rows:[['Bed Type','Raised Shallow (6–8")'],['Soil Mix','40% potting + 40% compost + 20% perlite'],['Target pH','6.0–6.8'],['Week 0','Worm tea drench + Blood Meal ½ tsp/cu ft'],['Week 3','Worm tea drench'],['Week 6','Worm tea + scout for pests'],['Water','1"/week — daily in summer'],['Watch For','Yellowing → liquid iron']]},
-    { icon:'🍅', title:'Fruiting Bed', sub:'Tomato, pepper, squash',
-      rows:[['Bed Type','Raised Deep (14–18")'],['Soil Mix','40% potting + 35% compost + 15% perlite + 10% native'],['Target pH','6.2–6.8'],['Week 0','Blood Meal 1 tsp/cu ft + worm tea drench'],['Week 4','Worm tea drench'],['Week 6','Corrmaxx 245 if mottled leaves'],['Week 8+','Neem oil every 14 days preventive'],['Water','2"/week — deep watering']]},
-    { icon:'🍊', title:'Citrus / Fruit Tree', sub:'Orange, lemon, avocado',
-      rows:[['Hole','3× root ball width, same depth'],['Backfill','50% native + 30% compost + 20% perlite'],['Target pH','6.0–7.0'],['At Planting','Worm tea drench in hole'],['Month 1','No fertilizer — let roots establish'],['Month 2','Worm tea at dripline'],['Month 3','Liquid iron if chlorosis; acidifier if pH >7'],['Annual','Top-dress dripline 2" compost each spring']]},
-    { icon:'🫐', title:'Acid-Loving Bed', sub:'Blueberry, strawberry',
-      rows:[['Bed Type','Raised Deep or dedicated container'],['Soil Mix','40% peat + 30% compost + 20% perlite + 10% sand'],['Target pH','4.5–5.5 — test before planting!'],['Before Planting','Acidify and retest monthly until stable'],['Monthly','Worm tea + liquid iron'],['Annual','Retest pH and re-acidify each fall']]},
-    { icon:'🌿', title:'Seedling / Start Tray', sub:'Germination through first true leaves',
-      rows:[['Mix','40% perlite + 40% fine potting + 20% screened compost'],['pH Target','5.8–6.5'],['At Fill','Worm tea diluted 1:10 as moisture only'],['Germination','No amendments'],['First True Leaf','Worm tea 1:20 weekly'],['No Blood Meal','Never — burns seedlings'],['Water','Bottom-water only']]}
-  ];
-  return plans.map(p => `
-    <div class="ref-card" style="margin-bottom:0.75rem;">
-      <div class="ref-card-head"><div class="ref-card-name">${p.icon} ${p.title}</div><div class="ref-card-npk">${p.sub}</div></div>
-      <div class="ref-card-body">
-        ${p.rows.map(r=>`<div class="plan-row"><span class="plan-key">${r[0]}</span><span class="plan-val">${r[1]}</span></div>`).join('')}
-      </div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════════════════════════════
-// HANDLE SELECT CHANGES (for dynamically rendered selects)
-// ══════════════════════════════════════════════════════════════
-document.addEventListener('change', function(e) {
-  if (e.target.id === 's-plot') renderSoilDims();
-  if (e.target.id === 'c-type') renderConcreteDims();
-});
-
-// ══════════════════════════════════════════════════════════════
-// SUPABASE CONFIG (entries only — no auth)
-// ══════════════════════════════════════════════════════════════
 const SUPA_URL = 'https://gblizuknnvguxyxfequh.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGl6dWtubnZndXh5eGZlcXVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzE5NjIsImV4cCI6MjA5OTIwNzk2Mn0.9m3e5T4S1kL9wusD0ZJBgIkshGt_Ws55iEcBE8bbLiE';
 
@@ -1551,47 +1276,45 @@ function toggleNewSection() {
 function getSectionOptions(topic, tab) {
   // Return known section eyebrow labels for this topic+tab
   const map = {
-    soil: {
-      'Overview':    ['Your On-Hand Amendments','Quick Soil pH Guide'],
-      'Amendments':  ['🦠 Biologicals','🌿 Nutrients','⚗️ pH Management','🛡️ Pest & Disease','🔬 Micronutrients'],
-      'Grow Plans':  [''],
-      'Calculator':  [''],
+    substrate: {
+      'Overview':   ['Match substrate to species'],
+      'Recipes':    ['Masters Mix — the commercial baseline','Straw — oyster baseline','Supplemented sawdust — wood-lovers'],
+      'Sourcing':   ['Riverside-area waste streams'],
+      'Calculator': [''],
     },
-    pest: {
-      'Overview':    ['Your On-Hand Treatment','Integrated Pest Management (IPM)'],
-      'ID Guide':    ['Common Pest Identification','Common Disease ID'],
-      'Treatments':  ['Neem Oil Application Guide','What Neem Controls'],
-      'Schedule':    ['Zone 9b Pest Pressure Calendar'],
+    sterilize: {
+      'Overview':      ['Two ways to clear the field'],
+      'Which Method':  ['Substrate → method → target'],
+      'Steps':         ['Pasteurize straw','Sterilize supplemented substrate'],
+      'Cool-Down':     [''],
     },
-    concrete: {
-      'Overview':    ['Your Product','Common Applications'],
-      'Mix Guide':   ['Quikrete Product Selection'],
-      'Tips':        ['Mold Ideas (Free / On-Hand)','Curing Checklist','Troubleshooting'],
-      'Calculator':  [''],
+    inoculate: {
+      'Overview':          [''],
+      'Spawn Rate':        [''],
+      'Sterile Technique': ['Work clean'],
+      'Colonization':      [''],
     },
-    irrigation: {
-      'Overview':    ['Zone 9b Water Context','General Watering Guidelines'],
-      'Scheduling':  ['Zone 9b Seasonal Schedule'],
-      'Reference':   ['Drip System Quick Reference'],
-      'Calculator':  [''],
+    environment: {
+      'Overview':   [''],
+      'Parameters': ['Colonization vs Fruiting','Fruiting temperature by species'],
+      'Controls':   [''],
+      'Pinning':    [''],
     },
-    planting: {
-      'Overview':    ['Zone 9b Growing Conditions','FGF Bed Quick Reference'],
-      'Calendar':    ['Zone 9b Planting Calendar'],
-      'Spacing':     ['Square Foot Spacing Guide'],
-      'Companions':  ['Companion Planting Guide'],
+    contamination: {
+      'Overview': [''],
+      'Identify': ['Know your enemy — look, smell, act'],
+      'Prevent':  ['Stack the odds'],
+      'Rescue':   [''],
     },
-    tools: {
-      'Overview':    ['Tool Categories'],
-      'Checklists':  ['Daily Walk-Through'],
-      'Maintenance': ['Tool Cleaning Guide'],
-      'Storage':     ['Chemical Storage Rules'],
+    harvest: {
+      'Overview':     [''],
+      'When to Pick': [''],
+      'Post-Harvest': [''],
+      'Yield (BE)':   [''],
     },
     records: {
-      'Overview':    ['Record Categories'],
-      'Observation Log': [''],
-      'Bed Status':  ['FGF Bed Quick Reference','Bed Volume Quick Reference'],
-      'Experiments': ['Experiment Design Basics','Amendment Experiment Template'],
+      'Overview':  ['Track for every batch'],
+      'Batch Log': [''],
     },
   };
   return (map[topic]?.[tab]) || [''];
